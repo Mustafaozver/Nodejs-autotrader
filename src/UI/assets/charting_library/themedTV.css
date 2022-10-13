@@ -1,0 +1,38 @@
+:root {
+	--tv-color-platform-background: #303030;
+	--tv-color-pane-background: #222222;
+	--tv-color-pane-background-secondary: #505050;
+	--tv-color-toolbar-button-background-hover: #505050;
+	--tv-color-toolbar-button-background-secondary-hover: blue;
+	--tv-color-toolbar-button-background-expanded: #202020;
+	--tv-color-toolbar-button-text: #DDDDDD;
+	--tv-color-toolbar-button-text-hover: #FFFFFF;
+	--tv-color-toolbar-button-text-active: #EEEEFF;
+	--tv-color-toolbar-button-text-active-hover: #FFFFFF;
+	--tv-color-item-active-text: rgb(6, 255, 6);
+	--tv-color-toolbar-toggle-button-background-active: blue;
+	--tv-color-toolbar-toggle-button-background-active-hover: blue;
+}
+
+.feature-point {
+	display: block;
+	position: absolute;
+	width: 25px;
+	height: 25px;
+	border-radius: 25px;
+	box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.25);
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.feature-point__image {
+	transition: all 0.5s;
+	opacity: 0.8;
+	overflow: visible !important;
+}
+
+.feature-point__image:hover {
+	transform: rotate(-90deg);
+	opacity: 1;
+}

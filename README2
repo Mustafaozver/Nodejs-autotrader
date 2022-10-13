@@ -1,0 +1,4 @@
+##Requirements
+modules = ws, request, technicalindicators
+npm init
+npm install [modulname]

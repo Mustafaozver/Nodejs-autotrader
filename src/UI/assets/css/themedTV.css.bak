@@ -1,0 +1,124 @@
+::-webkit-scrollbar {
+	width:7px;
+}
+
+::-webkit-scrollbar-track {
+	background:#f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+	background:#808080;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background:#444444;
+}
+
+body {
+	overflow:hidden;
+	background-color:#252630;
+	color:#EEEEFF;
+	width:100% !important;
+	height:100% !important;
+	left:0;
+	top:0;
+	position:fixed;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+.priceareaUpdate {
+	font-size:14px;
+	padding:5px;
+	text-align:right;
+	height:auto;
+	font-weight:normal;
+	font-family:consolas;
+	background-color:#808080CC;
+	overflow:hidden;
+	vertical-align:middle;
+	text-align:right;
+	clear:both;
+	display:inline-table;
+	width:100px;
+	position:relative;
+}
+
+.priceareanonpdate {
+	font-size:14px;
+	padding:5px;
+	text-align:right;
+	height:auto;
+	font-weight:normal;
+	font-family:consolas;
+	background-color:#F0F0F000;
+	color:#FFFFFFFF;
+	overflow:hidden;
+	vertical-align:middle;
+	text-align:right;
+	clear:both;
+	display:inline-table;
+	width:100px;
+	position:relative;
+}
+
+.wrapper {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+.number { text-align: right; }
+
+.messageCounter{
+  position: absolute;
+  right: -5px;
+  top: -5px;
+  background: #ad5000;
+  color:#fff;
+  font-weight: bold;
+  z-index: 4;
+  padding: 2px 5px;
+  border-radius: 50px;
+}
+
+.lm_active .messageCounter{
+  background: #ee7813;
+}
+
+font.nonchangedpricearea	{
+	right:0;
+	width:100%;
+}
+font.changedpricearea		{
+	right:0;
+	width:100%;
+}
+
+font.nonchangedstabprice	{color:#A0A0A0;}
+font.changedstabprice		{color:#FFFFFF;}
+
+font.nonchangedricearea		{color:#D0FFD0;}
+font.nonchangednonricearea	{color:#FFA0A0;}
+
+font.nonchangedricearea::before		{content:"▲ ";color:#00FF00AA;left:5px;position:absolute;}
+font.nonchangednonricearea::before	{content:"▼ ";color:#FF0000AA;left:5px;position:absolute;}
+
+font.changedricearea		{color:#00FF00;}
+font.changednonricearea		{color:#FF0000;}
+
+THEAD.Spreadsheet_THead {
+	
+}
+
+TBODY.Spreadsheet_TBody {
+	
+}
+
+TR.Spreadsheet_TR {
+	
+}
+
+TD.Spreadsheet_TD {
+	//margin:2px;
+	padding:3px;
+}

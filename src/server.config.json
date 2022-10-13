@@ -1,0 +1,13 @@
+{
+	"SECRET": "ATA",
+	"ROOT":"./node_modules",
+	"PORT":8010,
+	"DOMAIN":"localhost",
+	"SOCKET":{
+		"path": "/SOCKET",
+		"serveClient":true,
+		"pingInterval":10000,
+		"pingTimeout":5000,
+		"cookie":false
+	}
+}

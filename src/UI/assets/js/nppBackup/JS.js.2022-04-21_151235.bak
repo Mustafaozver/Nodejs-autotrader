@@ -1,0 +1,1704 @@
+if (!ATA) throw new Error("ATA kütüphanesi gereklidir.");
+
+function ToggleFullScreen(){
+	if(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement){
+		if(document.exitFullscreen)document.exitFullscreen();
+		else if(document.mozCancelFullScreen)document.mozCancelFullScreen();
+		else if(document.webkitExitFullscreen)document.webkitExitFullscreen();
+		else if(document.msExitFullscreen)document.msExitFullscreen();
+		$(".ToggleFullScreen")
+			.addClass("fa-expand")
+			.removeClass("fa-compress");
+	}else{
+		element = document.body;
+		if(element.requestFullscreen)element.requestFullscreen();
+		else if(element.mozRequestFullScreen)element.mozRequestFullScreen();
+		else if(element.webkitRequestFullscreen)element.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+		else if(element.msRequestFullscreen)element.msRequestFullscreen();
+		$(".ToggleFullScreen")
+			.removeClass("fa-expand")
+			.addClass("fa-compress");
+    }
+}
+
+var DecodeObject = function(obj){
+	if(obj)
+	switch ((typeof obj).toLowerCase()) {
+		default:
+		case "string": // String
+			return JSON.stringify(obj);
+		break;
+		case "object": // Object or Array or else
+			var objType = obj.constructor.name;
+			var text;
+			switch(objType.toLowerCase()){
+				default:break;
+				case "array": // Array
+					text = [];
+					for(var i=0;i<obj.length;i++) text.push(DecodeObject(obj[i]));
+					return "[" + text.join(",") + "]";
+					break;
+				case "object": // Object
+					var keys = Object.keys(obj);
+					text = "";
+					for (var i=0;i<keys.length;i++) {
+						try{
+							if(!obj[keys[i]])continue; // Unreadable values
+							//if(keys[i] == "")continue;
+							text += (keys[i]) + ":" + DecodeObject(obj[keys[i]]) + "";
+							if (i < keys.length - 1) text += ",";
+						}catch(e){
+							return "{}";
+						}
+					}
+					return "{" + text + "}";
+				break;
+			}
+			if (objType == "RegExp"){
+				return (obj)+""; // "new RegExp()";
+			}
+			if (objType == "Error"){
+				return "new Error(\"\")";
+			}
+			//return "Object.assign(new " + objType + "(),{" + text + "})";
+			return"{}";
+		break;
+		case "number": // Number
+			return obj;
+		break;
+		case "function": // Function
+			return obj+"";
+		break;
+		case "boolean": // Boolean
+			return obj+"";
+		break;
+	}
+};
+
+
+var WSSystem = function(url){
+	this.URL = url;
+	this.WS = false;
+	this.OnMessage = function(){};
+	this.OnOpen = function(){};
+	this.OnClose = function(){};
+	this.OnPing = function(){};
+	this.LastActivite = (new Date()).getTime();
+	//this.Connect();
+};
+WSSystem.prototype.Connect = function(){
+	var THAT = this;
+	var statu = this.GetStatus();
+	try {
+		switch(statu){
+			case "NONE":break;
+			case "CLOSED":delete this.WS;break;
+			case "CLOSING":
+			case "CONNECTING":setTimeout(function(){THAT.Connect();},50);break;
+			case "OPEN":this.WS.terminate();break;
+		}		
+		this.WS = new WebSocket(this.URL);
+		this.WS.on("open",function(){
+			THAT.Ping();
+			THAT.OnOpen();
+		});
+		this.WS.on("message",function(data){
+			THAT.Ping();
+			THAT.OnMessage(data);
+		});
+		this.WS.on("close",function(){
+			THAT.OnClose();
+		});
+		this.WS.on("ping",function(){
+			THAT.OnPing();
+			THAT.Ping();
+		});
+		this.WS.on("error",function(err){
+			console.log(err.stack);
+			THAT.OnClose();
+		});
+	}catch(e){
+		setTimeout(function(){
+			THAT.Connect();
+		},50);
+	}
+};
+WSSystem.prototype.Ping = function(){
+	this.LastActivite = (new Date()).getTime();
+};
+WSSystem.prototype.Send = function(msg){
+	var statu = this.GetStatus();
+	if (statu == "OPEN") this.WS.send(msg);
+	else return false;
+};
+WSSystem.prototype.GetStatus = function(){
+	if((this.LastActivite + 10000) < (new Date()).getTime()){
+		if(this.WS.readyState == "OPEN"){
+			this.Close();
+			return "CLOSED";
+		}
+	}
+	switch(this.WS.readyState){
+		case ATA.WebSocket.CONNECTING:
+			 return "CONNECTING";
+		break;
+		case ATA.WebSocket.OPEN:
+			 return "OPEN";
+		break;
+		case ATA.WebSocket.CLOSING:
+			 return "CLOSING";
+		break;
+		case ATA.WebSocket.CLOSED:
+			 return "CLOSED";
+		break;
+	}
+	return "NONE";
+};
+WSSystem.prototype.Close = function(){
+	var THAT = this;
+	var statu = this.GetStatus();
+	try {
+		if (statu == "CONNECTING") {
+			this.WS.terminate();
+		} else if (statu == "OPEN") this.WS.terminate(); // close
+		else if (statu == "NONE") return;
+		else if (this.GetStatus() == "CLOSING") return;
+		else if (statu == "CLOSED") return;
+	} catch (E){
+	}
+};
+
+ATA().Setups.push(function(){
+	ATA.Socket = io("ws://" + window.location.host,{
+		path:"/SOCKET"
+	});
+	ATA.Socket.on("0",function(){
+		ATA.Socket.emit("0");
+		ATA.Socket.on("APPROVED",function(){
+			ATA.Socket.emit("JOIN",ATA().Settings.ID);
+			ATA.Socket.on("DATA",function(data){
+				ATA.InterFace.ParseMessage(data);
+			});
+			ATA.SendData = function(data){
+				ATA.Socket.emit("DATA",data);
+			};
+		});
+	});
+});
+
+var Instrument = function(symbol){
+	this.Symbol = symbol;
+};
+
+ATA.InterFace = {
+	Instruments:{},
+	GetInstrument:function(symbol){
+		symbol = (symbol+"").toUpperCase();
+		if(!this.Instruments[symbol])this.Instruments[symbol] = new Instrument(symbol);
+		return this.Instruments[symbol];
+	},
+	ParseMessage:function(msg){
+		if(msg.EVAL){
+			var generatedRes;
+			var err = false;
+			try {
+				var code = msg.EVAL+"";
+				generatedRes = eval.apply(ATA.GLOBAL,["try{var generatedRes=("+code+");}catch(e){generatedRes=e};generatedRes"]);
+			} catch (e) {
+				generatedRes = e.message;
+				err = true;
+			}
+		}
+	},
+	ResponseFunctions:{
+		DEFAULT:function(){
+			console.log("Bilinmeyen => " + arguments);
+		},
+	},
+	Post:function(ajaxd,data){
+		var AjaxData = {
+			url:"/?" + $.param(data),
+			type:"POST",
+			data:{},
+			success:function(response) {},
+			error:function(){}
+		};
+		Object.assign(AjaxData,ajaxd);
+		$.ajax(AjaxData);
+	},
+};
+
+ATA.GetContextMenu = function(params){
+	var result = params.defaultItems ? params.defaultItems.splice(0) : [];
+	//console.log("getContextMenuItems",result);
+	//return result;
+	return [
+		{
+			name:"Excel'e Çıkar",
+			icon:"<i class=\"fa fa-table\" style=\"width:14px;height:14px;font-size:14px;\"></i>", // "<img src=\"images/lab.svg\"  style=\"width:14px;height:14px;font-size:14px;\" />"
+			action:function(){
+				//ATA.PriceTable.gridOptions.api.exportDataAsExcel(params);
+			}
+		},
+		{
+			name:"Sembol Analiz",
+			icon:"<i class=\"fa fa-graph\" style=\"width:14px;height:14px;font-size:14px;\"></i>",
+			action:function(){
+				var symbol = params.node.data.Symbol;
+				ATA.SymbolAnalysis(symbol);
+			 },
+		},
+		"separator",
+		{
+			name:"Console",
+			action:function(){
+				console.log(params.node.data);
+			}
+		},
+		"chartRange",
+		{
+			name:"Diğer",
+			subMenu:result,
+		}//,
+		/*{
+			name:"Takas Listesi",
+			icon:"<i class=\"fa fa-graph\" style=\"width:14px;height:14px;font-size:14px;\"></i>",
+			action:function(){
+				var SEP1 = ATA.Settings.SEP1;
+				var SessionId = ATA.UserParameters.SessionId;
+				var UserName = ATA.UserParameters.UserName = document.all.UserName.value;
+				var symbol = params.node.data.Symbol;
+				var PITEPeriot = 1;
+				
+				var instrument = ATA.InstrumentGet(symbol);
+				var yon = "ALANLAR";
+				ATA.WS.Send("X" + SEP1 + "REQ_PITE" + SEP1 + instrument.Symbol + SEP1 + PITEPeriot + SEP1 + ToEngUp(yon) + SEP1 + UserName + SEP1 + SessionId);
+				ATA.WS.Send("X" + SEP1 + "REQ_TKS2" + SEP1 + Username + SEP1 + basicitem.Composite + SEP1 + GetEl("TableTakasToolbar").rows[0].cells[ActiveTakasPeriodNo].innerHTML);
+			},
+		},*/
+		//"copy",
+		//"copyWithHeaders",
+		//"paste",
+	];
+};
+
+ATA.SymbolAnalysis = function(symbol){
+	
+};
+
+
+var ATAPriceCell = function(htmlobj){
+	this.HTMLObjectPrice = htmlobj;
+	this.HTMLObjectLot = false;
+	this.HTMLObjectPercent = false;
+	this.Step = 1;
+	this.Max = Infinity;
+	this.Min = -Infinity;
+	this.PriceFormat = {
+		style: "currency",
+		currency: "TRY",
+		minimumFractionDigits: - Math.floor(Math.log(this.Step) * Math.LOG10E),
+		useGrouping: false,
+	};
+	this.Value = 0;
+	this.Timeout = null;
+	this.Update(0);
+};
+ATAPriceCell.FormatPrice = function(price,format){
+	return Number(price).toLocaleString("tr-TR",format).substr(1);
+};
+ATAPriceCell.prototype.DelayedUpdate = function(){
+	var price = Math.floor(this.Value / this.Step) * this.Step;
+	var Newform = ATAPriceCell.FormatPrice(price,this.PriceFormat);
+	this.HTMLObjectPrice.innerHTML = "<div class=\"priceareanonpdate\">" + Newform + "</div>";
+	try{
+		$(this.HTMLObjectPrice).parents(".ag-cell")[0].style.backgroundColor  = "#80808000";
+	}catch(e){}
+	//this.HTMLObjectPrice.innerHTML = this.HTMLObjectPrice.innerHTML.replace("priceareaUpdate","priceareanonpdate").replace("nonchangednonricearea","").replace("nonchangedricearea","");//
+};
+ATAPriceCell.prototype.Update = function(price){
+	price = Number(price);
+	if(price == 0){// reset
+		this.Step = 1;
+		this.HTMLObjectPrice.innerText = "-";
+		return;
+	};
+	try{
+		this.Step = Math.min(this.Step,10**(-(""+price).split(".")[1].length));
+	}catch(e){}
+	
+	var oldValue = this.Value;
+	var rise = oldValue < price;
+	var change = oldValue != price;
+	price = Math.floor(price / this.Step) * this.Step;
+	this.PriceFormat = Object.assign(this.PriceFormat,{
+		minimumFractionDigits: - Math.floor(Math.log(this.Step) * Math.LOG10E),
+	});
+	var Newform = ATAPriceCell.FormatPrice(price,this.PriceFormat);
+	var Oldform = ATAPriceCell.FormatPrice(oldValue,this.PriceFormat);
+	var i=0;
+	if (Newform.length == Oldform.length) for (;i<Newform.length;i++){
+		if (Newform.charAt(i) == Oldform.charAt(i)) continue;
+		else break;
+	}
+	if (price == 0) {
+		this.HTMLObjectPrice.innerHTML = "";
+		return;
+	}
+	this.HTMLObjectPrice.innerHTML = "<div class=\"priceareaUpdate\"><font class=\"nonchangedpricearea " + (change?(rise?"nonchangedricearea":"nonchangednonricearea"):"nonchangedstabprice") + "\">" + Newform.substr(0,i) + "</font><font class=\"changedpricearea " + (change?(rise?"changedricearea":"changednonricearea"):"changedstabprice") + "\">" + Newform.substr(i,Newform.length) + "</font></div>";
+	try{
+		$(this.HTMLObjectPrice).parents(".ag-cell")[0].style.backgroundColor  = "#80808050";
+	}catch(e){}
+	this.Value = price;
+	clearTimeout(this.Timeout);
+	var THAT = this;
+	this.Timeout = setTimeout(function(){
+		THAT.DelayedUpdate();
+	},400);
+};
+
+var ATAWindow = function(title, opts){
+	this.ID = "win_" + ATA().UUID.Generate();
+	this.Title = "" + title;
+	this.Div = document.createElement("div");
+	document.body.append(this.Div);
+	this.Div.style.width = "400px";
+	this.Div.style.height = "250px";
+	this.Div.style.left = "150px";
+	this.Div.style.top = "150px";
+	this.Div.style.display = "none";
+	this.Div.className = "ATAWindow";
+	this.isMaximized = false;
+	//this.Div.innerHTML = "eşrkjhgroeuı";
+	ATAWindow.Config.GenerateHTML(this.Div);
+	this.Options = Object.assign({
+		Closable	: true,
+		Resizable	: true,
+		Movable		: true,
+		Maximizable	: true,
+		Minimizable	: true,
+	},opts);
+	this.OnClose = function(){};
+	this.OnResize = function(){};
+	this.OnMove = function(){};
+	this.OnFocus = function(){};
+	var THAT = this;
+	THAT.Initialize();
+	setTimeout(function(){
+		//THAT.Initialize();
+		THAT.Focus();
+	},1);
+	ATAWindow.Windows[this.ID] = this;
+	
+};
+ATAWindow.Config = {
+	isReady:false,
+	LastActivite:0,
+	LoopTime:1000*60*5,
+	GenerateHTML:function(content){
+		var divcontent = document.createElement("div");content.append(divcontent);
+		
+		var divedgeright = document.createElement("div");content.append(divedgeright);
+		var divedgeleft = document.createElement("div");content.append(divedgeleft);
+		var divedgebottom = document.createElement("div");content.append(divedgebottom);
+		
+		var divhead = document.createElement("div");content.append(divhead);
+		
+		var divlock = document.createElement("div");content.append(divlock);
+		
+		var headHeight = "1.5em";
+		
+		divhead.style.height = "" + headHeight + "";
+		divhead.className = "Title";
+		
+		divcontent.style.height = "calc(100% - " + headHeight + ")";
+		divcontent.style.top = "" + headHeight + "";
+		divcontent.className = "Content";
+		
+		divlock.className = "Lock";
+		divlock.style.display = "none";
+		
+		divedgeright.className = "Edge_Right";
+		divedgeleft.className = "Edge_Left";
+		divedgebottom.className = "Edge_Bottom";
+		
+		var divactions = document.createElement("div");content.append(divactions); // content
+		divactions.style.height = "" + headHeight + "";
+		divactions.className = "Actions";
+		
+		var buttonminimize = document.createElement("I"); // minimize
+		divactions.append(buttonminimize);
+		buttonminimize.className = "Minimize btn btn-outline-light fa fa-window-minimize"; // btn-outline-primary
+		
+		var buttonmaximize = document.createElement("I"); // maximize
+		divactions.append(buttonmaximize);
+		buttonmaximize.className = "Maximize btn btn-outline-light fa fa-window-maximize"; // btn-outline-warning
+		
+		var buttonrestore = document.createElement("I"); // restore
+		divactions.append(buttonrestore);
+		buttonrestore.className = "Restore btn btn-outline-light fa fa-window-restore"; // btn-outline-warning
+		buttonrestore.style.display = "none";
+		
+		var buttonclose = document.createElement("I"); // close
+		divactions.append(buttonclose);
+		buttonclose.className = "Close btn btn-outline-danger fa fa-times"; // btn-outline-danger
+		
+		$(divactions).children().css({
+			width:headHeight,
+			height:headHeight,
+		});
+	},
+};
+ATAWindow.Windows = {};
+ATAWindow.ActiveWindow = false;
+ATAWindow.Action = false;
+ATAWindow.Container = false;
+ATAWindow.GetPinnablePoints = function(){
+	var arr = [];
+	var conPos = $(ATAWindow.Container).position();
+	var conW = $(ATAWindow.Container).width();
+	var conH = $(ATAWindow.Container).height();
+	var conX = conPos.left;
+	var conY = conPos.top;
+	arr.push([conX + conW, conY + conH, conX, conY, ""]); // pinned to container
+	for(var key in ATAWindow.Windows){
+		var win = ATAWindow.Windows[key];
+		if(win.Div.style.display != "")continue;
+		var elePos = win.GetPosition();
+		var eleSize = win.GetSize();
+		var X1 = elePos.x;
+		var Y1 = elePos.y;
+		var X2 = elePos.x + eleSize.w;
+		var Y2 = elePos.y + eleSize.h;
+		arr.push([X1, Y1, X2, Y2, win.ID]);
+	}
+	return arr;
+};
+ATAWindow.LastZIndex = 15000;
+ATAWindow.prototype.Focus  = function(){
+	this.Div.style.zIndex = ++ATAWindow.LastZIndex;
+	this.OnFocus();
+};
+ATAWindow.prototype.Initialize = function(){
+	var THAT = this;
+	$(this.Div).find(".Title").mousedown(function(event){
+		var elePos = THAT.GetPosition();
+		var eleSize = THAT.GetSize();
+		THAT.__R = {};
+		THAT.__R.__X = Number(event.pageX) - Number(elePos.x);
+		THAT.__R.__Y = Number(event.pageY) - Number(elePos.y);
+		THAT.__R.__W = eleSize.w;
+		THAT.__R.__H = eleSize.h;
+		ATAWindow.ActiveWindow = THAT;
+		ATAWindow.Action = "MOVE";
+		ATAWindow.ContentAccess(false);
+		THAT.Focus();
+		//event.preventDefault();
+	}).mouseup(function(event){
+		ATAWindow.Action = false;
+	});
+	$(this.Div).click(function(){
+		THAT.Focus();
+	}).mousedown(function(event){
+		var elePos = THAT.GetPosition();
+		var eleSize = THAT.GetSize();
+		var edgeX = elePos.x + eleSize.w;
+		var edgeY = elePos.y + eleSize.h;
+		var wid = 7;
+		var resizeEX = edgeX >= Number(event.pageX) && edgeX < (Number(event.pageX)+wid);
+		var resizeEY = edgeY >= Number(event.pageY) && edgeY < (Number(event.pageY)+wid);
+		var resizeFX = elePos.x < Number(event.pageX) && elePos.x > (Number(event.pageX)-wid);
+		var resizeFY = elePos.y < Number(event.pageY) && elePos.y > (Number(event.pageY)-wid);
+		if (resizeEX || resizeEY || resizeFX || resizeFY){
+			ATAWindow.ActiveWindow = THAT;
+			ATAWindow.Action = "RESIZE";
+			ATAWindow.ContentAccess(false);
+			THAT.__R = {};
+			if(resizeEX)THAT.__R["REX"] = true; // right edge resize
+			if(resizeEY)THAT.__R["REY"] = true; // bottom edge resize
+			if(resizeFX)THAT.__R["RFX"] = true; // left edge resize
+			if(resizeFY)THAT.__R["RFY"] = true; // top edge resize
+			THAT.__R.__EHY = eleSize.h + elePos.y;
+			THAT.__R.__EWX = eleSize.w + elePos.x;
+		}
+	});
+	if(!this.Options.Closable)$(this.Div).find(".Close").hide();
+	if(!this.Options.Maximizable){
+		$(this.Div).find(".Maximize").hide();
+		$(this.Div).find(".Restore").hide();
+	}
+	if(!this.Options.Minimizable)$(this.Div).find(".Minimize").hide();
+	$(this.Div).find(".Close").on("click", function(){
+		//THAT.Hide();return;
+		THAT.Close();
+		THAT.OnClose();
+	});
+	$(this.Div).find(".Restore").on("click", function(){
+		THAT.Restore();
+	});
+	$(this.Div).find(".Maximize").on("click", function(){
+		THAT.Maximize();
+	});
+	$(this.Div).find(".Minimize").on("click", function(){
+		THAT.Minimize();
+	});
+};
+ATAWindow.prototype.ContentAccess = function(statu=true){
+	if(statu)$(this.Div).find(".Lock").hide();
+	else $(this.Div).find(".Lock").show();
+};
+ATAWindow.ContentAccess = function(statu=true){
+	for(var key in ATAWindow.Windows)ATAWindow.Windows[key].ContentAccess(statu);
+};
+ATAWindow.prototype.Close = function(){
+	this.Div.style.display = "none";
+	delete ATAWindow.Windows[this.ID];
+	this.OnClose();
+	return;
+	this.Div.remove();
+};
+ATAWindow.prototype.Hide = function(){
+	this.Div.style.display = "none";
+};
+ATAWindow.prototype.Show = function(){
+	this.Open();
+};
+ATAWindow.prototype.Restore = function(){
+	this.isMaximized = false;
+	var newW = this.ResoreData.W;
+	var newH = this.ResoreData.H;
+	var newX = this.ResoreData.X;
+	var newY = this.ResoreData.Y;
+	this.SetSize(newW, newH);
+	this.SetPosition(newX, newY);
+	$(this.Div).find(".Maximize").show();
+	$(this.Div).find(".Restore").hide();
+};
+ATAWindow.prototype.Maximize = function(){
+	var eleSize = this.GetSize();
+	var elePos = this.GetPosition();
+	this.ResoreData = {};
+	this.ResoreData.X = elePos.x;
+	this.ResoreData.Y = elePos.y;
+	this.ResoreData.W = eleSize.w;
+	this.ResoreData.H = eleSize.h;
+	var conPos = $(ATAWindow.Container).position();
+	var newW = $(ATAWindow.Container).width();
+	var newH = $(ATAWindow.Container).height();
+	var newX = conPos.left;
+	var newY = conPos.top;
+	this.SetSize(newW, newH);
+	this.SetPosition(newX, newY);
+	this.isMaximized = true;
+	$(this.Div).find(".Maximize").hide();
+	$(this.Div).find(".Restore").show();
+};
+ATAWindow.prototype.Minimize = function(){
+	var visible = this.GetContent().is(":visible");
+	if(visible){
+		var eleSize = this.GetSize();
+		this.GetContent().hide();
+		this.ResoreMinimizeData = [eleSize.w, eleSize.h];
+		$(this.Div).height($(this.Div).find(".Title").height());
+	}else{
+		this.SetSize(this.ResoreMinimizeData[0], this.ResoreMinimizeData[1]);
+		this.GetContent().show();
+	}
+};
+ATAWindow.prototype.Open = function(){
+	this.Div.style.display = "";
+	this.Focus();
+};
+ATAWindow.prototype.GetContent = function(){
+	return $(this.Div).find(".Content");
+};
+ATAWindow.prototype.SetTitle = function(title){
+	$(this.Div).find(".Title").html(title);
+};
+ATAWindow.prototype.GetSize = function(){
+	return {
+		w:Number($(this.Div).width().toFixed(0)),
+		h:Number($(this.Div).height().toFixed(0)),
+	};
+};
+ATAWindow.prototype.SetSize = function(w,h){
+	if(this.isMaximized)return;
+	if(!this.Options.Resizable)return;
+	if(typeof(w)=="number"){
+		if(w < 100)w = 100;
+		$(this.Div).width(w);
+	}
+	if(typeof(h)=="number"){
+		if(h < 100)h = 100;
+		$(this.Div).height(h);
+	}
+	this.OnResize();
+};
+ATAWindow.prototype.GetPosition = function(){
+	var pos = $(this.Div).position();
+	return {
+		x:Number(pos.left.toFixed(0)),
+		y:Number(pos.top.toFixed(0)),
+	};
+};
+ATAWindow.prototype.SetPosition = function(x,y){
+	if(this.isMaximized)return;
+	if(!this.Options.Movable)return;
+	var __s = {};
+	if(typeof(x)=="number")__s.left = x;
+	if(typeof(y)=="number")__s.top = y;
+	var eleSize = this.GetSize();
+	var conPos = $(ATAWindow.Container).position();
+	var conW = $(ATAWindow.Container).width();
+	var conH = $(ATAWindow.Container).height();
+	var conX = conPos.left;
+	var conY = conPos.top;
+	if((conW + conX) < (eleSize.w + __s.left)) __s.left = conW + conX - eleSize.w;
+	if((conH + conY) < (eleSize.h + __s.top)) __s.top = conH + conY - eleSize.h;
+	if(__s.left < conX)__s.left = conX;
+	if(__s.top < conY)__s.top = conY;
+	$(this.Div).css(__s);
+	this.OnMove();
+};
+ATAWindow.Setup = function(){
+	ATAWindow.Config.isReady = true;
+	ATAWindow.Container = document.all.pageLayout;
+	var documentmove = function(event){
+		// event.pageX, event.pageY;
+		//THAT.
+		if(ATAWindow.ActiveWindow)switch((""+ATAWindow.Action).toUpperCase()){
+			default:
+			break;
+			case "MOVE":
+				var win = ATAWindow.ActiveWindow; // ATAWindow.Windows[ATAWindow.ActiveWindow ID];
+				var PinnablePoints = ATAWindow.GetPinnablePoints();
+				var newX = event.pageX - win.__R.__X;
+				var newY = event.pageY - win.__R.__Y;
+				var edgeX = newX + win.__R.__W;
+				var edgeY = newY + win.__R.__H;
+				var mnewX = newX;
+				var mnewY = newY;
+				//win.SetPosition(mnewX, mnewY);return; // is pinnable?
+				var diffpixel = 15;
+				
+				for(var i=0;i<PinnablePoints.length;i++){
+					var point = PinnablePoints[i]; // x1, y1, x2, y2, winid
+					if(point[4] === win.ID)continue;
+					
+					var x1x1 = Math.abs(point[0] - newX) < diffpixel;
+					var x1x2 = Math.abs(point[0] - edgeX) < diffpixel;
+					var x2x1 = Math.abs(point[2] - newX) < diffpixel;
+					var x2x2 = Math.abs(point[2] - edgeX) < diffpixel;
+					
+					var y1y1 = Math.abs(point[1] - newY) < diffpixel;
+					var y1y2 = Math.abs(point[1] - edgeY) < diffpixel;
+					var y2y1 = Math.abs(point[3] - newY) < diffpixel;
+					var y2y2 = Math.abs(point[3] - edgeY) < diffpixel;
+					
+					if(x2x1){ // x2 - x1
+						mnewX = point[2];
+						if(y1y1)mnewY = point[1];
+						else if(y2y2)mnewY = point[3] - win.__R.__H;
+						//break;
+					}else if(x1x2){
+						mnewX = point[0] - win.__R.__W;
+						if(y1y1)mnewY = point[1];
+						else if(y2y2)mnewY = point[3] - win.__R.__H;
+						//break;
+					}
+					
+					if(y2y1){
+						mnewY = point[3];
+						if(x1x1)mnewX = point[0];
+						else if(x2x2)mnewX = point[2] - win.__R.__W;
+						//break;
+					}else if(y1y2){
+						mnewY = point[1] - win.__R.__H;
+						if(x1x1)mnewX = point[0];
+						else if(x2x2)mnewX = point[2] - win.__R.__W;
+						//break;
+					}
+				}
+				win.SetPosition(mnewX, mnewY);
+				//win.Focus();
+			break;
+			case "RESIZE":
+				var win = ATAWindow.ActiveWindow;// ATAWindow.Windows[ATAWindow.ActiveWindow ID];
+				var elePos = win.GetPosition();
+				var newX = false;
+				var newY = false;
+				var newW = false;
+				var newH = false;
+				if(win.__R["REX"])newW = Number(event.pageX) - elePos.x + 1;
+				if(win.__R["REY"])newH = Number(event.pageY) - elePos.y + 1;
+				if(win.__R["RFX"]){
+					var __EWX = win.__R.__EWX;
+					newX = Number(event.pageX);
+					newW = __EWX - newX;
+				}
+				if(win.__R["RFY"]){
+					var __EHY = win.__R.__EHY;
+					newY = Number(event.pageY);
+					newH = __EHY - newY;
+				}
+				win.SetPosition(newX, newY);
+				win.SetSize(newW, newH);
+			break;
+		}
+	};
+	var documentmouseup = function(event){
+		ATAWindow.Action = false;
+		ATAWindow.ActiveWindow = false;
+		ATAWindow.ContentAccess(true);
+	};
+	$(document.body).on("mousemove", documentmove)
+	$(document.body).on("mouseup", documentmouseup);
+	$(document.body).on("focusout", documentmouseup);
+	
+	$(window).resize(function(){
+		for(var key in ATAWindow.Windows){
+			var win = ATAWindow.Windows[key];
+			var elePos = win.GetPosition();
+			var eleSize = win.GetSize();
+			win.SetPosition(elePos.x, elePos.y);
+			win.SetSize(eleSize.w, eleSize.h);
+		}
+	});
+};
+
+ATA().Setups.push(function(){
+	ATAWindow.Setup();
+});
+
+var COLORS = [
+	"#00BCD4",
+	"#607D8B",
+	"#4CAF50",
+	"#8BC34A",
+	"#3F51B5",
+	"#F0E68C",
+	"#CDDC39",
+	"#FF9800",
+	"#795548",
+	"#FF5722",
+	"#000FFF",
+	"#E91E63",
+	"#9C27B0",
+	"#673AB7",
+	"#F44336",
+	"#009688",
+	"#FFEB3B",
+	"#616161",
+	"#FFC107",
+	"#00FFFF",
+	"#2196F3",
+	"#FFDDDD",
+	"#87CEEB",
+];
+
+var ATAPriceCellRenderer = function(){
+	this.eGui = document.createElement("DIV");
+	this.eGui.style.width = "100%";
+	this.eGui.style.height = "100%";
+	this.eGui.style.display = "none";
+	this.ATAPriceCell = new ATAPriceCell(this.eGui);
+};
+ATAPriceCellRenderer.prototype.init = function(params){
+	if (isNaN(Number(params.value))) return;
+	if(ATA.InterFace.InstrumentsList[params.data.Symbol + ""])this.eGui.style.display = "";
+	else this.eGui.style.display = "none";
+	this.ATAPriceCell.Update(params.value);
+};
+ATAPriceCellRenderer.prototype.getGui = function(){
+	return this.eGui;
+};
+ATAPriceCellRenderer.prototype.refresh = function(params){
+	if (isNaN(Number(params.value))) return;
+	if(ATA.InterFace.InstrumentsList[params.data.Symbol + ""])this.eGui.style.display = "";
+	else this.eGui.style.display = "none";
+	this.ATAPriceCell.Update(params.value);
+	return true;
+};
+ATAPriceCellRenderer.prototype.destroy = function(){};
+
+var ATAPercentCellRenderer = function(){
+	this.eGui = document.createElement("DIV");
+	this.eGui.innerHTML = "";
+	this.eGui.style.display = "none";
+	this.PValue = 0;
+};
+ATAPercentCellRenderer.prototype.init = function(params){
+	//this.eGui.innerHTML = "-";
+	if(ATA.InterFace.InstrumentsList[params.data.Symbol + ""])this.eGui.style.display = "";
+	else this.eGui.style.display = "none";
+	if(params.value)this.refresh(params);
+	else this.refresh({params:0});
+};
+ATAPercentCellRenderer.prototype.refresh = function(params){
+	var deger = Number(params.value);
+	if (isNaN(deger)) return true;
+	if (!isFinite(deger)) return true;
+	if(ATA.InterFace.InstrumentsList[params.data.Symbol + ""])this.eGui.style.display = "";
+	else this.eGui.style.display = "none";
+	this.PValue = deger;
+	var rise = this.PValue >= 0;
+	var change = !(this.PValue == 0);
+	this.eGui.innerHTML = "<div class=\"priceareanonpdate " + (change?(rise?"nonchangedricearea":"nonchangednonricearea"):"changedstabprice") + "\"> " + (rise?"<!-- + -->":"<!-- - -->") + " % " + Math.abs(this.PValue).toFixed(2) + "</div>";
+	return true;
+};
+ATAPercentCellRenderer.prototype.getGui = function(){
+	return this.eGui;
+};
+ATAPercentCellRenderer.prototype.destroy = function(){};
+
+var PriceTableWindow = function(listname){
+	this.ID = "win_" + ATA().UUID.Generate();
+	
+	this.WIN = new ATAWindow("Fiyat Penceresi" /*+ " - " + listname*/);
+	PriceTableWindow.Config.GenerateHTML(this.WIN.GetContent()[0]);
+	if(typeof(listname)=="string"){
+		this.WIN.SetTitle("Fiyat Penceresi - " + listname);
+		this.Name = listname;
+		this.List = [];
+	}else{
+		this.WIN.SetTitle("Fiyat Penceresi - Yeni Liste");
+		this.Name = "Yeni Liste";
+		this.List = (["BTCUSDT"]).concat(Array.from({length:50}).fill(""));
+	}
+	PriceTableWindow.Windows[this.ID] = this;
+	this.Length = 510;
+	var THAT = this;
+	this.WIN.OnClose = function(){
+		THAT.Close();
+	};
+	this.WIN.OnMove = function(){
+		var elePos = this.GetPosition();
+		PriceTableWindow.Config.DefaultPosition = [elePos.x, elePos.y];
+	};
+	this.Initialize();
+	setTimeout(function(){
+		//THAT.Initialize();
+	},1);
+};
+PriceTableWindow.Config = {
+	DefaultPosition:[0,0],
+	LastActivite:0,
+	LoopTime:1000*60*5,
+	GenerateHTML:function(content){
+		var divcontent = document.createElement("div");content.append(divcontent);
+		var divhead = document.createElement("div");content.append(divhead);
+		
+		var headHeight = "0em";
+		
+		divhead.style.width = "100%";
+		divhead.style.height = "" + headHeight + "";
+		divhead.style.left = "0px";
+		divhead.style.top = "0px";
+		divhead.style.position = "absolute";
+		divhead.className = "header";
+		divhead.innerHTML = "";
+		
+		divcontent.style.width = "100%";
+		divcontent.style.height = "calc(100% - " + headHeight + ")";
+		divcontent.style.left = "0px";
+		divcontent.style.top = "" + headHeight + "";
+		divcontent.style.position = "absolute";
+		
+		divcontent.className = "rootsystem";
+	},
+	PriceTableGrid:{
+		rowDragManaged:true,
+		//rowDragMultiRow:true,
+		allowContextMenuWithControlKey:true,
+		suppressMenuHide:true,
+		enterMovesDownAfterEdit:true,
+		enterMovesDown:true,
+		suppressColumnMoveAnimation:true, // check browser
+		enableCharts:true,
+		animateRows:true,
+		enableRangeSelection:true,
+		enableFillHandle:true,
+		undoRedoCellEditing:true,
+		undoRedoCellEditingLimit:50,
+		suppressClearOnFillReduction:false,
+		rowSelection:"multiple", // one of ["single","multiple"], leave blank for no selection
+		quickFilterText:null,
+		groupSelectsChildren:true, // one of [true, false]
+		suppressRowClickSelection:true, // if true, clicking rows doesn't select (useful for checkbox selection)
+		popupParent:document.body,
+		suppressAggFuncInHeader:true,
+		chartThemes:["myCustomTheme","ag-pastel-dark"],
+		getRowNodeId:function(data){return data.ID;},
+		customChartThemes:{
+			myCustomTheme:{
+				baseTheme:"ag-pastel-dark",
+				palette:{
+					fills:[...COLORS],
+					strokes:[...COLORS],
+				},
+				overrides:{
+					common:{
+						title:{
+							fontSize:25,
+							fontFamily:"-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen-Sans, Ubuntu, Cantarell, Helvetica Neue, sans-serif",
+						}
+					}
+				}
+			}
+		},
+		getChartToolbarItems:function(){
+			return [];
+		},
+		isExternalFilterPresent:function(){
+			return true;
+		},
+		doesExternalFilterPass:function(rowNode){
+			return rowNode.data.Active == "Y";
+		},
+		columnDefs:[
+			{field:"Active",hide:true,},
+			{field:"ID",hide:true,width:30,},
+			{field:"Prefix",hide:true,width:100,},
+			{
+				field:"Symbol",
+				minWidth:70,
+				type:"SymbolTypeFormat",
+				headerName:"Sembol",
+				rowDrag:true,
+				pinned:"left",
+				editable:true,
+				cellEditorPopup:true,
+				colSpan:function(params){
+					if(params.data.Symbol == "")return 6;
+					return 1;
+				},
+				cellClassRules:{
+					"Symbol_Grid_Title":function(params){
+						if(ATA.InterFace.InstrumentsList[params.data.Symbol + ""])return false;
+						return true;
+					}
+				}
+				/*sort:"asc"*/
+			},
+			{
+				field:"Last",
+				type:"PriceTypeFormat",
+				headerName:"Son",
+				minWidth:110,
+				editable:false,
+			},
+			{
+				headerName:"Değerler",
+				pinned: "right",
+				children:[
+					{field:"PDaily", headerName:"% Gün", type:"PercentTypeFormat",minWidth:110,},
+					{field:"Graph", headerName:"Grafik",minWidth:110, type:"GrahpTypeFormat",},
+					{field:"Last Lot", headerName:"Son Lot",width:100,hide:true},
+					{field:"Buy", headerName:"Alış", type:"PriceTypeFormat",width:100,hide:true},
+					{field:"Sell", headerName:"Satış", type:"PriceTypeFormat",width:100,hide:true},
+					
+					{field:"DailyLot", headerName:"Günlük Adet", hide:true,width:100,},
+					{field:"BidSize", headerName:"Alış Adet", hide:true,width:100,},
+					{field:"AskSize", headerName:"Satış Adet", hide:true,width:100,},
+					{field:"LimitUp", headerName:"Tavan", hide:true, type:"PriceTypeFormat",width:100,},
+					{field:"LimitDown", headerName:"Taban", hide:true, type:"PriceTypeFormat",width:100,},
+					{field:"Step", headerName:"Adım", hide:true,width:100,},
+					{field:"Avarage", headerName:"Ortalama", hide:true, type:"PriceTypeFormat",width:100,},
+					{field:"Volume", headerName:"Hacim", hide:true,width:100,},
+					{field:"PreviusClose", headerName:"Önceki Gün Kapanış", hide:true,type:"PriceTypeFormat",width:100,},
+				],
+			},
+		],
+		defaultColDef:{
+			minWidth: 50,
+			editable:false,
+			sortable:true,
+			//flex:1,
+			filter:true,
+			resizable:true
+		},
+		components:{
+			ATAPriceCellRenderer:ATAPriceCellRenderer,
+			ATAPercentCellRenderer:ATAPercentCellRenderer,
+		},
+		columnTypes:{
+			PriceTypeFormat:{
+				chartDataType:"series",
+				cellClass:"number",
+				valueFormatter:function(params){
+					return Number(Number(params.value).toPrecision(7));
+					//return Math.floor(params.value).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+				},
+				cellRenderer:"ATAPriceCellRenderer"
+			},
+			PercentTypeFormat:{
+				chartDataType:"series",
+				cellClass:"number",
+				valueFormatter:function(params){
+					return Number(params.value);
+					//return Math.floor(params.value).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+				},
+				cellRenderer:"ATAPercentCellRenderer"
+			},
+			SymbolTypeFormat:{
+				cellRenderer:"ATASymbolCellRenderer",
+				cellEditor:"ATASymbolCellEditor"
+			},
+			GrahpTypeFormat:{
+				cellRenderer:"ATAPriceGrahpCellRenderer"
+			},
+		},
+		statusBar: {
+			statusPanels: [
+				//{ statusPanel: "agTotalAndFilteredRowCountComponent", key: "totalAndFilter", align: "left" },
+				{ statusPanel: "agSelectedRowCountComponent", align: "left" },
+				{ statusPanel: "agAggregationComponent", align: "right" }
+			]
+		},
+		onGridReady:function(params){
+			params.api.sizeColumnsToFit();
+		},
+		sideBar: {
+			toolPanels: ["columns", "filters"],
+			defaultToolPanel: "",
+		},
+		onCellClicked:function(param){
+			var symbol = param.data.Symbol;
+			SuperficialAnalysis(symbol);
+		},
+		onRowDoubleClicked:function(param){
+			var symbol = param.data.Symbol;
+			//SuperficialAnalysis(symbol);
+		},
+		getContextMenuItems:function(params){
+			return ATA.InterFace.GetContextMenu(params);
+		},
+	},
+};
+PriceTableWindow.Windows = {};
+PriceTableWindow.prototype.Serialize = function(){
+	var elePos = this.WIN.GetPosition();
+	var eleSize = this.WIN.GetSize();
+	var xcode = "(function(){";
+	xcode += "var _=new PriceTableWindow(\"" + this.Name + "\");";
+	xcode += "_.List=[\"" + this.List.join("\",\"") + "\"];";
+	xcode += "setTimeout(function(){"
+	xcode += 	"_.WIN.SetPosition(" + elePos.x + "," + elePos.y + ");";
+	xcode += 	"_.WIN.SetSize(" + eleSize.w + "," + eleSize.h + ");";
+	xcode += "},10);";
+	xcode += "})();";
+	return xcode;
+};
+PriceTableWindow.Serialize = function(){
+	var xcode = "(function(){";
+	//xcode += "PriceTableWindow.Config.=" + PriceTableWindow.Config. + ";";
+	for(var key in PriceTableWindow.Windows){
+		xcode += PriceTableWindow.Windows[key].Serialize();
+	}
+	xcode += "})();";
+	return xcode;
+};
+PriceTableWindow.Deserialize = function(xcode){
+	if(typeof(xcode)=="string")setTimeout(function(){eval(xcode)},1);
+	else if(typeof(xcode)=="function")setTimeout(xcode,1);
+};
+PriceTableWindow.prototype.Initialize = function(){
+	/*this.TableDerinlik.gridOptions.api.setRowData(Array.from({length:25},function(item,index){
+		return {
+			ID:index,
+			Active:"",
+		}
+	}));*/
+	this.WIN.Open();
+	this.WIN.SetSize(500,800);
+	this.WIN.SetPosition(PriceTableWindow.Config.DefaultPosition[0], PriceTableWindow.Config.DefaultPosition[1]);
+	var div = this.WIN.GetContent().children(".rootsystem")[0];
+	this.panelayout = new GoldenLayout({
+		resizeWithContainerAutomatically :true,
+		settings:{
+			hasHeaders: true,
+			constrainDragToContainer: false,
+			reorderEnabled: false,
+			selectionEnabled: false,
+			popoutWholeStack: false,
+			blockedPopoutsThrowError: false,
+			closePopoutsOnUnload: false,
+			showPopoutIcon: false,
+			showMaximiseIcon: false,
+			showCloseIcon: false,
+			selectionEnabled: true,
+		},
+		dimensions:{
+			borderWidth: 10,
+			minItemHeight: 70,
+			minItemWidth: 70,
+			//headerHeight: 20,
+			//dragProxyWidth: 300,
+			//dragProxyHeight: 200
+		},
+		content:[{
+			type:"row",
+			content:[{
+				type:"stack",
+				content:[{
+					type:"component",
+					isClosable:false,
+					id:"column0",
+					//cssClass:"",
+					componentName:"RComponent",
+					title:"Prices",
+				},{
+					type:"component",
+					isClosable:false,
+					id:"column1",
+					//cssClass:"",
+					componentName:"RComponent",
+					title:"Heat Map",
+				}],
+			}],
+		}]
+	},div);
+	this.panelayout.registerComponent("RComponent",function(container,state){
+		//container.getElement().append($(document.getElementById(state.text)));
+	});
+	
+	this.panelayout.init();
+	
+	var div_pricelist = $(this.panelayout.root.contentItems[0].contentItems[0].contentItems[0].element[0]).find(".lm_content")[0];
+	div_pricelist.className = "ag-theme-balham-dark";
+	
+	var div_heatmap = $(this.panelayout.root.contentItems[0].contentItems[0].contentItems[1].element[0]).find(".lm_content")[0];
+	div_heatmap.style.overflow = "scroll";
+	this.HeatMapArea = div_heatmap;
+	
+	var THAT = this;
+	this.panelayout.on("stateChanged",function(){
+		THAT.panelayout.updateSize("100%","100%");
+	});
+	
+	this.PriceTable = new agGrid.Grid(div_pricelist,Object.assign({
+		popupParent:document.body,
+	},PriceTableWindow.Config.PriceTableGrid));
+	this.PriceTable.gridOptions.api.setRowData(Array.from({length:this.Length},function(item,index){
+		return {
+			ID:index,
+			Symbol:"",
+		}
+	}));
+	this.PriceTable.gridOptions.api.applyTransactionAsync({update:this.List.map(function(item,index){
+		return {
+			ID:index,
+			Symbol:item,
+		};
+	})});
+	this.PriceTable.gridOptions.api.sizeColumnsToFit();
+	this.PriceTable.gridOptions.api.WINDOW = this;
+};
+PriceTableWindow.prototype.UpdateList = function(){
+	var arr_temp = this.List.concat(Array.from({length:this.Length-this.List.length}).fill("")).map(function(item,index){
+		var xitem = {
+			Symbol:item,
+			ID:index,
+			Active:"Y",
+		};
+		if(!ATA.InterFace.InstrumentsList[item])return xitem;
+		instrument = ATA.InterFace.InstrumentGet(item);
+		var LastPrice = parseFloat(instrument.LastPrice);
+		var PreviusClose = parseFloat(instrument.DayClose);// | LastPrice; // P,1
+		var PDaily = 100 * (LastPrice - PreviusClose) / PreviusClose;
+		return Object.assign(xitem,{
+			Symbol:item,
+			Last:LastPrice,
+			Graph:LastPrice,
+			Prefix:instrument.Prefix,
+			"LastLot":instrument.LastSize,
+			Buy:instrument.BidPrice,
+			Sell:instrument.AskPrice,
+			"PDaily":PDaily,
+			LimitUp:instrument.LimitUp,
+			LimitDown:instrument.LimitDown,
+			Step:instrument.PriceStep,
+			//Avarage:instrument.SUB_E,
+			//Volume:instrument.SUB_G,
+			DailyLot:instrument.SizeSession,
+			BidSize:instrument.BidSize,
+			AskSize:instrument.AskSize,
+			PreviusClose:PreviusClose,
+			Active:"Y",
+		});
+	});
+	this.PriceTable.gridOptions.api.applyTransactionAsync({update:arr_temp});
+	var div = this.HeatMapArea;
+	div.innerHTML = "";
+	var high = -Infinity;
+	var low = Infinity;
+	var GetDifferential = function(instrument){
+		var LastPrice = Number(instrument.LastPrice);
+		var PreviusClose = Number(instrument.DayClose);// | LastPrice; // P,1
+		if(isNaN(PreviusClose) || !(PreviusClose > 0)) return 0;
+		if(isNaN(LastPrice)) LastPrice = PreviusClose;
+		var PDaily = 100 * (LastPrice - PreviusClose) / PreviusClose;
+		return PDaily;
+	};
+	var CalculateColor = function(num,rising){
+		var Gl = 0.5;
+		var Rl = 0.5;
+		
+		if(typeof(rising) == "boolean"){
+			if(rising)num = Math.max(num,Gl);
+			else num = Math.min(num,Rl);
+		}
+		var h = num * 110;
+		var s = Math.abs(num - 0.5) / 0.5 * 25 + 40;
+		var l = 40;
+		return("hsl(" + h + ", " + s + "%, " + l + "%)");
+	};
+	var arr = this.List.filter(function(item){
+		if(!ATA.InterFace.InstrumentsList[item])return false;
+		var deg = GetDifferential(ATA.InterFace.InstrumentGet(item));
+		if(deg > high) high = deg;
+		if(deg < low) low = deg;
+		return true;
+	}).sort(function(item1,item2){
+		var deg1 = GetDifferential(ATA.InterFace.InstrumentGet(item1));
+		var deg2 = GetDifferential(ATA.InterFace.InstrumentGet(item2));
+		return deg1 > deg2 ? -1 : 1;
+	});
+	if(high == low){
+		high += 1;
+		low -= 1;
+	}
+	arr.map(function(item){
+		var deg = GetDifferential(ATA.InterFace.InstrumentGet(item));
+		var obj = document.createElement("SPAN");
+		obj.className = "HeatMap";
+		obj.Symbol = ATA.InterFace.InstrumentGet(item).Symbol;
+		obj.onclick = function(){
+			SuperficialAnalysis(this.Symbol);
+		};
+		obj.style.backgroundColor = CalculateColor((deg - low) / (high - low), deg >= 0);
+		obj.innerHTML = "<H6>" + item + "</H6>% " + deg.toFixed(2);
+		div.append(obj);
+	});
+};
+PriceTableWindow.prototype.SetSymbol = function(id, symbol){
+	if(this.List[id]){
+		this.List[id] = symbol;
+	} else this.List.push(symbol);
+};
+PriceTableWindow.prototype.Close = function(){
+	//PriceTableWindow.Windows[this.ID].WIN.Close();
+	delete PriceTableWindow.Windows[this.ID];
+};
+PriceTableWindow.Reset = function(){
+	for(var key in PriceTableWindow.Windows){
+		PriceTableWindow.Windows[key].Close();
+	}
+};
+
+var WalletWindow = function(symbol){
+	this.ID = "win_" + symbol;//generate_ID();
+	this.Symbol = symbol;
+	this.WIN = new ATAWindow("Dağılım Pasta" /*+ " - " + symbol*/);
+	WalletWindow.Config.GenerateHTML(this.WIN.GetContent()[0]);
+	this.WIN.SetTitle("Dağılım Pasta - " + symbol);
+	WalletWindow.Windows[this.ID] = this;
+	var THAT = this;
+	this.WIN.OnClose = function(){
+		THAT.Close();
+	};
+	
+	THAT.Initialize();
+	setTimeout(function(){
+		//THAT.Initialize();
+	},1);
+};
+WalletWindow.Config = {
+	LastActivite:0,
+	LoopTime:1000*60*5,
+	GenerateHTML:function(content){
+		var divcontent = document.createElement("div");content.append(divcontent);
+		var divhead = document.createElement("div");content.append(divhead);
+		
+		var headHeight = "3em";
+		
+		divhead.style.width = "100%";
+		divhead.style.height = "" + headHeight + "";
+		divhead.style.left = "0px";
+		divhead.style.top = "0px";
+		divhead.style.position = "absolute";
+		divhead.className = "header";
+		divhead.innerHTML = "";
+		
+		var __buildMenuBar = function(){
+			var div0 = document.createElement("div");divhead.append(div0);
+			div0.className = "btn-group d-flex";
+			div0.style.margin = "5px";
+			var span0 = document.createElement("span");div0.append(span0);
+			span0.className = "btn";
+			span0.innerHTML = "&nbsp;";
+			var div1 = document.createElement("div");div0.append(div1);
+			div1.className = "btn-group";
+			div1.setAttribute("role","group");
+			
+			var button0 = document.createElement("button");div1.append(button0);
+			button0.className = "btn btn-outline-secondary dropdown-toggle";
+			button0.id = "btnGroupDrop1";
+			button0.style.border = "none";
+			button0.setAttribute("data-bs-toggle","dropdown");
+			button0.setAttribute("aria-expanded","false");
+			button0.innerHTML = "ALANLAR";
+			var ul0 = document.createElement("ul");div1.append(ul0);
+			ul0.className = "dropdown-menu";
+			ul0.setAttribute("aria-labelledby","btnGroupDrop1");
+			var list1 = ["ALANLAR", "SATANLAR", "TOPLAM"]; // yönler
+			var _yon = "ALANLAR";
+			list1.map(function(item){
+				var li0 = document.createElement("li");ul0.append(li0);
+				var button2 = document.createElement("button");li0.append(button2);
+				button2.className = "dropdown-item";
+				button2.href = "#";
+				button2.innerText = item;
+				button2.parametre = item;
+				button2.onclick = function(){
+					var parametre = this.parametre;
+					var symbol = divcontent.SYMBOL;
+					button0.innerHTML = parametre;
+					_yon = parametre;
+					IdealInterFace.Splitage(symbol, parametre, _periot);
+				};
+			});
+			
+			var button1 = document.createElement("button");div1.append(button1);
+			button1.className = "btn btn-outline-secondary dropdown-toggle";
+			button1.id = "btnGroupDrop1";
+			button1.style.border = "none";
+			button1.setAttribute("data-bs-toggle","dropdown");
+			button1.setAttribute("aria-expanded","false");
+			button1.innerHTML = "10";
+			var ul1 = document.createElement("ul");div1.append(ul1);
+			ul1.className = "dropdown-menu";
+			ul1.setAttribute("aria-labelledby","btnGroupDrop1");
+			var list2 = ["1","2","3","4","5","10"]; // periot
+			var _periot = "10";
+			list2.map(function(item){
+				var li0 = document.createElement("li");ul1.append(li0);
+				var button2 = document.createElement("button");li0.append(button2);
+				button2.className = "dropdown-item";
+				button2.href = "#";
+				button2.innerText = item;
+				button2.parametre = item;
+				button2.onclick = function(){
+					var parametre = this.parametre;
+					var symbol = divcontent.SYMBOL;
+					button1.innerHTML = parametre;
+					_periot = parametre;
+					IdealInterFace.Splitage(symbol, _yon, parametre);
+				};
+			});
+		};
+		__buildMenuBar();
+		
+		divcontent.style.width = "100%";
+		divcontent.style.height = "calc(100% - " + headHeight + ")";
+		divcontent.style.left = "0px";
+		divcontent.style.top = "" + headHeight + "";
+		divcontent.style.position = "absolute";
+		
+		divcontent.className = "rootsystem";
+	},
+	SplitageChart:{
+		enableCharts:true,
+		//popupParent: document.body,
+		chartThemes:["myCustomTheme","ag-pastel-dark","ag-vivid-dark"],
+		customChartThemes:{
+			myCustomTheme:{
+				baseTheme:"ag-pastel-dark",
+				palette:{
+					fills:[...COLORS],
+					strokes:[...COLORS],
+				},
+				overrides:{
+					common:{
+						title:{
+							fontSize:15,
+							fontFamily:"-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen-Sans, Ubuntu, Cantarell, Helvetica Neue, sans-serif",
+						}
+					}
+				}
+			}
+		},
+		chartThemeOverrides:{
+
+			pie:{
+				/*title:{
+					enabled:true,
+					text:"Precious Metals Production",
+					fontWeight:"bold",
+					fontSize:20,
+					color:"rgb(100, 100, 100)",
+				},
+				subtitle:{
+					enabled: true,
+					text:"by country",
+					fontStyle:"italic",
+					fontWeight:"bold",
+					fontSize:14,
+					color:"rgb(100, 100, 100)",
+				},*/
+				padding:{
+					top:50,
+					right:50,
+					bottom:50,
+					left:50,
+				},
+				background:{
+					fill:"#00000000",
+				},
+				legend:{
+					enabled:false,
+				},
+				series:{
+					highlightStyle:{
+						item:{
+							fill:"#EEEEEE",
+							//stroke:"maroon",
+							strokeWidth:0,
+						},
+						series:{
+							fill:"#BBBBBB",
+							dimOpacity:0.2,
+							strokeWidth:2,
+						},
+					},
+					label:{
+						enabled:true,
+					},
+					callout:{
+						length:20,
+					},
+					tooltip:{
+						renderer:function(params){
+							return "<div class=\"tooltipforpiechart\" style=\"background-color:" + params.color + ";\">" + params.datum.Symbol + " (" + params.datum.BalanceinAvailablePUSDT + ")</div>";
+						}
+					},
+				},
+			},
+		},
+		getChartToolbarItems:function(){
+			return [];
+		},
+	},
+	SplitageTable:{
+		animateRows:true,
+		columnDefs:[
+			{
+				field:"ID",
+				sort:"asc",
+				hide:true,
+			},
+			{field:"Symbol", headerName:"Varlık"},
+			{field:"BalanceinAvailable", headerName:"Uygun Miktar"},
+			{field:"BalanceonOrder", headerName:"Emirdeki Miktar"},
+			{field:"BalanceinAvailablePUSDT", headerName:"USDT Karşılığı"},
+		],
+		defaultColDef:{
+			minWidth: 50,
+			editable:false,
+			sortable:false,
+			//flex:1,
+			filter:false,
+			resizable:true,
+		},
+		//animateRows:true,
+		//suppressAggFuncInHeader:true,
+		getRowNodeId:function(data){return data.ID;},
+		/*onGridReady:function(params){
+			params.api.sizeColumnsToFit();
+		},*/
+	}
+};
+WalletWindow.Windows = {};
+WalletWindow.prototype.Serialize = function(){
+	var elePos = this.WIN.GetPosition();
+	var eleSize = this.WIN.GetSize();
+	var xcode = "(function(){";
+	xcode += "var _=IdealInterFace.Splitage(\"" + this.Symbol + "\");";
+	xcode += "setTimeout(function(){"
+	xcode += 	"_.WIN.SetPosition(" + elePos.x + "," + elePos.y + ");";
+	xcode += 	"_.WIN.SetSize(" + eleSize.w + "," + eleSize.h + ");";
+	xcode += "},1);";
+	xcode += "})();";
+	return xcode;
+};
+WalletWindow.Serialize = function(){
+	var xcode = "(function(){";
+	//xcode += "WalletWindow.Config.=" + WalletWindow.Config. + ";";
+	for(var key in WalletWindow.Windows){
+		xcode += WalletWindow.Windows[key].Serialize();
+	}
+	xcode += "})();";
+	return xcode;
+};
+WalletWindow.Deserialize = function(xcode){
+	if(typeof(xcode)=="string")setTimeout(function(){eval(xcode)},1);
+	else if(typeof(xcode)=="function")setTimeout(xcode,1);
+};
+WalletWindow.Reset = function(){
+	for(var key in WalletWindow.Windows){
+		WalletWindow.Windows[key].Close();
+	}
+};
+WalletWindow.prototype.Close = function(){
+	//WalletWindow.Windows[this.ID].WIN.Close();
+	delete WalletWindow.Windows[this.ID];
+};
+WalletWindow.prototype.Initialize = function(){
+	/*this.TableDerinlik.gridOptions.api.setRowData(Array.from({length:25},function(item,index){
+		return {
+			ID:index,
+			Active:"",
+		}
+	}));*/
+	this.WIN.Open();
+	this.WIN.SetSize(460,800);
+	var div = this.WIN.GetContent().children(".rootsystem")[0];
+	div.SYMBOL = this.Symbol;
+	this.panelayout = new GoldenLayout({
+		resizeWithContainerAutomatically:true,
+		settings:{
+			hasHeaders:false,
+			constrainDragToContainer:false,
+			reorderEnabled:false,
+			selectionEnabled:false,
+			popoutWholeStack:false,
+			blockedPopoutsThrowError:false,
+			closePopoutsOnUnload:false,
+			showPopoutIcon:false,
+			showMaximiseIcon:false,
+			showCloseIcon:false,
+			selectionEnabled:true,
+		},
+		dimensions:{
+			borderWidth: 10,
+			minItemHeight: 70,
+			minItemWidth: 70,
+			//headerHeight: 20,
+			//dragProxyWidth: 300,
+			//dragProxyHeight: 200
+		},
+		content:[{
+			type:"row",
+			content:[{
+				type:"column",
+				content:[{
+					type:"component",
+					isClosable:false,
+					id:"column0",
+					//cssClass:"",
+					componentName:"RComponent",
+					height:70,
+				},{
+					type:"component",
+					isClosable:false,
+					id:"column1",
+					//cssClass:"",
+					componentName:"RComponent",
+				}],
+			}],
+		}]
+	},div);
+	this.panelayout.registerComponent("RComponent",function(container,state){
+		//container.getElement().append($(document.getElementById(state.text)));
+	});
+	this.panelayout.init();
+	var div_splitagechart = $(this.panelayout.root.contentItems[0].contentItems[0].contentItems[0].element[0]).find(".lm_content")[0];
+	var div_splitagetable = $(this.panelayout.root.contentItems[0].contentItems[0].contentItems[1].element[0]).find(".lm_content")[0];
+	
+	div_splitagetable.className = "ag-theme-balham-dark";
+	
+	var THAT = this;
+	this.panelayout.on("stateChanged",function(){
+		THAT.panelayout.updateSize("100%","100%");
+	});
+	
+	var config = Object.assign({
+		onFirstDataRendered:function(params){
+			params.api.createRangeChart({
+				cellRange: {
+					rowStartIndex: 0,
+					rowEndIndex: 79,
+					columns: ["Symbol", "BalanceinAvailablePUSDT"],
+				},
+				chartType: "pie",
+				chartContainer: div_splitagechart,
+				//aggFunc: "sum",
+			});
+		},
+	},WalletWindow.Config.SplitageTable);
+	config = Object.assign(config,WalletWindow.Config.SplitageChart);
+	
+	this.SplitageTable = new agGrid.Grid(div_splitagetable,config);
+	this.SplitageTable.gridOptions.api.setRowData([]);
+	this.SplitageTable.gridOptions.api.sizeColumnsToFit();
+};
+
+
+ATA().Loops.push(function(){
+	var thisTime = (new Date()).getTime();
+	var PivotTime = thisTime % PriceTableWindow.Config.LoopTime;
+	var lastPivotTime = PriceTableWindow.Config.LastActivite % PriceTableWindow.Config.LoopTime;
+	var periodicalCycle = PivotTime < lastPivotTime;
+	PriceTableWindow.Config.LastActivite = thisTime;
+	for(var key in PriceTableWindow.Windows){
+		PriceTableWindow.Windows[key].UpdateList();
+		if(periodicalCycle);;
+	}
+});
+
+ATA().Setups.push(function(){
+	ATA.PriceTableWindow = new PriceTableWindow("");
+	ATA.PriceTableWindow.WIN.Open();
+	ATA.WalletWindow = new WalletWindow("");
+	ATA.WalletWindow.WIN.Open();
+	var _instumentList = [];
+	$.ajax({
+		url:"/assetlist",
+		type:"POST",
+		data:{},
+		success:function(Response){
+			Response.map(function(item){
+				_instumentList.push(item.Symbol);
+				var instrument = ATA.InterFace.GetInstrument(item.Symbol);
+				instrument.BalanceinAvailable = item.BalanceinAvailable;
+				instrument.BalanceonOrder = item.BalanceonOrder;
+				instrument.BalanceinAvailablePUSDT = item.BalanceinAvailablePUSDT;
+			});
+		},
+	});
+	ATA().Loops.push(function(){
+		$.ajax({
+			url:"/assetlist",
+			type:"POST",
+			data:{},
+			success:function(Response){
+				Response.map(function(item){
+					var instrument = ATA.InterFace.GetInstrument(item.Symbol);
+					instrument.BalanceinAvailable = item.BalanceinAvailable;
+					instrument.BalanceonOrder = item.BalanceonOrder;
+					instrument.BalanceinAvailablePUSDT = item.BalanceinAvailableUPSDT;
+				});
+			},
+		});
+		ATA.WalletWindow.SplitageTable.gridOptions.api.setRowData(Object.keys(ATA.InterFace.Instruments).map(function(item,index){
+			var instrument = ATA.InterFace.GetInstrument(item);
+			return {
+				ID: index,
+				Symbol: item,
+				BalanceinAvailable: instrument.BalanceinAvailable,
+				BalanceonOrder: instrument.BalanceonOrder,
+				BalanceinAvailablePUSDT: instrument.BalanceinAvailablePUSDT.toFixed(2),
+			};
+		}));
+	});
+});
