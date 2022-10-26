@@ -1,9 +1,9 @@
 {
   "name": "nodejsautotrader",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "start.js",
   "scripts": {
-    "test": "node index.js"
+    "test": "node start.js"
   },
   "repository": {
     "type": "git",
