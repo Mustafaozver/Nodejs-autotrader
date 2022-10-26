@@ -7,27 +7,28 @@ module.exports = ((ATA)=>{
 	const FixNumber = (num)=>{
 		return (num - 0).toPrecision(12) - 0;
 	};
-	const GetPricePUSDT = (code)=>{
+	const GetPricePUSDT = (code, n=-1)=>{
 		if(code == "USDT")return 1;
 		if(code == "TUSDB")return 1;
 		if(code == "TUSD")return 1;
+		if(code == "BUSD")return 1;
 		var pair0;
-		if(pair0 = Pair.GetPair(code + "USDT")){
-			return pair0.valueOf();
-		} else if(pair0 = Pair.GetPair("USDT" + code)){
-			return 1 / pair0.valueOf();
-		} else if(pair0 = Pair.GetPair(code + "BUSD")){
-			return pair0.valueOf();
-		} else if(pair0 = Pair.GetPair("BUSD" + code)){
-			return 1 / pair0.valueOf();
-		} else if(pair0 = Pair.GetPair(code + "BTC")){
-			return Pair.GetPair("BTCUSDT") * pair0.valueOf();
-		} else if(pair0 = Pair.GetPair("BTC" + code)){
-			return Pair.GetPair("BTCUSDT") / pair0.valueOf();
-		} else if(pair0 = Pair.GetPair(code + "ETH")){
-			return Pair.GetPair("ETHUSDT") * pair0.valueOf();
-		} else if(pair0 = Pair.GetPair("ETH" + code)){
-			return Pair.GetPair("ETHUSDT") / pair0.valueOf();
+		if(pair0 = GetPair(code + "USDT")){
+			return pair0.Candle.data.slice(n)[0].close;
+		} else if(pair0 = GetPair("USDT" + code)){
+			return 1.0000 / pair0.Candle.data.slice(n)[0].close;
+		} else if(pair0 = GetPair(code + "BUSD")){
+			return pair0.Candle.data.slice(n)[0].close;
+		} else if(pair0 = GetPair("BUSD" + code)){
+			return 1.0000 / pair0.Candle.data.slice(n)[0].close;
+		} else if(pair0 = GetPair(code + "BTC")){
+			return GetPair("BTCUSDT").Candle.data.slice(n)[0].close * pair0.Candle.data.slice(n)[0].close;
+		} else if(pair0 = GetPair("BTC" + code)){
+			return GetPair("BTCUSDT").Candle.data.slice(n)[0].close / pair0.Candle.data.slice(n)[0].close;
+		} else if(pair0 = GetPair(code + "ETH")){
+			return GetPair("ETHUSDT").Candle.data.slice(n)[0].close * pair0.Candle.data.slice(n)[0].close;
+		} else if(pair0 = GetPair("ETH" + code)){
+			return GetPair("ETHUSDT").Candle.data.slice(n)[0].close / pair0.Candle.data.slice(n)[0].close;
 		}
 		//console.log(code);
 		return 0;
@@ -55,6 +56,7 @@ module.exports = ((ATA)=>{
 		var sym0 = GetInstrument0fromCode(code);
 		var sym1 = GetInstrument1fromCode(code);
 		if(!stack_pairs["PR_" + sym0 + "_" + sym1]){
+			return false;
 			return new Pair(sym0, sym1);
 		}
 		return stack_pairs["PR_" + sym0 + "_" + sym1];
@@ -196,8 +198,8 @@ module.exports = ((ATA)=>{
 		ID = "";
 		Instrument0 = null;
 		Instrument1 = null;
-		StepSize = 1;//PInfinity;
-		TickSize = 1;//PInfinity;
+		StepSize = 00000001;//PInfinity;
+		TickSize = 0.00000001;//PInfinity;
 		//MaxPrice = Infinity;
 		//MinPrice = -Infinity;
 		//MaxQuantity = Infinity;
@@ -211,6 +213,7 @@ module.exports = ((ATA)=>{
 		Buy = 0;
 		Sell = 0;
 		Candle = null;// new Candle();
+		CandlePUSDT = null;// new Candle();
 		dailyVolume = 0;
 		tradable = false;
 		constructor(sym0,sym1){
@@ -227,6 +230,8 @@ module.exports = ((ATA)=>{
 			price = FixNumber(Math.round(price / this.TickSize) * this.TickSize);
 			vol = FixNumber(Math.round(price / this.StepSize) * this.StepSize);
 			this.Candle.Update(price, vol);
+			const usdtprice = GetPricePUSDT(this.Instrument0.Symbol);
+			this.Instrument0.Candle.Update(usdtprice, vol);
 		};
 		UpdateBidAsk(buy, sell){
 			this.Buy = FixNumber(buy);
@@ -252,10 +257,191 @@ module.exports = ((ATA)=>{
 	const SetListenerCheck = (func)=>{
 		isTradableCheck = func;
 	};
-	
-	const FinancialPosition = class{
-		
+	const stack_fpos = {};
+	//var counter_fpos = 0;
+	const Calculate = (price, leverage)=>{
+		const MUsd = 100 * 0.75;
+		return Number((MUsd / price * leverage).toPrecision(1)) + "";
 	};
+	const FinancialPosition = class{
+		Pair = null;
+		ID = "";
+		isLong = true;
+		Time = 0;
+		Balance = 0;
+		Entry = 0;
+		Target = 0;
+		High = 0;
+		Low = 0;
+		Quantity = 0;
+		__leverage = 1;
+		constructor(pair0, balance, isLong=true, leverage=false){
+			this.Pair = pair0;
+			this.ID = pair0.ID;
+			this.isLong = isLong ? true : false;
+			this.Time = (new Date()).getTime();
+			this.Balance = Number(balance);
+			this.Entry = this.Pair[this.isLong?"Buy":"Sell"];
+			this.Target = this.isLong?Infinity:0;
+			this.High = -Infinity;
+			this.Low = Infinity;
+			this.__leverage = leverage > 0 ? leverage : 1;
+			this.Quantity = Calculate(this.Entry, this.__leverage);
+			stack_fpos[this.ID] = this;
+		};
+		GetInstrument0(){
+			return this.Pair.Instrument0;
+		};
+		GetInstrument1(){
+			return this.Pair.Instrument1;
+		};
+		Buy(quantity, price=false){
+			ATA.MakeOrder(this.Pair.symbol, this.Quantity, price, this.__leverage);
+		};
+		Sell(quantity, price=false){
+			ATA.MakeOrder(this.Pair.symbol, -this.Quantity, price, this.__leverage);
+		};
+		Update(){
+			const lastPrice = this.Pair.valueOf();
+			const high = this.isLong ? this.Target : lastPrice;
+			const low = this.isLong ? lastPrice : this.Target;
+			const EntryTime = this.Time;
+			
+			this.Pair.Candle.data.filter(function(item){
+				return item.time >= EntryTime;
+			}).map(function(item){
+				if (item.high > high) high = item.high;
+				if (item.low < low) low  = item.low;
+			});
+			
+			if(this.isLong){
+				if(this.High < high)this.High = high;
+				if(this.Low > low)this.Low = low;
+			}else if(!this.isLong){
+				if(this.High < high)this.High = high;
+				if(this.Low > low)this.Low = low;
+			}
+			const Fibos = [
+				0.23606797749979, // 0
+				// Alış aralığı
+				0.38196601125011, // 1
+				0.5,			  // 2
+				0.61803398874990, // 3
+				// Satış aralığı
+				0.76393202250021, // 4
+			];
+			const priceRange = high - low;
+			
+			const locationonRangeBuy = (this.Pair.Buy - low) / priceRange;
+			const locationonRangeSell = (this.Pair.Sell - low) / priceRange;
+			
+			if(this.Time < ((new Date()).getTime() - 1000*60*60*24*2)){
+				if(this.isLong){
+					this.Target = priceRange * Fibos[4] + low;
+				}else{
+					this.Target = priceRange * Fibos[0] + low;
+				}
+				this.Time += 1000*60*60*4;
+			}
+			
+			if(this.isLong){
+				//if (this.Entry > lastPrice) return "+L";		  // pozisyon artır kontrol
+				if (Fibos[0] > locationonRangeSell) return "++L"; // pozisyon artır kontrol
+				else if (Fibos[1] > locationonRangeSell) return "+L"; // pozisyon artır kontrol
+				else if (Fibos[2] > locationonRangeSell) return "L"; // bekle
+				else if (Fibos[3]/1.05 > locationonRangeBuy) return "L"; // bekle
+				else if (Fibos[4] > locationonRangeBuy) return "EL"; // pozisyon kapat ve bitir
+				else return "EL";								  // pozisyon kapat ve bitir
+				return "EL";
+			}else{
+				//if (this.Entry < lastPrice) return "+S";		  // pozisyon artır kontrol
+				if (Fibos[4] < locationonRangeBuy) return "++S"; // pozisyon artır kontrol
+				else if (Fibos[3] < locationonRangeBuy) return "+S"; // pozisyon artır kontrol
+				else if (Fibos[2] < locationonRangeBuy) return "S"; // bekle
+				else if (Fibos[1]*1.05 < locationonRangeSell) return "S"; // bekle
+				else if (Fibos[0] < locationonRangeSell) return "ES"; // pozisyon kapat ve bitir
+				else return "ES";								  // pozisyon kapat ve bitir
+				return "ES";
+			}
+			
+		};
+		AddBalance(balance){
+			const comM = 1.0002;
+			balance = Number(balance);
+			const oltCost = this.Balance * this.Entry;
+			const newCost = balance * this.Pair[this.isLong?"Buy":"Sell"] * (this.isLong?comM:(1/comM));
+			const totalCost = newCost + oltCost;
+			this.Balance += balance;
+			this.Entry = totalCost / this.Balance;
+			this.Balance = Number(Number(this.Balance).toPrecision(15));
+		};
+		Close(){
+			const lastPrice = this.Pair.valueOf();
+			const THAT = this;
+			const lot = this.LOT;
+			if(this.isLong){
+				if(lot > Balance0){
+					lot = Balance0;
+					this.Balance = lot;
+				}
+				this.Sell(lot);
+				this.AddBalance(-lot);
+			}else{
+				if(lot > Balance1/lastPrice){
+					lot = Balance1/lastPrice;
+					this.Balance = lot;
+				}
+				this.Buy(lot);
+				this.AddBalance(lot);
+			}
+			if(this.Balance == 0) delete FinancialPosition.FinancialPositions[this.ID];
+			else setTimeout(function(){
+				THAT.F();
+			},200);
+		};
+		F(){
+			const st = this.Update();
+			const lot = this.LOT;
+			const entry = this.Entry;
+			const lastPrice = this.Pair.valueOf();
+			const high = this.isLong ? this.Target : this.High;
+			const low = this.isLong ? this.Low : this.Target;
+			
+			const priceRange = high - low;
+			const locationonRange = (entry - low) / priceRange;
+			
+			if(this.isLong){
+			}else{
+			}
+			
+			switch(st){
+				case "EL":this.Close();break; // Long side
+				case "+L"://break;
+				case "++L":
+					if(locationonRange < 0.38196601125011)return;
+					this.AddBalance(lot);
+					this.Buy(lot);
+				case "L":break; // hold
+				//--------------------------------------------------------------------
+				case "ES":this.Close();break; // Short side
+				case "+S"://break;
+				case "++S":
+					if(locationonRange > 0.61803398874990)return;
+					this.AddBalance(-lot);
+					this.Sell(lot);
+				case "S":break; // hold
+				default:break;
+			}
+			
+		};
+	};
+	
+	ATA.Loops.push(function(){
+		for(var key in stack_fpos){
+			stack_fpos[key].F();
+		}
+	});
+	
 	MainInstruments.map(GetInstrument);
 	
 	return{
@@ -264,6 +450,7 @@ module.exports = ((ATA)=>{
 		GetPairList,
 		SetListenerCheck,
 		FixNumber,
+		GetPricePUSDT,
 		CandleStick,
 		Candle,
 		Instrument,

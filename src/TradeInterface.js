@@ -993,12 +993,6 @@ module.exports = ((ATA)=>{
 	const Loop = ()=>{
 		
 	};
-	const Buy = ()=>{
-		
-	};
-	const Sell = ()=>{
-		
-	};
 	return{
 		// ATA settings
 		Setup,
@@ -1014,8 +1008,6 @@ module.exports = ((ATA)=>{
 		// future
 		
 		// short function
-		Buy,
-		Sell,
 		// helpers
 		FixedNumber,
 		

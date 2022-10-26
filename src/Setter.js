@@ -34,10 +34,9 @@ module.exports = ((ATA)=>{
 				P:pairkey,
 			}, SignalCheckresult));
 		}
-		if(arr.length > 0) console.log("Örnek pair stan = ", arr[0]);
 		ATA.SendMessage({
 			ID		: "DU",
-			Answer	: "X => " + Object.keys(ATA.PAIRPOOL).length + " / " + arr.length
+			Answer	: arr
 		});
 	}catch(e){console.log(e)}
 	};
@@ -163,7 +162,7 @@ module.exports = ((ATA)=>{
 			const firstSignal = Math.min.apply(Math,buy_setups);
 			const latestSignal = Math.max.apply(Math,buy_setups);
 			const target = ((data[firstSignal].close + data[latestSignal].close) / 2 - ATR__).toPrecision(12)-0;
-			const lastprice = data[data.length - 1].close;
+			const lastprice = data[LastIndex].close;
 			const leverage = Math.floor(lastprice / (range[0] - range[1]) / 2 / 50);
 			
 			if (!isFinite(leverage)) console.log(range);
@@ -174,12 +173,13 @@ module.exports = ((ATA)=>{
 				Side        : "LONG",
 				Last        : lastprice,
 				leverage    : leverage,
+				Available   : data[LastIndex].high != range[0] && data[LastIndex - 1].high != range[0],
 			};
 		}else if (sell_setups.length > 0){
 			const firstSignal = Math.min.apply(Math,sell_setups);
 			const latestSignal = Math.max.apply(Math,sell_setups);
 			const target = ((data[firstSignal].close + data[latestSignal].close) / 2 + ATR__).toPrecision(12)-0;
-			const lastprice = data[data.length - 1].close;
+			const lastprice = data[LastIndex].close;
 			const leverage = Math.floor(lastprice / (range[0] - range[1]) / 2 / 50);
 			return {
 				Point       : target / data[LastIndex].close - 1,
@@ -188,6 +188,7 @@ module.exports = ((ATA)=>{
 				Side        : "SHORT",
 				Last        : lastprice,
 				leverage    : leverage,
+				Available   : data[LastIndex].low != range[1] && data[LastIndex - 1].low != range[1],
 			};
 		}
 	}catch(e){console.log(e)}

@@ -6,13 +6,13 @@
 		<META charset="utf-8" />
 		<META name="viewport" content="width=device-width, initial-scale=1" />
 		<!-- Socket.IO -->
-		<SCRIPT src="./assets/socket.io/socket.io-3.0.1.min.js"></SCRIPT>
+		<SCRIPT type="text/javascript" src="./assets/socket.io/socket.io-3.0.1.min.js"></SCRIPT>
 		<!-- JQuery -->
-		<SCRIPT src="./assets/jquery/jquery.min.js"></SCRIPT>
-		<SCRIPT src="./assets/jquery/jquery-ui.js"></SCRIPT>
+		<SCRIPT type="text/javascript" src="./assets/jquery/jquery.min.js"></SCRIPT>
+		<SCRIPT type="text/javascript" src="./assets/jquery/jquery-ui.js"></SCRIPT>
 		<LINK rel="stylesheet" href="./assets/css/jquery-ui.css" />
 		<!-- Bootstrap -->
-		<SCRIPT src="./assets/bootstrap/js/bootstrap.min.js"></SCRIPT>
+		<SCRIPT type="text/javascript" src="./assets/bootstrap/js/bootstrap.min.js"></SCRIPT>
 		<LINK type="text/css" rel="stylesheet" href="./assets/bootstrap/css/bootstrap.min.css" />
 		<!-- Fontawesome -->
 		<LINK type="text/css" rel="stylesheet" href="./assets/font-awesome/font-awesome.min.css" />
@@ -21,62 +21,85 @@
 		<SCRIPT type="text/javascript" src="./assets/datafeeds/udf/dist/polyfills.js"></SCRIPT>
 		<SCRIPT type="text/javascript" src="./assets/datafeeds/udf/dist/bundle.js"></SCRIPT>
 		<!-- Notify -->
-		<SCRIPT src="./assets/notify/notify.js"></SCRIPT>
+		<SCRIPT type="text/javascript" src="./assets/notify/notify.js"></SCRIPT>
 		<LINK type="text/css" rel="stylesheet" href="./assets/notify/notify.css" />
+		<!-- Crypto.JS -->
+		<SCRIPT type="text/javascript" src="./assets/crypto/crypto-js.min.js"></SCRIPT>
+		<!-- ATA Server JSON -->
+		<SCRIPT type="text/javascript" src="./config.js"></SCRIPT>
 		<!-- ATA library System -->
-		<SCRIPT src="./assets/js/pre.ATA.js"></SCRIPT>
-		<SCRIPT src="./assets/js/ATA.js"></SCRIPT>
+		<SCRIPT type="text/javascript" src="./assets/js/pre.ATA.js"></SCRIPT>
+		<SCRIPT type="text/javascript" src="./assets/js/ATA.js"></SCRIPT>
 		<!-- Executing System -->
-		<link rel="stylesheet" type="text/css" href="./assets/style.css"/>
-		<script type="text/javascript" src="./assets/main.js"></script>
+		<LINK rel="stylesheet" type="text/css" href="./assets/style.css"/>
+		<SCRIPT type="text/javascript" src="./assets/main.js"></SCRIPT>
+		<SCRIPT type="text/javascript" src="./assets/ata.browser.modules/ata.window.js"></SCRIPT>
+		<SCRIPT type="text/javascript">
+//
+const ToggleFullScreen = ()=>{
+	if(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement){
+		if(document.exitFullscreen)document.exitFullscreen();
+		else if(document.mozCancelFullScreen)document.mozCancelFullScreen();
+		else if(document.webkitExitFullscreen)document.webkitExitFullscreen();
+		else if(document.msExitFullscreen)document.msExitFullscreen();
+		$(".ToggleFullScreen")
+			.addClass("fa-expand")
+			.removeClass("fa-compress");
+	}else{
+		element = document.body;
+		if(element.requestFullscreen)element.requestFullscreen();
+		else if(element.mozRequestFullScreen)element.mozRequestFullScreen();
+		else if(element.webkitRequestFullscreen)element.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+		else if(element.msRequestFullscreen)element.msRequestFullscreen();
+		$(".ToggleFullScreen")
+			.removeClass("fa-expand")
+			.addClass("fa-compress");
+	}
+};
+
+const changeTheme = (name)=>{
+	switch(name){
+		default:
+		case "dark":
+			$("body").removeClass('bg-light').removeClass('text-dark').addClass('bg-dark').addClass("text-light");
+			break;
+		case "light":
+			$("body").removeClass('bg-dark').removeClass('text-light').addClass('bg-light').addClass("text-dark");
+		break;
+	}
+};
+
+ATA().Setups.push(()=>{
+	const urltoframe = (url)=>{
+		return "<iframe class=\"fullframe\" src=\"" + url + "\"></iframe>";
+	};
+	const win1 = new Window("Console");
+	win1.Open();
+	win1.GetContent().html(urltoframe("console/console.html"));
+	win1.SetSize(800,600);
+	
+	const win2 = new Window("Trade");
+	win2.Open();
+	win2.GetContent().html(urltoframe("trade/trade.html"));
+	win2.SetSize(800,600);
+	
+});
+		</SCRIPT>
 	</HEAD>
-	<BODY>
-		<DIV style="height:100%;width:100%;position:fixed;left:0;top:0;">
-			<TABLE style="width:100%;height:100%;" class="bg-dark">
+	<BODY onselectstart="return false" class="bg-dark text-light">
+		<DIV style="height:100%;width:100%;position:fixed;left:0;top:0;" class="bg-dark text-light">
+			<TABLE style="width:100%;height:100%;" class="desktoplayout">
 				<TR style="height:2em;z-index:200000;">
 					<TD>
-						<NAV class="navbar navbar-dark bg-dark">
+						<NAV class="navbar">
 							<DIV class="container-fluid">
 								<DIV class="btn-group" role="group">
-									<UL class="navbar-nav me-auto my-2 my-lg-0 btn" style="--bs-scroll-height: 100px;">
-										<LI class="nav-item dropdown">
-											<BUTTON style="border:none;" class="btn btn-outline-light dropdown-toggle" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">DD</BUTTON>
-											<UL class="dropdown-menu" aria-labelledby="navbarScrollingDropdown" role="menu" style="z-index:150000;">
-												<LI><BUTTON class="dropdown-item" href="#" onclick="ListOrderBy('BISTTUM');">BIST Tüm</BUTTON></LI>
-												<LI><BUTTON class="dropdown-item" href="#" onclick="ListOrderBy('VADELITUM');">Tüm Vadeliler</BUTTON></LI>
-												<LI><BUTTON class="dropdown-item" href="#" onclick="ListOrderBy('PARITE');">Pariteler</BUTTON></LI>
-												<LI><BUTTON class="dropdown-item" href="#" onclick="ListOrderBy('KIYMET');">Kıymetli Emtialar</BUTTON></LI>
-												<LI><BUTTON class="dropdown-item" href="#" onclick="ListOrderBy('BIST30');">BIST 30</BUTTON></LI>
-												<LI><BUTTON class="dropdown-item" href="#" onclick="ListOrderBy('BIST100');">BIST 100</BUTTON></LI>
-												<LI><BUTTON class="dropdown-item" href="#" onclick="IdealInterFace.LoadList('Bankalar');">Bankalar</BUTTON></LI>
-												<LI><BUTTON class="dropdown-item" href="#" onclick="IdealInterFace.LoadList('Sigortalar');">Sigortalar</BUTTON></LI>
-												<LI><BUTTON class="dropdown-item" href="#" onclick="IdealInterFace.LoadList('Holdingler');">Holdingler</BUTTON></LI>
-												<LI><BUTTON class="dropdown-item" href="#" onclick="IdealInterFace.LoadList('Taş, Toprak');">Taş ve Toprak</BUTTON></LI>
-												<LI><BUTTON class="dropdown-item" href="#" onclick="IdealInterFace.LoadList('Metal');">Metal</BUTTON></LI>
-												<LI><BUTTON class="dropdown-item" href="#" onclick="IdealInterFace.LoadList('Teknoloji');">Teknoloji</BUTTON></LI>
-												<LI><BUTTON class="dropdown-item" href="#" onclick="IdealInterFace.LoadList('Kimya');">Kimya</BUTTON></LI>
-											</UL>
-										</LI>
-									</UL>
-									<BUTTON style="border:none;" class="btn btn-outline-light navbar-brand" onclick="IdealInterFace.Splitage(document.all.superficial_analysis_symbol.innerText);">
-										<I class="fa fa-pie-chart" style="color:inherit;"></I>
-										<!--<IMG src="./assets/images/x_dagilim.png" />-->
-									</BUTTON>
-									<BUTTON style="border:none;" class="btn btn-outline-light navbar-brand" onclick="IdealInterFace.SplitageList(document.all.superficial_analysis_symbol.innerText);">
-										<I class="fa fa-file-text-o" style="color:inherit;"></I>
-										<!--<IMG src="./assets/images/x_dagilimliste.png" />-->
-									</BUTTON>
-									<BUTTON style="border:none;" class="btn btn-outline-light navbar-brand" onclick="IdealInterFace.Chart(document.all.superficial_analysis_symbol.innerText);">
-										<I class="fa fa-line-chart" style="color:inherit;"></I>
-										<!--<IMG src="./assets/images/x_chart.png" />-->
-									</BUTTON>
-									<SPAN id="focusObject"></SPAN>
-								</DIV>
-								<DIV class="btn-group" role="group">
 									<DIV class="d-flex">
-										<BUTTON class="btn btn-outline-light" style="border:none;" onclick="ToggleFullScreen();"><I class="fa fa-expand ToggleFullScreen" style="color:inherit;"></I></BUTTON>
-										<BUTTON class="btn btn-outline-light" style="border:none;" onclick="$('#modalsettingswindow').modal('show');"><I class="fa fa-gear" style="color:inherit;"></I></BUTTON>
-										<BUTTON class="btn btn-outline-light" style="border:none;"><FONT id="info"></FONT></BUTTON>
+										<DIV class="btn-group" role="group">
+											<BUTTON class="btn btn-outline-light" style="border:none;" onclick="ToggleFullScreen();"><I class="fa fa-expand ToggleFullScreen"></I></BUTTON>
+											<BUTTON class="btn btn-outline-light" style="border:none;" onclick="$('#modalsettingswindow').modal('show');"><I class="fa fa-gear"></I></BUTTON>
+										</DIV>
+										<FONT id="info"></FONT>
 									</DIV>
 								</DIV>
 							</DIV>
@@ -85,17 +108,26 @@
 				</TR>
 				<TR style="z-index:10;">
 					<TD id="pageLayout">
+						<DIV id="ata_windows" style="z-index:10;">
+						
+						</DIV>
 					</TD>
 				</TR>
 				<TR style="height:0.5em;z-index:200000;">
 					<TD>
 						<!-- Footer Bar -->
-						<NAV class="navbar navbar-dark bg-dark">
+						<NAV class="navbar">
 							<DIV class="container-fluid d-flex">
-								<BUTTON style="border:none;" onclick="ATA.Windows.Portfolio.Toggle();" class="btn btn-outline-light">
-									Portföy
-									<I class="fa fa-angle-up" style="color:inherit;"></I>
-								</BUTTON>
+								<DIV class="btn-group" role="group">
+									<BUTTON style="border:none;" onclick="" class="btn btn-outline-light">
+										Portföy
+										<I class="fa fa-angle-up"></I>
+									</BUTTON>
+									<BUTTON style="border:none;" onclick="" class="btn btn-outline-light">
+										Portföy
+										<I class="fa fa-angle-up"></I>
+									</BUTTON>
+								</DIV>
 							</DIV>
 						</NAV>
 					</TD>
@@ -105,7 +137,7 @@
 		<!-- Modal Windows -->
 		<DIV class="modal fade" id="modalwindow" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 			<DIV class="modal-dialog" role="document">
-				<DIV class="modal-content text-light bg-dark">
+				<DIV class="modal-content">
 					<DIV class="modal-header">
 						<H5 class="modal-title" id="exampleModalLabel">Modal title</H5>
 						<BUTTON type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#modalwindow').modal('hide');">&times;</BUTTON>
@@ -119,32 +151,28 @@
 			</DIV>
 		</DIV>
 		<DIV class="modal" id="modalsettingswindow" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-			<DIV class="modal-dialog" role="document">
-				<DIV class="modal-content text-light bg-dark">
+			<DIV class="modal-dialog modal-dialog-centered" role="document">
+				<DIV class="modal-content">
 					<DIV class="modal-header">
 						<H5 class="modal-title" id="exampleModalLabel">Ayarlar</H5>
 						<BUTTON type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#modalsettingswindow').modal('hide');">&times;</BUTTON>
 					</DIV>
 					<DIV class="modal-body">
-					
-						<DIV class="form-row align-items-center">
-							<DIV class="form-group row">
-								<LABEL for="inputEmail3" class="col-sm-2 col-form-label">Zaman Aşımı</LABEL>
-								<DIV class="col-sm-10">
-									<INPUT type="number" class="form-control form-control-sm" id="timeoutdelay" placeholder="Zaman Aşımı" value="150" />
-									<DIV class="input-group-prepend">
-										<DIV class="input-group-text">sn</DIV>
+						<TABLE style="width:100%;line-height:50px !important;">
+							<TR>
+								<TD>
+									Theme
+								</TD>
+								<TD>
+									<DIV class="input-group form-group">
+										<label class="switch">
+											<input oninput="if(this.checked)changeTheme('light');else changeTheme('dark');" type="checkbox" />
+											<span class="slider"></span>
+										</label>
 									</DIV>
-								</DIV>
-							</DIV>
-							<DIV class="form-group row">
-								<LABEL for="inputEmail3" class="col-sm-2 col-form-label">Zaman Aşımı</LABEL>
-								<DIV class="col-sm-10">
-									<INPUT type="number" class="form-control form-control-sm" id="timeoutdelay" placeholder="Zaman Aşımı" value="150" />
-								</DIV>
-							</DIV>
-						</DIV>
-						
+								</TD>
+							</TR>
+						</TABLE>
 					</DIV>
 				</DIV>
 			</DIV>

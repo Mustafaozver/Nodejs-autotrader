@@ -1,33 +1,50 @@
 module.exports = ((ATA)=>{
 	const wt = ATA.Require("worker_threads");
 	const datapool = {};
+	const stack = {};
+	var count = 0;
 	ATA.SetVariable = (key, value)=>{
 		datapool["" + key] = value;
 	};
 	ATA.GetVariable = (key)=>{
 		return datapool["" + key];
 	};
-	ATA.SetVariable("lo", "Mustafa ÖZVER");
 	const Thread = class{
 		OnMessage = function(msg){};
 		OnExit = function(){};
 		OnError = function(){};
+		__updatetime = 0;
+		ID = "";
 		constructor(){
+			this.ID = "TH_" + (count++);
 			this.Create();
+			stack[this.ID] = this;
 		};
 		Create(){
 			var THAT = this;
+			this.__updatetime = (new Date()).getTime();
 			this._WW = new wt.Worker("./src/ata.wt.js");
 			var addlistener = this._WW.addListener || this._WW.addEventListener;
 			addlistener.apply(this._WW, ["message", async function(){
 				THAT.OnMessage.apply(THAT,[...arguments]);
+				THAT.HeartBeat();
 			}]);
 			addlistener.apply(this._WW, ["error", function(){
 				THAT.OnError.apply(THAT,[...arguments]);
+				THAT.HeartBeat();
 			}]);
 			addlistener.apply(this._WW, ["exit", function(){
 				THAT.OnExit.apply(THAT,[...arguments]);
+				THAT.HeartBeat();
 			}]);
+		};
+		HeartBeat(){
+			this.__updatetime = (new Date()).getTime();
+		};
+		Check(){
+			if(((new Date()).getTime() - this.__updatetime) > 60000){
+				this.OnError();
+			}
 		};
 		Terminate(){
 			this._WW.terminate();
@@ -44,5 +61,10 @@ module.exports = ((ATA)=>{
 			});
 		};
 	};
+	ATA.Loops.push(()=>{
+		for(var key in stack){
+			stack[key].Check();
+		}
+	});
 	return Thread;
 })(ATA());

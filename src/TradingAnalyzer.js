@@ -4,18 +4,17 @@ module.exports = ((ATA)=>{
 	const {FixNumber, GetPair, GetPairList, SetListenerCheck, Pair, Instrument} = ATA.Require("./FinancialClasses");
 	var wor = null;
 	var pairlist = [];
-	var trustedList = [];
+	var trustedList = {};
+	var untrustedList = {};
 	var counter = 0;
 	const ListenerCheck = (pair)=>{
 		const console = {
 			log:()=>{},
 		};
 		try{
-			console.log("|14");
 			if(pair.Type != "+")return false;
 			switch (pair.Instrument1.Symbol){
 				default:
-					console.log("|17");
 					return false;
 				case "USDT":
 				case "BUSD":
@@ -33,18 +32,15 @@ module.exports = ((ATA)=>{
 			}
 			const buyrate1 = pair.Buy/1;
 			const sellrate1 = pair.Sell/1;
-			console.log("|34");
 			if(sellrate1 / buyrate1 > 1.005)return false;
 			
 			var buyrate2 = ""+FixNumber(buyrate1,pair.TickSize);
 			var sellrate2 = ""+FixNumber(sellrate1,pair.TickSize);
-			console.log("|38");
 			if (buyrate2.indexOf("e") > 0)return false;
 			if (sellrate2.indexOf("e") > 0)return false;
 			
 			buyrate2 = buyrate2/1;
 			sellrate2 = sellrate2/1;
-			console.log("|43");
 			if (buyrate2 == sellrate2)return false;
 			if (buyrate1 != buyrate2)return false;
 			if (sellrate1 != sellrate2)return false;
@@ -52,7 +48,6 @@ module.exports = ((ATA)=>{
 			const tokenext1 = "UPUSDT";
 			const tokenext2 = "DOWNUSDT";
 			var tokenize = "" + pair.Instrument0.Symbol + "" + pair.Instrument1.Symbol;
-			console.log("|50");
 			if (tokenize.substring(tokenize.length - tokenext1.length) == tokenext1)return false;
 			if (tokenize.substring(tokenize.length - tokenext2.length) == tokenext2)return false;
 			
@@ -69,12 +64,9 @@ module.exports = ((ATA)=>{
 				if (temp[key]) d++;
 				else temp[key] = true;
 			}
-			console.log("|66");
 			if ((d / data.length) > 0.5) return false;
 			return true;
-		}catch(e){console.log("|75", e)}
-		
-		console.log("|71");
+		}catch(e){}
 		return false;
 	};
 	const MakeReadyTradeList = async()=>{
@@ -82,12 +74,14 @@ module.exports = ((ATA)=>{
 		const FutureExchangeInfo = await TradeInterface.GetFutureExchangeInfo();
 		FutureExchangeInfo.symbols.map((item)=>{
 			const pair = GetPair(item.symbol);
+			if(!pair)return;
 			pair.tradable = true;
 			trustedList[item.symbol] = !!pair;
 		});
 		ATA.Loops.push(()=>{
 			pairlist = GetPairList().filter((item)=>{
 				const pair = GetPair(item);
+				if(untrustedList[item])return false;
 				return trustedList[item] && ListenerCheck(pair);
 			});
 		});
@@ -95,13 +89,18 @@ module.exports = ((ATA)=>{
 			if(counter < pairlist.length){
 				const pairkey = pairlist[counter];
 				wor.Run(function(){
-					const pairkeys = arguments[0];
-					const ohlcvts = arguments[1];
-					ATA().SetVariable("pairkeys", pairkeys);
-					ATA().SetVariable("ohlcvts", ohlcvts);
-					//console.log("PARITE => ", ATA().GetVariable("pairkeys"));
-					//console.log("OHLCVTS => ", ATA().GetVariable("ohlcvts"));
-					ATA().PAIRPOOL[pairkeys] = ohlcvts;
+					try{
+						const pairkeys = arguments[0];
+						const ohlcvts = arguments[1];
+						ATA().SetVariable("pairkeys", pairkeys);
+						ATA().SetVariable("ohlcvts", ohlcvts);
+						//console.log("PARITE => ", ATA().GetVariable("pairkeys"));
+						//console.log("OHLCVTS => ", ATA().GetVariable("ohlcvts"));
+						ATA().PAIRPOOL[pairkeys] = ohlcvts;
+						return;
+					}catch(e){
+						process.exit();
+					}
 				}, [pairkey ,GetPair(pairkey).Candle.data]);
 				counter++;
 				return;
@@ -122,7 +121,8 @@ module.exports = ((ATA)=>{
 			wor.OnMessage = (data)=>{
 				switch(data.ID){
 					case "DU":
-						console.log(data.Answer);
+						// 
+						console.log(data.Answer, "sdfgsdgfh");
 					break;
 				}
 			};

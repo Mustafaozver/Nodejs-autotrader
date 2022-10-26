@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<HTML>
+	<HEAD>
+		<TITLE>NodeJS Trader for Binance</TITLE>
+		<!-- Meta Tags -->
+		<META charset="utf-8" />
+		<META name="viewport" content="width=device-width, initial-scale=1" />
+		<!-- Socket.IO -->
+		<SCRIPT type="text/javascript" src="../assets/socket.io/socket.io-3.0.1.min.js"></SCRIPT>
+		<!-- JQuery -->
+		<SCRIPT type="text/javascript" src="../assets/jquery/jquery.min.js"></SCRIPT>
+		<SCRIPT type="text/javascript" src="../assets/jquery/jquery-ui.js"></SCRIPT>
+		<LINK rel="stylesheet" href="../assets/css/jquery-ui.css" />
+		<!-- Bootstrap -->
+		<SCRIPT type="text/javascript" src="../assets/bootstrap/js/bootstrap.min.js"></SCRIPT>
+		<LINK type="text/css" rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css" />
+		<!-- Fontawesome -->
+		<LINK type="text/css" rel="stylesheet" href="../assets/font-awesome/font-awesome.min.css" />
+		<!-- TradingView -->
+		<SCRIPT type="text/javascript" src="../assets/charting_library/charting_library.standalone.js"></SCRIPT>
+		<SCRIPT type="text/javascript" src="../assets/datafeeds/udf/dist/polyfills.js"></SCRIPT>
+		<SCRIPT type="text/javascript" src="../assets/datafeeds/udf/dist/bundle.js"></SCRIPT>
+		<!-- Notify -->
+		<SCRIPT type="text/javascript" src="../assets/notify/notify.js"></SCRIPT>
+		<LINK type="text/css" rel="stylesheet" href="../assets/notify/notify.css" />
+		<!-- Crypto.JS -->
+		<SCRIPT type="text/javascript" src="../assets/crypto/crypto-js.min.js"></SCRIPT>
+		<!-- ATA Server JSON -->
+		<SCRIPT type="text/javascript" src="../config.js"></SCRIPT>
+		<!-- ATA library System -->
+		<SCRIPT type="text/javascript" src="../assets/js/pre.ATA.js"></SCRIPT>
+		<SCRIPT type="text/javascript" src="../assets/js/ATA.js"></SCRIPT>
+		<!-- Executing System -->
+		<LINK rel="stylesheet" type="text/css" href="../assets/style.css"/>
+		<SCRIPT type="text/javascript" src="../assets/main.js"></SCRIPT>
+		<SCRIPT type="text/javascript">
+		((ATA)=>{
+			ATA.Setups.push(()=>{
+				const JSDecode = (obj)=>{
+					const _newline = "</BR>";
+					const _space = " ";//"<span style=\"width:2em;\">&nbsp;</span>";
+					switch(typeof obj){
+						default:
+						case "number":
+							return "" + "<span style=\"color:rgb(153, 128, 255);\">" + obj + "</span>";
+						case "string":
+							const _text = JSON.stringify(obj);
+							return "<span style=\"color:gray;\">\"</span><span style=\"color:rgb(255, 255, 255);font-style:oblique;\">" + _text.substring(1, _text.length - 1) + "</span><span style=\"color:gray;\">\"</span>";
+						case "object":
+							const objType = obj.constructor.name;
+							const _dropdownmenuid = objType + "" + ATA.UUID.Generate();
+							var obj1 = "";
+							if(Array.isArray(obj)){ // overflow: hidden;position: relative;display: inline-block;
+								obj1 += "<table style=\"left:0;right:0;position:relative;display:block;\"><tbody style=\"width:100%;display:table;\"><tr><td>";
+								obj1 += _space + "</td><td><span style=\"color:rgb(154, 160, 166);font-style:italic;\">Array (" + obj.length + ")[</span><span onclick=\"this.style.height='';\" style=\"background-color:#80808003;border-left:1px dashed #ffffff20;height:0.3em;overflow:hidden;position:relative;display:block;\">";
+								obj.map((item, index)=>{
+									obj1 += _newline + _space + JSDecode(index) + "<span style=\"color:gray;\">: </span>" + JSDecode(item);
+								});
+								obj1 += _newline + "</span><span style=\"color:rgb(154, 160, 166);font-style:italic;\">]</span></td></tr></tbody></table>";
+							}else{
+								obj1 += "<table style=\"left:0;right:0;position:relative;display:block;\"><tbody style=\"width:100%;display:table;\"><tr><td>";
+								obj1 += _space + "</td><td><span style=\"color:rgb(154, 160, 166);font-style:italic;\">" + objType + " {</span><span onclick=\"this.style.height='';\" style=\"background-color:#80808003;border-left:1px dashed #ffffff20;height:0.3em;overflow:hidden;position:relative;display:block;\">";
+								for(var key in obj){
+									obj1 += _newline + _space + JSDecode(key + "") + "<span style=\"color:gray;\">: </span>" + JSDecode(obj[key]);
+								}
+								obj1 += _newline + "</span><span style=\"color:rgb(154, 160, 166);font-style:italic;\">}</span></td></tr></tbody></table>";
+							}
+							return obj1;
+						case "boolean":
+							if(obj === true) return "" + "<span style=\"color:rgb(161, 247, 181);\">" + obj + "</span>";
+							if(obj === false) return "" + "<span style=\"color:rgb(161, 247, 181);\">" + obj + "</span>";
+							return "" + "<span style=\"color:rgb(161, 247, 181);\">" + obj + "</span>";
+						case "function":
+							return "" + "<span style=\"color:rgb(242, 151, 102);\">" + obj + "</span>";
+					}
+				};
+				const console_setup = (fName, opts={})=>{
+					const tempfunc = console[fName];
+					console[fName] = function(){
+						AddLine([...arguments].map((x)=>JSDecode(x)).join(""), opts);
+						tempfunc.apply(console,[...arguments]);
+					};
+				};
+				console_setup("log");
+				console_setup("error", {background:"#ff000020"});
+				console_setup("warn", {background:"#ffff0020"});
+				const msgarea = document.getElementById("msgarea").contentDocument.body;
+				const entry = document.getElementById("entry");
+				const AddLine = (msg, opts={})=>{
+					const _line = document.createElement("DIV");
+					_line.innerHTML = "" + msg;
+					_line.style.color = "#ffffff";
+					_line.style.background = "#00000000";
+					_line.style.borderBottom = "1px solid #ffffff20";
+					// _line.style.width = "100%";
+					_line.style.fontFamily = "'Courier New', Courier, monospace";
+					_line.style.fontSize = "14px";
+					_line.style.paddingLeft = "1em";
+					for(var key in opts){
+						_line.style[key] = opts[key];
+					}
+					msgarea.innerHTML = msgarea.innerHTML.substring(-5000);
+					msgarea.append(_line);
+					ScrollDown();
+				};
+				ATA._scrolling = true;
+				const ScrollDown = ()=>{
+					const diff = msgarea.scrollHeight - msgarea.scrollTop - msgarea.clientHeight; // = 0
+					console.info(diff);
+					//if(diff < 25)
+					if(ATA._scrolling)
+						msgarea.scrollTop = msgarea.scrollHeight - msgarea.clientHeight;
+				};
+				const ClearArea = ()=>{
+					msgarea.innerHTML = "";
+				};
+				const SendMessage = ()=>{
+					const _message = entry.value;
+					switch(_message){
+						case "clear":
+							ClearArea();
+							return;
+					}
+					$.ajax({
+						type:"POST",
+						url:"/eval",
+						data:{EVAL:"(()=>{return("+_message+");})()"},
+						success:(result)=>{
+							if(result.Error){
+								console.error(_message + " => ", "Error => ", result.Answer);
+								return;
+							}
+							console.log(_message + " => ", (result.Answer));
+						},
+					});
+				};
+				$(entry).keydown((e)=>{
+					switch(e.keyCode){
+						case 13:
+							SendMessage();
+							entry.value = "";
+							return false;
+						break;
+					}
+				});
+				$("#clearbtn").click(()=>{
+					ClearArea();
+				});
+				setTimeout(()=>{
+					const tempf = (who)=>{
+						const fName = "log";
+						const tempfunc = console[fName];
+						const tempfunc2 = function(fName, args){
+							console[fName].apply(console,[...args]);
+						};
+						console[fName] = function(){
+							ATA.SendMessage(who, "DATA", {EVAL:"("+tempfunc2+")(" + JSON.stringify(fName) + "," + JSON.stringify([...arguments]) + ")"});
+							//tempfunc.apply(console,[...arguments]);
+						};
+					};
+					ATA.SendMessage({EVAL:"("+tempf+")(" + JSON.stringify(ATA.MyName) + ")"});
+				}, 500);
+			});
+		})(ATA());
+		</SCRIPT>
+	</HEAD>
+	<BODY style="background-color:rgb(32, 33, 36);color:green;font-family:'Courier New', Courier, monospace;font-size:14px;">
+		<TABLE style="position:absolute;left:0;top:0;right:0;bottom:0;width:100%;height:100%;">
+			<TR>
+				<TD>
+					<IFRAME id="msgarea" style="width:100%;height:100%;border:1px solid #00000050;"></IFRAME>
+				</TD>
+			</TR>
+			<TR style="height:5em;">
+				<TD>
+					<TEXTAREA id="entry" style="padding-left:1em;width:100%;height:100%;border:none;color:#008000;background-color:#00000050;font-size:14px;"></TEXTAREA>
+				</TD>
+			</TR>
+			<TR style="height:2em;">
+				<TD>
+					<BUTTON class="btn btn-danger" id="clearbtn">Clear</BUTTON>
+					<DIV class="btn-group" role="group" aria-label="Basic radio toggle button group">
+						<INPUT type="radio" class="btn-check" name="scrolling" id="scrolling1" autocomplete="off" checked>
+						<LABEL class="btn btn-outline-secondary" for="scrolling1" onclick="ATA()._scrolling=true;">Scroll</LABEL>
+						<INPUT type="radio" class="btn-check" name="scrolling" id="scrolling2" autocomplete="off">
+						<LABEL class="btn btn-outline-secondary" for="scrolling2" onclick="ATA()._scrolling=false;">Static</LABEL>
+					</DIV>
+				</TD>
+			</TR>
+		</TABLE>
+	</BODY>
+</HTML>

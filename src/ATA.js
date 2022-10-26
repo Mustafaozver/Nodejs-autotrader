@@ -349,6 +349,7 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 			}
 			ATA.LastActivite = thisTime;
 			var title = ATA.Name + " V(" + ATA.Version + ") " + (new Date(thisTime)) + " " + FormatTime(thisTime - ATA.StartTime);
+			ATA.__title = title;
 			//process.stdout.write(String.fromCharCode(27) + "]0;" + title + String.fromCharCode(7));
 		},50);
 	},1);
