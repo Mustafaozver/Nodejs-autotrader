@@ -1,27 +1,30 @@
-(()=>{
+((ATA)=>{
 	const subscribes = {};
+	const stack = {};
+	var count = 0;
 	const configurationData = {
 		supports_marks: true,
 		supports_timescale_marks: true,
 		supports_time: true,
 		supports_search: true,
-		supported_resolutions:["3"],
+		supported_resolutions:["1"],
 		symbols_types: [
 			{name:"TUM", value:"TUM"}
 		],
 	};
+	const SetOnChangeSymbol = (func)=>{
+		_OnChangeSymbol = func;
+	};
 	const TVDatafeeds = class{
-		URL = "";
-		WS = "";
-		HTTP = false;
-		HTTPS = false;
+		ID = "";
 		Bars = [];
+		Symbol = "BTCUSDT";
+		Last = 0;
 		constructor(){
-			console.warn("ÇÖZ =>", "constructor", [...arguments]);
-			
+			this.ID = "TVUDF_" + (count++);
+			stack[this.ID] = this;
 		};
 		getServerTime(callback){
-			console.warn("ÇÖZ =>", "getServerTime", [...arguments]);
 			$.ajax({
 				type:"GET",
 				url:"/time",
@@ -29,30 +32,37 @@
 			});
 			//callback(Math.floor((new Date()).getTime()));
 		};
+		_onReady_callback = null;
 		onReady(callback){
-			console.warn("ÇÖZ =>", "onReady", [...arguments]);
+			const THAT = this;
+			this._onReady_callback = callback;
 			setTimeout(()=>{
-				callback(configurationData);
+				THAT._onReady_callback(configurationData);
 			},10)
 		};
+		_searchSymbols_onResultReadyCallback = null;
 		searchSymbols(userInput, exchange, symbolType, onResultReadyCallback){
-			console.warn("ÇÖZ =>", "searchSymbols", [...arguments]);
+			const THAT = this;
+			this._searchSymbols_onResultReadyCallback = onResultReadyCallback;
 			$.ajax({
 				type:"GET",
 				url:"/SEARCH?query="+userInput,
-				success: onResultReadyCallback,
+				success:(result)=>{
+					THAT._searchSymbols_onResultReadyCallback(result);
+				},
 			});
 		};
+		_getBars_onResult = null;
 		getBars(symbolInfo, resolution, rangeStartDate, rangeEndDate, onResult, onError){
-			console.warn("ÇÖZ =>", "getBars", [...arguments]);
+			const THAT = this;
+			this._getBars_onResult = onResult;
 			$.ajax({
 				type:"GET",
 				url:"/history?symbol="+symbolInfo.ticker + "&from=" + rangeStartDate + "&to=" + rangeEndDate,
 				success:(result)=>{
-					console.log(result, typeof result);
-					onResult(result.t.map((item,index)=>{
+					THAT._getBars_onResult(result.t.map((item,index)=>{
 						return {
-							time: item,
+							time: parseInt(item) * 1000,
 							close: parseFloat(result.c[index]),
 							open: parseFloat(result.o[index]),
 							high: parseFloat(result.h[index]),
@@ -64,8 +74,10 @@
 			});
 			
 		};
+		_resolveSymbol_onSymbolResolvedCallback = null;
 		resolveSymbol(symbolName, onSymbolResolvedCallback, onResolveErrorCallback){
-			console.warn("ÇÖZ =>", "resolveSymbol", [...arguments]);
+			const THAT = this;
+			this._resolveSymbol_onSymbolResolvedCallback = onSymbolResolvedCallback;
 			var splitted = symbolName.split(":");
 			const prefix = splitted[0];
 			var symbol = "BTCUSDT";
@@ -79,6 +91,7 @@
 			}
 			const data = {
 				data_status: "streaming",
+				name: symbol,
 				description: symbol,
 				"exchange-listed": symbol,
 				"exchange-traded": symbol,
@@ -88,27 +101,107 @@
 				minmov2: 0,
 				name: symbol,
 				pointvalue: 1,
-				pricescale: 100,
-				session: "0955-1815",
+				pricescale: 1000000,
+				session: "24x7",
 				supported_resolutions: ['1'],//, '5', '10', '15', '20', '30', '60', '120', '240', 'D', '2D', '3D', 'W', '3W', 'M', '6M'],
 				ticker: symbol,
 				timezone: "Europe/Istanbul",
 				type: "Crypto",
-				volume_precision: 2,
+				volume_precision: 5,
 			};
 			setTimeout(()=>{
-				onSymbolResolvedCallback(data);
+				THAT._resolveSymbol_onSymbolResolvedCallback(data);
 			},10)
 		};
+		_subscribeBars_onRealtimeCallback = null;
 		subscribeBars(symbolInfo, resolution, onRealtimeCallback, subscribeUID, onResetCacheNeededCallback){
-			console.warn("ÇÖZ =>", "subscribeBars", [...arguments]);
+			const THAT = this;
+			this._subscribeBars_onRealtimeCallback = onRealtimeCallback;
+			this.Symbol = symbolInfo.ticker;
 			subscribes[subscribeUID] = onRealtimeCallback;
 		};
 		unsubscribeBars(subscribeUID){
-			console.warn("ÇÖZ =>", "unsubscribeBars", [...arguments]);
 			
 		};
+		
+		
+		
+		calculateHistoryDepth(resolution, resolutionBack, intervalBack){
+			//optional
+			console.warn('=====calculateHistoryDepth running')
+			// while optional, this makes sure we request 24 hours of minute data at a time
+			// CryptoCompare's minute data endpoint will throw an error if we request data beyond 7 days in the past, and return no data
+			return resolution < 60 ? {resolutionBack: 'D', intervalBack: '1'} : undefined
+		}
+		_getMarks_onResult = null;
+		getMarks(symbolInfo, rangeStartDate, rangeEndDate, onResult, resolution){
+			const THAT = this;
+			this._getMarks_onResult = onResult;
+			$.ajax({
+				type:"GET",
+				url:"/marks?symbol="+symbolInfo.ticker + "&from=" + rangeStartDate + "&to=" + rangeEndDate,
+				success:(result)=>{
+					THAT._getMarks_onResult(result.map((item,index)=>{
+						return {
+							time: item.time / 1000,
+							id: item.id,
+							color: item.color,
+							text: item.text,
+							label: item.label,
+							labelFontColor: item.labelFontColor,
+							minSize: 5,
+						}
+					}));
+				},
+			});
+		}
+		getTimeScaleMarks(symbolInfo, rangeStartDate, rangeEndDate, onResult, resolution){
+			//optional
+			console.warn('=====getTimeScaleMarks running')
+		}
+		
+		
+		
+		
+		
+		Loop(data){
+			this._subscribeBars_onRealtimeCallback(data);
+		};
+		Update(){
+			const THAT = this;
+			const nowtime = Math.floor((new Date()).getTime() / 1000);
+			$.ajax({
+				type:"GET",
+				url:"/history?symbol=" + this.Symbol + "&from=" + (nowtime - 60*3) + "&to=" + 2101010101010,
+				success:(result)=>{
+					const lastIndex = result.t.length - 1;
+					THAT.Last = result.c[lastIndex];
+					THAT._subscribeBars_onRealtimeCallback({
+						time: parseInt(result.t[lastIndex]) * 1000,
+						close: parseFloat(result.c[lastIndex]),
+						open: parseFloat(result.o[lastIndex]),
+						high: parseFloat(result.h[lastIndex]),
+						low: parseFloat(result.l[lastIndex]),
+						volume: parseFloat(result.v[lastIndex]),
+					});
+					return;
+					THAT._subscribeBars_onRealtimeCallback({
+						time: parseInt(result.t[lastIndex - 1]) * 1000,
+						close: parseFloat(result.c[lastIndex - 1]),
+						open: parseFloat(result.o[lastIndex - 1]),
+						high: parseFloat(result.h[lastIndex - 1]),
+						low: parseFloat(result.l[lastIndex - 1]),
+						volume: parseFloat(result.v[lastIndex - 1]),
+					});
+				}
+			});
+		};
 	};
-	
+	ATA.Loops.push(()=>{
+		for(var key in stack){
+			stack[key].Update();
+		}
+	});
 	window.TVDatafeeds = TVDatafeeds;
+	window.SetOnChangeSymbol = SetOnChangeSymbol;
 })(ATA());

@@ -64,18 +64,18 @@
 						},
 					});
 				}
-				
-				
 				var TVudf = new TVDatafeeds();
 				var widget = window.tvWidget = new TradingView.widget({
 					datafeed: TVudf,
 					library_path: "./assets/charting_library/",
 					symbol: 'ATAEX:BTCUSDT',
-					debug: true, // uncomment this line to see Library errors and warnings in the console
+					//debug: true, // uncomment this line to see Library errors and warnings in the console
 					container_id: "tv_chart_container",
 					theme: "dark",
 					locale: "tr",
-					
+					height: "100%",
+					width: "100%",
+					timezone: "Europe/Istanbul",
 					interval: '1',
 					disabled_features: ['use_localstorage_for_settings'],
 					enabled_features: [],
@@ -83,6 +83,8 @@
 					user_id: 'public_user_id',
 					fullscreen: true,
 					autosize: true,
+					custom_css_url: "./themedTV.css",
+					charts_storage_url: "./charts_storage_url",
 					overrides: {
 						"paneProperties.background": "#131722",
 						"paneProperties.vertGridProperties.color": "#363c4e",
@@ -93,45 +95,63 @@
 						"mainSeriesProperties.candleStyle.wickDownColor": '#7f323f',
 					}
 				});
-				console.log(TVudf);
+				$("#longbtn").click(()=>{
+					const lot = document.getElementById("lotinput").value;
+					const lav = document.getElementById("lavinput").value;
+					$.ajax({
+						type:"GET",
+						url:"/ORDER",
+						data:{
+							symbol:TVudf.Symbol,
+							quantity:lot,
+							price:false, // TVudf.Last,
+							leverage:lav,
+						},
+						success:(result)=>{
+							if(result.Error){
+								console.error("Error => ", result);
+								jNotify.error("Alım Hatası", result);
+								return;
+							}
+							console.log(" => ", result);
+							jNotify.success("Alım Gerçekleşti", result);
+						},
+					});
+				});
+				$("#shortbtn").click(()=>{
+					const lot = document.getElementById("lotinput").value;
+					const lav = document.getElementById("lavinput").value;
+					$.ajax({
+						type:"GET",
+						url:"/ORDER",
+						data:{
+							symbol:TVudf.Symbol,
+							quantity:-lot,
+							price:false,
+							leverage:lav,
+						},
+						success:(result)=>{
+							if(result.Error){
+								console.error("Error => ", result);
+								jNotify.error("Satım Hatası", result);
+								return;
+							}
+							console.log(" => ", result);
+							jNotify.success("Satım Gerçekleşti", result);
+						},
+					});
+				});
 			});
 		})(ATA());
 		</SCRIPT>
 	</HEAD>
 	<BODY style="background-color:rgb(32, 33, 36);">
-		<TABLE style="position:absolute;left:0;top:0;right:0;bottom:0;width:100%;height:100%;">
-			<TR>
-				<TD>
-					<TABLE style="width:100%;height:100%;">
-						<TR style="height:2em;">
-							<TD>
-								<DIV class="input-group">
-									<DIV class="input-group-text" id="btnGroupAddon">Pair =</DIV>
-									<INPUT type="text" class="form-control" placeholder="Input group example" aria-label="Input group example" aria-describedby="btnGroupAddon" />
-								</INPUT>
-							</TD>
-						</TR>
-						<TR>
-							<TD id="tv_chart_container">
-							</TD>
-						</TR>
-						<TR style="height:2em;">
-							<TD>
-								<BUTTON class="btn btn-danger" id="clearbtn">Clear</BUTTON>
-								<DIV class="btn-group" role="group" aria-label="Basic radio toggle button group">
-									<INPUT type="radio" class="btn-check" name="scrolling" id="scrolling1" autocomplete="off" checked>
-									<LABEL class="btn btn-outline-secondary" for="scrolling1" onclick="ATA()._scrolling=true;">Scroll</LABEL>
-									<INPUT type="radio" class="btn-check" name="scrolling" id="scrolling2" autocomplete="off">
-									<LABEL class="btn btn-outline-secondary" for="scrolling2" onclick="ATA()._scrolling=false;">Static</LABEL>
-								</DIV>
-							</TD>
-						</TR>
-					</TABLE>
-				</TD>
-				<TD style="width:20em;">
-					ATA.__reqs["./FinancialClasses"].GetPair("SOLUSDT").Candle
-				</TD>
-			</TR>
-		</TABLE>
+		<DIV id="tv_chart_container" style="position:absolute;width:100%;height:100%;left:0;top:0;"></DIV>
+		<DIV id="panel" style="position:absolute;right:0px;top:0;width:10em;" class="btn-group" role="group">
+			<BUTTON id="longbtn" class="btn btn-success">L</BUTTON>
+			<INPUT id="lotinput" value="0" class="btn btn-outline-secondary" style="width:2em;" />
+			<INPUT type="number" id="lavinput" value="8" class="btn btn-outline-secondary" style="width:2em;" />
+			<BUTTON id="shortbtn" class="btn btn-danger">S</BUTTON>
+		</DIV>
 	</BODY>
 </HTML>

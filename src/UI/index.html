@@ -69,20 +69,27 @@ const changeTheme = (name)=>{
 	}
 };
 
+const urltoframe = (url)=>{
+	return "<iframe class=\"fullframe\" src=\"" + url + "\"></iframe>";
+};
+
+const CreateTradeWin = ()=>{
+	const win = new Window("Trade");
+	win.Open();
+	win.GetContent().html(urltoframe("trade/trade.html"));
+	win.SetSize(800,600);
+	return win;
+};
+
 ATA().Setups.push(()=>{
-	const urltoframe = (url)=>{
-		return "<iframe class=\"fullframe\" src=\"" + url + "\"></iframe>";
-	};
+	
 	const win1 = new Window("Console");
+	win1.Closable = false;
 	win1.Open();
 	win1.GetContent().html(urltoframe("console/console.html"));
 	win1.SetSize(800,600);
 	
-	const win2 = new Window("Trade");
-	win2.Open();
-	win2.GetContent().html(urltoframe("trade/trade.html"));
-	win2.SetSize(800,600);
-	
+	CreateTradeWin();
 });
 		</SCRIPT>
 	</HEAD>
@@ -119,6 +126,7 @@ ATA().Setups.push(()=>{
 						<NAV class="navbar">
 							<DIV class="container-fluid d-flex">
 								<DIV class="btn-group" role="group">
+									<BUTTON style="border:none;" onclick="CreateTradeWin();" class="btn btn-outline-light">Trade</BUTTON>
 									<BUTTON style="border:none;" onclick="" class="btn btn-outline-light">
 										Portföy
 										<I class="fa fa-angle-up"></I>

@@ -1,17 +1,17 @@
-((ATA)=>{
-	const wt = ATA.Require("worker_threads");
+(()=>{
+	const wt = require("worker_threads");
 	var WW;
 	const HeartBeat = ()=>{
 		
 	};
-	const OnMessage = ()=>{
+	const OnMessage = (args)=>{
 		
 	};
-	const OnError = ()=>{
-		
+	const OnError = (args)=>{
+		BuildWW();
 	};
-	const OnExit = ()=>{
-		
+	const OnExit = (args)=>{
+		BuildWW();
 	};
 	const BuildWW = ()=>{
 		WW = new wt.Worker("./index.js");
@@ -29,13 +29,14 @@
 			HeartBeat();
 		}]);
 	};
-	ATA.Setups.push(()=>{
+	setTimeout(()=>{
+		console.log("Starting...");
 		BuildWW();
-	});
-	ATA.Loops.push(()=>{
-		const memdata = process.memoryUsage();
-		if((memdata.heapUsed / memdata.heapTotal) > 0.98){
-			
-		}
-	});
-})(require("./src/ATA")());
+		setInterval(()=>{
+			const memdata = process.memoryUsage();
+			if((memdata.heapUsed / memdata.heapTotal) > 0.98){
+				
+			}
+		},10000);
+	}, 1000);
+})();

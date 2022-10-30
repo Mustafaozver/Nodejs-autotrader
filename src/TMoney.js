@@ -8,6 +8,7 @@ module.exports = ((ATA)=>{
 	new Instrument("TMONEY");
 	const TMoney = new Pair("TMONEY","USDT");
 	TMoney.Type = "V";
+	TMoney.TickSize = 0.01;
 	TMoney.Update(0, 0);
 	var Series = {};
 	var Weights = {};
@@ -128,14 +129,11 @@ module.exports = ((ATA)=>{
 				return item * _series[index][lastindex - 1];
 			}).reduce((a,b)=>{return(a+b)}, 0);
 			
-			if(typeof(t) == "number" && t > 0) GetPair("TMONEYUSDT").Update(_TMoney, 0);
-			console.log("TMONEY/USD => ", _TMoney, " => ", TMoney.valueOf());
+			if(typeof(_TMoney) == "number" && _TMoney > 0) TMoney.Update(_TMoney, 0);
 		});
 		ATA.Loops.push(()=>{
 			
 		});
 	},3 * 60 / 1000);
-	
-	
-	
+	return true;
 })(ATA());

@@ -116,7 +116,7 @@ module.exports = ((ATA)=>{
 	APP.use(bodyparser.urlencoded({extended:true}));
 	APP.use(bodyparser.json());
 	APP.use(ATA.Require("cors")());
-	APP.use(ATA.Require("morgan")("tiny")); // logger
+	//APP.use(ATA.Require("morgan")("tiny")); // logger
 	APP.use(ATA.Require("multer")().array());
 	APP.use(ATA.Require("cookie-parser")());
 	APP.use(ATA.Require("express-session")({secret:config.SECRET}));

@@ -1,20 +1,16 @@
 ((ATA)=>{
-	process.on("unhandledRejection", function(err){
-		console.log("Unhandled rejection:", err);
-		process.exit();
-	});
 	ATA.isReady = true;
 	ATA.isDebug = false;
 	ATA.isMaster = true;
 	
 	const FS = ATA.Require("fs");
 	const Url = ATA.Require("url");
-	ATA.Require("./TradingAnalyzer");
+	const {SetDataUpdate} = ATA.Require("./TradingAnalyzer");
 	const {CreateHttpService} = ATA.Require("./Server");
 	ATA.Require("./TMoney");
 	
 	const TradeInterface = ATA.Require("./TradeInterface");
-	const {GetPairList, CandleStick, Candle, Instrument, Pair, FinancialPosition, GetPair} = ATA.Require("./FinancialClasses");
+	const {GetPairList, CandleStick, Candle, Instrument, Pair, FinancialPosition, GetPair, SetMakeOrder, GetFinancialPosition} = ATA.Require("./FinancialClasses");
 	
 	TradeInterface.SetListenerUpdate((x)=>{
 		const pair0 = GetPair(x.symbol);
@@ -23,6 +19,32 @@
 		pair0.Update(x.Price, vol);
 		pair0.UpdateBidAsk(x.Buy, x.Sell);
 		pair0.dailyVolume = x.dailyVolume;
+	});
+	/*
+	
+	
+				Point       : target / data[LastIndex].close - 1,
+				Start       : data[latestSignal].time,
+				Target      : target,
+				Side        : "LONG",
+				Last        : lastprice,
+				leverage    : leverage,
+				Available   : data[LastIndex].high != range[0] && data[LastIndex - 1].high != range[0],
+	
+	*/
+	SetDataUpdate((data)=>{
+		data.filter((item)=>{
+			return item.Available;
+		}).sort((a, b)=>{
+			const apoint = Math.abs(a.Point);
+			const bpoint = Math.abs(b.Point);
+			if(apoint > bpoint) return -1;
+			else if(apoint < bpoint) return +1;
+			return 0;
+		}).slice(-1).map((item)=>{
+			console.log("[" + item.P + "] => " + item.Side + " " + item.Target + " (" + (new Date(item.Start)) + ") " + item.leverage + "x Last=" + item.Last);
+			StrategicOrder(item.P, item.leverage, item.Side=="LONG", item.Target);
+		});
 	});
 	ATA.Loops.push(()=>{
 		ATA.Execute("STR2", // STR2 is everyone
@@ -41,15 +63,32 @@
 			if(leverage){
 				if(leverage > 10) leverage = leverage - 2;
 				await TradeInterface.SetLeverage(symbol, leverage);
-				await TradeInterface.SetMarginType(symbol, "ISOLATED")
+				await TradeInterface.SetMarginType(symbol, "ISOLATED");
 			}
 			return await TradeInterface.MarketPosition(symbol, quantity, price);
 		}else{
 			return await TradeInterface.MarketOrder(symbol, quantity, price=false)
 		}
 	};
+	ATA.Setups.push(()=>{
+		SetMakeOrder(async(symbol, quantity, price)=>{
+			console.log("TRADER => ", symbol, quantity, price);
+			return;
+			const resp = await TradeInterface.MarketPosition(symbol, quantity, price);
+		});
+	});
+	const StrategicOrder = async(symbol, leverage, isLong, target)=>{
+		const pair0 = GetPair(symbol);
+		const balance = Number((MBalance * leverage / pair0.valueOf()).toPrecision(1));
+		await TradeInterface.SetLeverage(pair0.symbol, leverage);
+		await TradeInterface.SetMarginType(pair0.symbol, "ISOLATED");
+		const fpos = GetFinancialPosition(pair0, balance, isLong, leverage);
+		fpos.Entry = pair0.valueOf();
+		fpos.Target = target;
+		console.log("SET TRADER [" + symbol + "] => " + target);
+	};
 	
-	// TradingView apis
+	// web ui and TradingView apis
 	CreateHttpService("TIME", (Request, Resources, Next)=>{
 		Resources.set("Content-Type","text/plain");
 		Resources.send(""+Math.floor((new Date()).getTime()/1000));
@@ -221,6 +260,32 @@
 			t:t,
 			v:v
 		}, null, "\t"));
+	});
+	CreateHttpService("MARKS", (Request, Resources, Next)=>{
+		const list = GetPairList();
+		const opts = Url.parse(Request.url, true);
+		const symbol = (opts.query.symbol+"").toUpperCase();
+		const fromtime = (1000*Number(opts.query.from));
+		const totime = (1000*Number(opts.query.to));
+		const pair0 = GetPair(symbol);
+		const arr = [];
+		if(pair0)pair0.Candle.data.map(function(item){
+			if(item.time<fromtime)return;
+			if(item.time>totime)return;
+			if(Math.random() < 0.1)arr.push({
+				id: item.time,
+				time: item.time,
+				color: {
+					color: "#808080",
+					background: "#FF00FF",
+				},
+				label: "B",
+				text: "sembol = " + symbol,
+				labelFontColor: "#00FF00",
+			});
+		});
+		Resources.set("Content-Type","application/json");
+		Resources.send(JSON.stringify(arr, null, "\t"));
 	});
 	CreateHttpService("ORDER", async(Request, Resources, Next)=>{
 		const resp = {};

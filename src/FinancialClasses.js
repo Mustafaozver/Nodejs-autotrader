@@ -1,7 +1,16 @@
 module.exports = ((ATA)=>{
 	const TradeInterface = ATA.Require("./TradeInterface");
 	const MainInstruments = ["USDT", "BUSD", "BTC", "ETH", "BNB", "XRP", "TRX", "XRP", "DOGE", "DOT", "TRY", "AUD", "BIDR", "IDRT", "BRL", "EUR", "GBP", "RUB", "UAH", "NGN", "TUSD", "USDC", "DAI", "VAI", "USDP"];
-	const period = 1*60*1000;
+	const period = 20*1000;
+	const Fibos = [
+		0.23606797749979, // 0
+		// Alış aralığı
+		0.38196601125011, // 1
+		0.5,			  // 2
+		0.61803398874990, // 3
+		// Satış aralığı
+		0.76393202250021, // 4
+	];
 	const limit = 600;
 	var PivotTime = 0;
 	const FixNumber = (num)=>{
@@ -82,6 +91,10 @@ module.exports = ((ATA)=>{
 			if(pair)pair.Update(item.price);
 		});
 	};
+	var _MakeOrder = (symbol, Quantity, price, leverage)=>{};
+	const SetMakeOrder = (func)=>{
+		_MakeOrder = func;
+	};
 	ATA.Setups.push(async()=>{
 		const filterTypes = {
 			PRICE_FILTER:(pair,filter)=>{
@@ -110,9 +123,19 @@ module.exports = ((ATA)=>{
 			for(var key in stack_candles){
 				stack_candles[key].Clock(thisTime - _PivotTime);
 			}
-			PeriodicalUpdate();
 		}
 		PivotTime = thisTime;
+	});
+	const period_req = 60*1000;
+	var pivottime_req = 0;
+	ATA.Loops.push(()=>{
+		const thisTime = (new Date()).getTime();
+		const _PivotTime = thisTime % periperiod_reqod;
+		const lastPivotTime = pivottime_req % period_req;
+		if (_PivotTime < lastPivotTime){
+			PeriodicalUpdate();
+		}
+		pivottime_req = thisTime;
 	});
 	const CandleStick = class{
 		time = null;
@@ -227,8 +250,9 @@ module.exports = ((ATA)=>{
 			stack_pairs[this.ID] = this;
 		};
 		Update(price, vol=0){
+			if(!(price > 0))return;
 			price = FixNumber(Math.round(price / this.TickSize) * this.TickSize);
-			vol = FixNumber(Math.round(price / this.StepSize) * this.StepSize);
+			vol = vol > 0 ? FixNumber(Math.round(price / this.StepSize) * this.StepSize) : 0;
 			this.Candle.Update(price, vol);
 			const usdtprice = GetPricePUSDT(this.Instrument0.Symbol);
 			this.Instrument0.Candle.Update(usdtprice, vol);
@@ -258,7 +282,7 @@ module.exports = ((ATA)=>{
 		isTradableCheck = func;
 	};
 	const stack_fpos = {};
-	//var counter_fpos = 0;
+	var counter_fpos = 0;
 	const Calculate = (price, leverage)=>{
 		const MUsd = 100 * 0.75;
 		return Number((MUsd / price * leverage).toPrecision(1)) + "";
@@ -277,7 +301,8 @@ module.exports = ((ATA)=>{
 		__leverage = 1;
 		constructor(pair0, balance, isLong=true, leverage=false){
 			this.Pair = pair0;
-			this.ID = pair0.ID;
+			this.ID = "FP_" + (counter_fpos++);
+			if(stack_fpos[this.ID])return;
 			this.isLong = isLong ? true : false;
 			this.Time = (new Date()).getTime();
 			this.Balance = Number(balance);
@@ -286,8 +311,9 @@ module.exports = ((ATA)=>{
 			this.High = -Infinity;
 			this.Low = Infinity;
 			this.__leverage = leverage > 0 ? leverage : 1;
-			this.Quantity = Calculate(this.Entry, this.__leverage);
+			//this.Quantity = Calculate(this.Entry, this.__leverage);
 			stack_fpos[this.ID] = this;
+			ActiveFinancialPosition = this;
 		};
 		GetInstrument0(){
 			return this.Pair.Instrument0;
@@ -296,10 +322,10 @@ module.exports = ((ATA)=>{
 			return this.Pair.Instrument1;
 		};
 		Buy(quantity, price=false){
-			ATA.MakeOrder(this.Pair.symbol, this.Quantity, price, this.__leverage);
+			_MakeOrder(this.Pair.symbol, this.Quantity, price, this.__leverage);
 		};
 		Sell(quantity, price=false){
-			ATA.MakeOrder(this.Pair.symbol, -this.Quantity, price, this.__leverage);
+			_MakeOrder(this.Pair.symbol, -this.Quantity, price, this.__leverage);
 		};
 		Update(){
 			const lastPrice = this.Pair.valueOf();
@@ -321,15 +347,6 @@ module.exports = ((ATA)=>{
 				if(this.High < high)this.High = high;
 				if(this.Low > low)this.Low = low;
 			}
-			const Fibos = [
-				0.23606797749979, // 0
-				// Alış aralığı
-				0.38196601125011, // 1
-				0.5,			  // 2
-				0.61803398874990, // 3
-				// Satış aralığı
-				0.76393202250021, // 4
-			];
 			const priceRange = high - low;
 			
 			const locationonRangeBuy = (this.Pair.Buy - low) / priceRange;
@@ -394,7 +411,10 @@ module.exports = ((ATA)=>{
 				this.Buy(lot);
 				this.AddBalance(lot);
 			}
-			if(this.Balance == 0) delete FinancialPosition.FinancialPositions[this.ID];
+			if(this.Balance == 0){
+				delete stack_fpos[this.ID];
+				ActiveFinancialPosition = false;
+			}
 			else setTimeout(function(){
 				THAT.F();
 			},200);
@@ -435,8 +455,19 @@ module.exports = ((ATA)=>{
 			
 		};
 	};
+	var ActiveFinancialPosition = false;
+	const GetFinancialPosition = (symbol, balance, isLong=true, leverage=false)=>{
+		const pair0 = GetPair(symbol);
+		if(!pair0)return false;
+		if(!ActiveFinancialPosition){
+			return new FinancialPosition(pair0, balance, isLong, leverage);
+		}else if(ActiveFinancialPosition.Pair.ID == pair0.ID)return ActiveFinancialPosition;
+		return false;
+	};
 	
 	ATA.Loops.push(function(){
+		if(ActiveFinancialPosition)ActiveFinancialPosition.F();
+		return;
 		for(var key in stack_fpos){
 			stack_fpos[key].F();
 		}
@@ -455,6 +486,8 @@ module.exports = ((ATA)=>{
 		Candle,
 		Instrument,
 		Pair,
-		FinancialPosition
+		FinancialPosition,
+		SetMakeOrder,
+		GetFinancialPosition,
 	};
 })(ATA());

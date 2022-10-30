@@ -162,7 +162,7 @@ if (!ATA) throw new Error("ATA Library is needed for this module.");
 			var resizeEX = edgeX >= Number(event.pageX) && edgeX < (Number(event.pageX)+wid);
 			var resizeEY = edgeY >= Number(event.pageY) && edgeY < (Number(event.pageY)+wid);
 			var resizeFX = elePos.x < Number(event.pageX) && elePos.x > (Number(event.pageX)-wid);
-			var resizeFY = elePos.y < Number(event.pageY) && elePos.y > (Number(event.pageY)-wid);
+			var resizeFY = false;//elePos.y < Number(event.pageY) && elePos.y > (Number(event.pageY)-wid);
 			if (resizeEX || resizeEY || resizeFX || resizeFY){
 				ActiveWindow = winobj;
 				Action = "RESIZE";
@@ -271,7 +271,6 @@ if (!ATA) throw new Error("ATA Library is needed for this module.");
 			this.__Div.style.display = "none";
 			delete stack[this.ID];
 			this.OnClose();
-			return;
 			this.__Div.remove();
 		};
 		Show(){

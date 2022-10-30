@@ -339,6 +339,14 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 			};
 		}
 	}
+	process.on("unhandledRejection", function(err){
+		console.log("Unhandled rejection:", err);
+		//process.exit();
+	});
+	process.on('uncaughtException', function (err) {
+		console.log('Caught exception: ', err);
+		//process.exit();
+	  });
 	setTimeout(async function(){ // Start trigger
 		setInterval(function(){ // Time => /|. Clock
 			var thisTime = (new Date()).getTime();
@@ -351,8 +359,8 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 			var title = ATA.Name + " V(" + ATA.Version + ") " + (new Date(thisTime)) + " " + FormatTime(thisTime - ATA.StartTime);
 			ATA.__title = title;
 			//process.stdout.write(String.fromCharCode(27) + "]0;" + title + String.fromCharCode(7));
-		},50);
-	},1);
+		},200);
+	},10);
 	ATA.Require("./Thread");
 	ATA.waitUntil = waitUntil;
 	ATA.isTimeCycled = isTimeCycled;

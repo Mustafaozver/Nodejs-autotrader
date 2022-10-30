@@ -1,12 +1,19 @@
 module.exports = ((ATA)=>{
 	// this file is for binance tarde system.
 	// modules
-	const Request = ATA.Require("request");
+	const Request1 = ATA.Require("request");
 	const Crypto = ATA.Require("crypto");
 	const Thread = ATA.Require("./Thread");
 	
+	const Request = async function(opts, resp){
+		//console.log("REQUEST => ", arguments.callee.caller.name);
+		console.log("REQUEST => ", opts.url);
+		return await Request1(opts, resp);
+	};
+	
 	// get api and secret key
 	const config = ATA.Require("./binance.config.json");
+	const PancakeSwap = ATA.Require("./PancakeSwap");
 	var SELECTED_API = 0;
 	
 	// endpoints
@@ -165,7 +172,6 @@ module.exports = ((ATA)=>{
 	const SetListenerUpdate = (func)=>{
 		_dataUpdate = func;
 	};
-	
 	const GetSpotPrices = async()=>{
 		var path = "/api/v3/ticker/price";
 		var url = BASE_URL;

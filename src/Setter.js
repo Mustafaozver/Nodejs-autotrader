@@ -24,7 +24,13 @@ module.exports = ((ATA)=>{
 		}
 		PivotTime = thisTime;
 	});
-	
+	const ScaleRange = (arr)=>{
+		if(arr.length < 3)return 0.5;
+		const max = Math.max.apply(Math,arr);
+		const min = Math.min.apply(Math,arr);
+		const last = arr[arr.length - 1];
+		return (last - min) / (max - min);
+	};
 	const ScanAllPairs = ()=>{
 	try{
 		var arr = [];
@@ -47,12 +53,12 @@ module.exports = ((ATA)=>{
 		if(data[LastIndex].time < LTtime)return {Point:0};
 		const RSI_LIMIT = 22.3;
 		const eorfa_LIMIT = 2.67;
-		const tolerans = 1.003;
+		const tolerans = 1.006;
 		const timeout = 1000*60*60*2; // 2 saat
 		var buy_setups = [];
 		var sell_setups = [];
 		
-		const FPrice_ = Indicators.WMA.calculate({period:3,values:data.map(function(item){return item.close*0.30+item.open*0.20+item.high*0.25+item.low*0.25})});
+		const FPrice_ = Indicators.WMA.calculate({period:3,values:data.map(function(item){return item.close*0.40+item.high*0.30+item.low*0.30})});
 		//const SD_ = Indicators.SD.calculate({period:LastIndex,values:data.map(function(item){return item.high*0.5+item.low*0.5})});
 		const RSI_ = Indicators.RSI.calculate({period:13,values:data.map(function(item){return item.close})});
 		const MFI_ = Indicators.MFI.calculate({period:13,high:data.map(function(item){return item.high}),low:data.map(function(item){return item.low}),close:data.map(function(item){return item.close}),volume:data.map(function(item){return item.volume})});
@@ -78,7 +84,7 @@ module.exports = ((ATA)=>{
 		if (LastIndex < StartIndex)return {Point:0};
 		//if(check)console.log(eorfa_);
 		
-		for(var i=StartIndex;i<=LastIndex;i++){
+		for(var i=StartIndex;i<=LastIndex-1;i++){ // analiz sınırı
 			const candle = data[i];
 			const RSI__ = RSI_[i - diff_RSI_];
 			const MFI__ = MFI_[i - diff_MFI_];
@@ -113,7 +119,7 @@ module.exports = ((ATA)=>{
 			if(buy_) buy_setups.push(i);
 			if(sell_) sell_setups.push(i);
 		}
-		var range = [0,0];
+		var range = [Infinity,0];
 		var fiborange;
 		for(var index=0;index<buy_setups.length;index++){ // check buy
 			const Index = buy_setups[index];
@@ -163,24 +169,24 @@ module.exports = ((ATA)=>{
 			const latestSignal = Math.max.apply(Math,buy_setups);
 			const target = ((data[firstSignal].close + data[latestSignal].close) / 2 - ATR__).toPrecision(12)-0;
 			const lastprice = data[LastIndex].close;
-			const leverage = Math.floor(lastprice / (range[0] - range[1]) / 2 / 50);
-			
-			if (!isFinite(leverage)) console.log(range);
+			const leverage = Math.floor(lastprice / (range[0] - range[1]) / 2 / 30);
+			const RSIF_range = ScaleRange([100].concat(RSIF_.slice(-2)));
 			return {
 				Point       : target / data[LastIndex].close - 1,
 				Start       : data[latestSignal].time,
 				Target      : target,
 				Side        : "LONG",
 				Last        : lastprice,
-				leverage    : leverage,
-				Available   : data[LastIndex].high != range[0] && data[LastIndex - 1].high != range[0],
+				leverage    : leverage > 2 ? leverage : 2,
+				Available   : data[LastIndex].high != range[0] && RSIF_range > 0.23606797749979,
 			};
 		}else if (sell_setups.length > 0){
 			const firstSignal = Math.min.apply(Math,sell_setups);
 			const latestSignal = Math.max.apply(Math,sell_setups);
 			const target = ((data[firstSignal].close + data[latestSignal].close) / 2 + ATR__).toPrecision(12)-0;
 			const lastprice = data[LastIndex].close;
-			const leverage = Math.floor(lastprice / (range[0] - range[1]) / 2 / 50);
+			const leverage = Math.min(Math.max(Math.floor(lastprice / (range[0] - range[1]) / 2 / 30), 2), 10);
+			const RSIF_range = ScaleRange([0].concat(RSIF_.slice(-2)));
 			return {
 				Point       : target / data[LastIndex].close - 1,
 				Start       : data[latestSignal].time,
@@ -188,7 +194,7 @@ module.exports = ((ATA)=>{
 				Side        : "SHORT",
 				Last        : lastprice,
 				leverage    : leverage,
-				Available   : data[LastIndex].low != range[1] && data[LastIndex - 1].low != range[1],
+				Available   : data[LastIndex].low != range[1] && RSIF_range < 0.76393202250021,
 			};
 		}
 	}catch(e){console.log(e)}

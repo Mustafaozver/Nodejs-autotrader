@@ -47,7 +47,7 @@
 							const _text = JSON.stringify(obj);
 							return "<span style=\"color:gray;\">\"</span><span style=\"color:rgb(255, 255, 255);font-style:oblique;\">" + _text.substring(1, _text.length - 1) + "</span><span style=\"color:gray;\">\"</span>";
 						case "object":
-							const objType = obj.constructor.name;
+							const objType = Object(obj).constructor.name;
 							const _dropdownmenuid = objType + "" + ATA.UUID.Generate();
 							var obj1 = "";
 							if(Array.isArray(obj)){ // overflow: hidden;position: relative;display: inline-block;

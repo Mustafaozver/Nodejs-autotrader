@@ -24,7 +24,9 @@
     "request": "^2.88.2",
     "serve-index": "^1.9.1",
     "socket.io": "^4.5.2",
+    "solc": "^0.8.17",
     "technicalindicators": "^3.1.0",
+    "web3": "^1.8.0",
     "ws": "^8.9.0"
   },
   "description": ""

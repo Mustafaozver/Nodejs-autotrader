@@ -7,6 +7,10 @@ module.exports = ((ATA)=>{
 	var trustedList = {};
 	var untrustedList = {};
 	var counter = 0;
+	var _DataUpdate = (data)=>{};
+	const SetDataUpdate = (func)=>{
+		_DataUpdate = func;
+	};
 	const ListenerCheck = (pair)=>{
 		const console = {
 			log:()=>{},
@@ -17,12 +21,12 @@ module.exports = ((ATA)=>{
 				default:
 					return false;
 				case "USDT":
-				case "BUSD":
+				//case "BUSD":
 				//case "DAI":
-				case "TRY":
-				case "BTC":
-				case "BNB":
-				case "ETH":
+				//case "TRY":
+				//case "BTC":
+				//case "BNB":
+				//case "ETH":
 				//case "TRX":
 				//case "RUB":
 				//case "EUR":
@@ -121,8 +125,7 @@ module.exports = ((ATA)=>{
 			wor.OnMessage = (data)=>{
 				switch(data.ID){
 					case "DU":
-						// 
-						console.log(data.Answer, "sdfgsdgfh");
+						_DataUpdate(data.Answer);
 					break;
 				}
 			};
@@ -157,4 +160,7 @@ module.exports = ((ATA)=>{
 		
 		
     });
+    return{
+        SetDataUpdate,
+    };
 })(ATA());
