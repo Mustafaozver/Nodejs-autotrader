@@ -203,5 +203,4 @@
 		}
 	});
 	window.TVDatafeeds = TVDatafeeds;
-	window.SetOnChangeSymbol = SetOnChangeSymbol;
 })(ATA());

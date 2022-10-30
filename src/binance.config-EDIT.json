@@ -1,0 +1,10 @@
+{
+	"Accounts":[
+		{
+			"Name":"Mustafa",
+			"APIKEY":"binance api public key",
+			"SECRETKEY":"binance api secret key"
+		},
+		...
+	]
+}
