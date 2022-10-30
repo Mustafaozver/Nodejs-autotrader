@@ -281,10 +281,11 @@ module.exports = ((ATA)=>{
 	const SetListenerCheck = (func)=>{
 		isTradableCheck = func;
 	};
+	var MBALANCE = 0;
 	const stack_fpos = {};
 	var counter_fpos = 0;
 	const Calculate = (price, leverage)=>{
-		const MUsd = 100 * 0.75;
+		const MUsd = MBALANCE * 0.75;
 		return Number((MUsd / price * leverage).toPrecision(1)) + "";
 	};
 	const FinancialPosition = class{
@@ -464,8 +465,49 @@ module.exports = ((ATA)=>{
 		}else if(ActiveFinancialPosition.Pair.ID == pair0.ID)return ActiveFinancialPosition;
 		return false;
 	};
-	
-	ATA.Loops.push(function(){
+	const FinancialPositionCheck = async()=>{
+		const FAccount = await TradeInterface.GetFutureAccount();
+		const balance = Number(FAccount.totalWalletBalance);
+		MBALANCE = balance;
+		return;
+		FAccount.positions.filter((item)=>{
+			return Number(item.positionAmt) != 0;
+		}).map((item)=>{
+			const pair0 = GetPair(item.symbol);
+			if(!pair0)return;
+			const quantity = Number(item.positionAmt); // quantity +/-
+			/*
+			
+			item.isolated=true
+			
+			*/
+			const entry = Number(item.entryPrice);
+			const profit = Number(item.unrealizedProfit);
+			const PUSDTBalance = Number(item.initialMargin); // kaş dolar bağlı x
+			const PUSDTBalanceLeverage = Number(item.notional); // kaç dolar bağlı kaldıraçlı +/-
+			const leverage = Number(item.leverage);
+			const updatetime = new Date(item.updateTime);
+			
+			if(profit / PUSDTBalance > 1.01); // %1den fazla kazanç var
+			
+			
+		});
+		FAccount.assets.map((item)=>{
+			
+		});
+	};
+	FinancialPositionCheck();
+	const period_fposcheck = 15*60*1000;
+	var pivottime_fposcheck = 0;
+	ATA.Loops.push(()=>{
+		const thisTime = (new Date()).getTime();
+		const _PivotTime = thisTime % period_fposcheck;
+		const lastPivotTime = pivottime_fposcheck % period_req;
+		if (_PivotTime < lastPivotTime){
+			FinancialPositionCheck();
+		}
+		pivottime_fposcheck = thisTime;
+		
 		if(ActiveFinancialPosition)ActiveFinancialPosition.F();
 		return;
 		for(var key in stack_fpos){

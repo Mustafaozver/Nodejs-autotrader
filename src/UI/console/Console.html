@@ -124,7 +124,7 @@
 					$.ajax({
 						type:"POST",
 						url:"/eval",
-						data:{EVAL:"(()=>{return("+_message+");})()"},
+						data:{EVAL:"(async()=>{return("+_message+");})()"},
 						success:(result)=>{
 							if(result.Error){
 								console.error(_message + " => ", "Error => ", result.Answer);
