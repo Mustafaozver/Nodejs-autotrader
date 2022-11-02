@@ -299,11 +299,12 @@ module.exports = ((ATA)=>{
 			this.isLong = this.MorselBalance > 0; // isLong ? true : false;
 			this.TargetPrice = Number(targetPrice);
 			this.EntryPrice = this.Pair[this.isLong?"Buy":"Sell"];
-			this.High = -Infinity;
-			this.Low = +Infinity;
+			this.High = this.isLong ? targetPrice : -Infinity;
+			this.Low = this.isLong ? Infinity : +targetPrice;
 			stack_fpos[this.ID] = this;
 		};
 		Close(){
+			console.log("307");
 			_MakeOrder(this.Pair.symbol, -this.TotalBalance);
 			delete stack_fpos[this.ID];
 		};
@@ -318,6 +319,7 @@ module.exports = ((ATA)=>{
 			}
 		};
 		AddMorselBalance(){
+			console.log("322");
 			_MakeOrder(this.Pair.symbol, this.MorselBalance);
 			const comM = 1.0002;
 			const activePrice = this.isLong ? (this.Pair.Buy * comM) : (this.Pair.Sell / comM);
@@ -380,12 +382,14 @@ module.exports = ((ATA)=>{
 		return Number((MUsd / price * leverage).toPrecision(1)) + "";
 	};
 	const GenerateFinancialPosition = async(symbol, targetPrice, leverage, isLong)=>{
+		if(Object.keys(stack_fpos).length > 0)return false;
 		const pair0 = GetPair(symbol);
 		if(!pair0)return false;
 		var fpos;
 		const morselBalance = CalculateMorselBalance(pair0.valueOf(), leverage);
 		if(morselBalance == 0)return false;
 		if(!stack_fpos[pair0.ID]){
+			console.log("392 => ", pair0, targetPrice, isLong ? morselBalance : -morselBalance, isLong);
 			await TradeInterface.SetLeverage(pair0.symbol, leverage);
 			await TradeInterface.SetMarginType(pair0.symbol, "ISOLATED");
 			fpos = new FinancialPosition(pair0, targetPrice, isLong ? morselBalance : -morselBalance, isLong);
@@ -411,9 +415,10 @@ module.exports = ((ATA)=>{
 			if(!pair0)return false;
 			const profit = Number(item.unrealizedProfit);
 			const PUSDTBalance = Number(item.initialMargin); // kaş dolar bağlı x
-			if(existedFPos[item.symbol])delete existedFPos[item.symbol];
+			if(existedFPos[pair0.ID])delete existedFPos[pair0.ID];
 			if(!stack_fpos[pair0.ID]){
 				if((profit / PUSDTBalance) > 0.0085){
+					console.log("418");
 					_MakeOrder(pair0.symbol, -quantity);
 					return false;
 				}
@@ -428,7 +433,8 @@ module.exports = ((ATA)=>{
 			
 		});
 		Object.keys(existedFPos).map((item)=>{
-			
+			stack_fpos[item].Close();
+			//existedFPos[item]
 		});
 		/*FAccount.assets.map((item)=>{
 			
@@ -443,13 +449,15 @@ module.exports = ((ATA)=>{
 				
 			}else{
 				// fiyat iyi yerde ancak giriş iyi değil, pozisyon büyült
+				console.log("449");
 				await _MakeOrder(fpos.Pair.symbol, fpos.MorselBalance);
 				await FinancialPositionCheck();
 			}
 		}else{
-			if(fpos.MorselBalance != 0)switch(priceLocation){
+			if(fpos.TotalBalance != 0)switch(priceLocation){
 				case "XL":
 				case "XS":
+					console.log("457");
 					await _MakeOrder(fpos.Pair.symbol, -fpos.TotalBalance);
 					await FinancialPositionCheck();
 				break;

@@ -74,8 +74,7 @@
 	ATA.Setups.push(()=>{
 		SetMakeOrder(async function(symbol, quantity, price=false, leverage=false){
 			console.log("TRADER => ", symbol, quantity, price, leverage);
-			throw new Error("TRADER");
-			return;
+			//return;
 			const resp = await TradeInterface.MarketPosition(symbol, quantity, price);
 		});
 	});

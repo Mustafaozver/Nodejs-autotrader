@@ -53,7 +53,7 @@ module.exports = ((ATA)=>{
 		if(data[LastIndex].time < LTtime)return {Point:0};
 		const RSI_LIMIT = 22.3;
 		const eorfa_LIMIT = 2.67;
-		const tolerans = 1.0075;
+		const tolerans = 1.009;
 		const timeout = 1000 * 60 * 60 * 4; // 4 saat
 		var buy_setups = [];
 		var sell_setups = [];
@@ -169,8 +169,8 @@ module.exports = ((ATA)=>{
 			const latestSignal = Math.max.apply(Math,buy_setups);
 			const target = ((data[firstSignal].close + data[latestSignal].close) / 2 - ATR__).toPrecision(12)-0;
 			const lastprice = data[LastIndex].close;
-			const leverage = Math.floor(lastprice / (range[0] - range[1]) / 2 / 30);
-			const RSIF_range = ScaleRange([].concat(eorfa_.slice(-3)));
+			const leverage = Math.min(Math.max(Math.floor(lastprice / (range[0] - range[1]) / 2 / 20), 2), 10);
+			const RSIF_range = ScaleRange([0].concat(eorfa_.slice(-5)));
 			return {
 				Point       : target / data[LastIndex].close - 1,
 				Start       : data[latestSignal].time,
@@ -178,15 +178,15 @@ module.exports = ((ATA)=>{
 				Side        : "LONG",
 				Last        : lastprice,
 				leverage    : leverage > 2 ? leverage : 2,
-				Available   : data[LastIndex].high != range[0] && RSIF_range > 0.23606797749979,
+				Available   : data[LastIndex].high != range[0] && RSIF_range > 0.38196601125011,
 			};
 		}else if (sell_setups.length > 0){
 			const firstSignal = Math.min.apply(Math,sell_setups);
 			const latestSignal = Math.max.apply(Math,sell_setups);
 			const target = ((data[firstSignal].close + data[latestSignal].close) / 2 + ATR__).toPrecision(12)-0;
 			const lastprice = data[LastIndex].close;
-			const leverage = Math.min(Math.max(Math.floor(lastprice / (range[0] - range[1]) / 2 / 30), 2), 10);
-			const RSIF_range = ScaleRange([].concat(eorfa_.slice(-3)));
+			const leverage = Math.min(Math.max(Math.floor(lastprice / (range[0] - range[1]) / 2 / 20), 2), 10);
+			const RSIF_range = ScaleRange([0].concat(eorfa_.slice(-5)));
 			return {
 				Point       : target / data[LastIndex].close - 1,
 				Start       : data[latestSignal].time,
@@ -194,7 +194,7 @@ module.exports = ((ATA)=>{
 				Side        : "SHORT",
 				Last        : lastprice,
 				leverage    : leverage,
-				Available   : data[LastIndex].low != range[1] && RSIF_range < 0.76393202250021,
+				Available   : data[LastIndex].low != range[1] && RSIF_range < 0.61803398874990,
 			};
 		}
 	}catch(e){console.log(e)}

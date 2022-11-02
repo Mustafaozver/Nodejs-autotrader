@@ -340,11 +340,11 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 		}
 	}
 	process.on("unhandledRejection", function(err){
-		console.log("Unhandled rejection:", err);
+		console.log("Unhandled rejection:", err.toString());
 		//process.exit();
 	});
 	process.on('uncaughtException', function (err) {
-		console.log('Caught exception: ', err);
+		console.log('Caught exception: ', err.toString());
 		//process.exit();
 	  });
 	setTimeout(async function(){ // Start trigger
