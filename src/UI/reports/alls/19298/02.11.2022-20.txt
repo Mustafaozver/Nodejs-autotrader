@@ -27,3 +27,403 @@ Wed Nov 02 2022 20:06:17 GMT+0300 (GMT+03:00) LOG => [
 Wed Nov 02 2022 20:06:17 GMT+0300 (GMT+03:00) LOG => [
 	"Setup is DONE."
 ]
+Wed Nov 02 2022 20:10:00 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667409000057&signature=42d961d8989615f2d8d8ae369d18d0c5be15b8a45564e0e72f907e3e4868f163"
+]
+Wed Nov 02 2022 20:15:00 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667409300789&signature=8df808606bedc6ab3823941427c5221b796e1b890df25d1cb81fc94a6c534648"
+]
+Wed Nov 02 2022 20:15:01 GMT+0300 (GMT+03:00) LOG => [
+	"Service web on http://localhost:8010/"
+]
+Wed Nov 02 2022 20:15:02 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://api.binance.com/api/v3/exchangeInfo"
+]
+Wed Nov 02 2022 20:15:03 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://api.binance.com/api/v3/exchangeInfo"
+]
+Wed Nov 02 2022 20:15:05 GMT+0300 (GMT+03:00) LOG => [
+	"OKKK"
+]
+Wed Nov 02 2022 20:15:05 GMT+0300 (GMT+03:00) LOG => [
+	"Preparing..."
+]
+Wed Nov 02 2022 20:15:05 GMT+0300 (GMT+03:00) LOG => [
+	"Preparing..."
+]
+Wed Nov 02 2022 20:15:06 GMT+0300 (GMT+03:00) LOG => [
+	"SET TRADER [BTCUSDT] => 60000"
+]
+Wed Nov 02 2022 20:15:06 GMT+0300 (GMT+03:00) LOG => 392 => ,[object Object],60000,Infinity,true
+Wed Nov 02 2022 20:15:06 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/leverage?recvWindow=60000&timestamp=1667409306082&symbol=BTCUSDT&leverage=2&signature=b5de847d5bb6ad48708b425989a6bbced519d2d0d4f798eec3f512f1c2830ebf"
+]
+Wed Nov 02 2022 20:15:06 GMT+0300 (GMT+03:00) LOG => [
+	"Preparing..."
+]
+Wed Nov 02 2022 20:15:06 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/exchangeInfo"
+]
+Wed Nov 02 2022 20:15:06 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/marginType?recvWindow=60000&timestamp=1667409306491&symbol=BTCUSDT&marginType=ISOLATED&signature=6595437a13b2c0fbc67d82d7a0ca43039bb3540f3168f621d762f37664fa4ce7"
+]
+Wed Nov 02 2022 20:15:06 GMT+0300 (GMT+03:00) LOG => [
+	"Setup is DONE."
+]
+Wed Nov 02 2022 20:19:41 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667409581947&signature=6b7c14f8edc2268747cdd8d7342de5d4f98bdb95a314358a5e37be8c159c37c5"
+]
+Wed Nov 02 2022 20:19:42 GMT+0300 (GMT+03:00) LOG => [
+	"Service web on http://localhost:8010/"
+]
+Wed Nov 02 2022 20:19:43 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://api.binance.com/api/v3/exchangeInfo"
+]
+Wed Nov 02 2022 20:19:44 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://api.binance.com/api/v3/exchangeInfo"
+]
+Wed Nov 02 2022 20:19:46 GMT+0300 (GMT+03:00) LOG => [
+	"OKKK"
+]
+Wed Nov 02 2022 20:19:46 GMT+0300 (GMT+03:00) LOG => [
+	"Preparing..."
+]
+Wed Nov 02 2022 20:19:46 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/exchangeInfo"
+]
+Wed Nov 02 2022 20:19:47 GMT+0300 (GMT+03:00) LOG => [
+	"Setup is DONE."
+]
+Wed Nov 02 2022 20:19:52 GMT+0300 (GMT+03:00) LOG => [
+	"SET TRADER [BTCUSDT] => 60000"
+]
+Wed Nov 02 2022 20:19:52 GMT+0300 (GMT+03:00) LOG => 392 => ,[object Object],60000,0.005,true
+Wed Nov 02 2022 20:19:52 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/leverage?recvWindow=60000&timestamp=1667409592262&symbol=BTCUSDT&leverage=2&signature=5967cf6e70d0a926847be548feba4364fcefdc4162e127b84dadd6536a8c60d6"
+]
+Wed Nov 02 2022 20:19:52 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/marginType?recvWindow=60000&timestamp=1667409592713&symbol=BTCUSDT&marginType=ISOLATED&signature=f25574efb9e56c7198d2b4bd2166cc7dacd4cbc0496be24585faa69814137b4f"
+]
+Wed Nov 02 2022 20:20:00 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667409600040&signature=657545949fb484676ed33ee6888e50d0f27fda9a6515f4909485ae937912de9c"
+]
+Wed Nov 02 2022 20:21:32 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667409692853&signature=42f5fef92378c9b57045ec95313fcf232c1bc2eb895775d1e539d62aae10f93c"
+]
+Wed Nov 02 2022 20:21:33 GMT+0300 (GMT+03:00) LOG => [
+	"Service web on http://localhost:8010/"
+]
+Wed Nov 02 2022 20:21:34 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://api.binance.com/api/v3/exchangeInfo"
+]
+Wed Nov 02 2022 20:21:35 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://api.binance.com/api/v3/exchangeInfo"
+]
+Wed Nov 02 2022 20:21:38 GMT+0300 (GMT+03:00) LOG => [
+	"OKKK"
+]
+Wed Nov 02 2022 20:21:38 GMT+0300 (GMT+03:00) LOG => [
+	"Preparing..."
+]
+Wed Nov 02 2022 20:21:38 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/exchangeInfo"
+]
+Wed Nov 02 2022 20:21:40 GMT+0300 (GMT+03:00) LOG => [
+	"Setup is DONE."
+]
+Wed Nov 02 2022 20:22:33 GMT+0300 (GMT+03:00) LOG => [
+	"SET TRADER [BTCUSDT] => 60000"
+]
+Wed Nov 02 2022 20:22:33 GMT+0300 (GMT+03:00) LOG => [
+	"Unhandled rejection:",
+	"TypeError: Converting circular structure to JSON\n    --> starting at object with constructor 'Pair'\n    |     property 'Instrument0' -> object with constructor 'Instrument'\n    |     property 'Pairs' -> object with constructor 'Array'\n    --- index 0 closes the circle"
+]
+Wed Nov 02 2022 20:24:10 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667409850290&signature=60b74434adb2fae9f1d32d3536a6febe812b950372ecd769ad448f7e145927aa"
+]
+Wed Nov 02 2022 20:24:10 GMT+0300 (GMT+03:00) LOG => [
+	"Service web on http://localhost:8010/"
+]
+Wed Nov 02 2022 20:24:11 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://api.binance.com/api/v3/exchangeInfo"
+]
+Wed Nov 02 2022 20:24:12 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://api.binance.com/api/v3/exchangeInfo"
+]
+Wed Nov 02 2022 20:24:19 GMT+0300 (GMT+03:00) LOG => [
+	"OKKK"
+]
+Wed Nov 02 2022 20:24:19 GMT+0300 (GMT+03:00) LOG => [
+	"Preparing..."
+]
+Wed Nov 02 2022 20:24:19 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/exchangeInfo"
+]
+Wed Nov 02 2022 20:24:21 GMT+0300 (GMT+03:00) LOG => [
+	"Setup is DONE."
+]
+Wed Nov 02 2022 20:25:00 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667409900083&signature=90642633c7b3aae1d0a9150d25673c64c39547d107e3715ebbdff6417f61760b"
+]
+Wed Nov 02 2022 20:25:10 GMT+0300 (GMT+03:00) LOG => [
+	"SET TRADER [BTCUSDT] => 60000"
+]
+Wed Nov 02 2022 20:25:10 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/leverage?recvWindow=60000&timestamp=1667409910557&symbol=BTCUSDT&leverage=2&signature=97e81f256fb312840752097df1a49156d63aadd301c83280a89187f010c9f6e0"
+]
+Wed Nov 02 2022 20:25:10 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/marginType?recvWindow=60000&timestamp=1667409910848&symbol=BTCUSDT&marginType=ISOLATED&signature=76954d5d8b49d3b67ae6f95395f545104d90da4594bb55d1a06332279458d677"
+]
+Wed Nov 02 2022 20:30:00 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667410200050&signature=89a9ec7056d44dcb62a924148d228bd2ffd73d8a7a5b733234677127610b8c41"
+]
+Wed Nov 02 2022 20:33:10 GMT+0300 (GMT+03:00) LOG => [
+	"SIGNAL => ",
+	{
+		"P": "MASKUSDT",
+		"Point": 0.001997004493260013,
+		"Start": 1667410360000,
+		"Target": 4.014,
+		"Side": "SHORT",
+		"Last": 4.006,
+		"leverage": 2,
+		"Available": false
+	}
+]
+Wed Nov 02 2022 20:35:00 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667410500012&signature=d306b2f39134623f50a157452b39f6e6f096e96f037a6c1b6cab5e81c72d1971"
+]
+Wed Nov 02 2022 20:36:26 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667410586049&signature=d401316ebef9f9131bc45ef6fd9b43f1baf284c0fa825eccb5eafb8109db1580"
+]
+Wed Nov 02 2022 20:36:26 GMT+0300 (GMT+03:00) LOG => [
+	"Service web on http://localhost:8010/"
+]
+Wed Nov 02 2022 20:36:27 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://api.binance.com/api/v3/exchangeInfo"
+]
+Wed Nov 02 2022 20:36:28 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://api.binance.com/api/v3/exchangeInfo"
+]
+Wed Nov 02 2022 20:36:30 GMT+0300 (GMT+03:00) LOG => [
+	"OKKK"
+]
+Wed Nov 02 2022 20:36:30 GMT+0300 (GMT+03:00) LOG => [
+	"Preparing..."
+]
+Wed Nov 02 2022 20:36:31 GMT+0300 (GMT+03:00) LOG => [
+	"Preparing..."
+]
+Wed Nov 02 2022 20:36:31 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/exchangeInfo"
+]
+Wed Nov 02 2022 20:36:32 GMT+0300 (GMT+03:00) LOG => [
+	"Setup is DONE."
+]
+Wed Nov 02 2022 20:37:26 GMT+0300 (GMT+03:00) LOG => [
+	"SET TRADER [BTCUSDT] => 60000"
+]
+Wed Nov 02 2022 20:37:26 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/leverage?recvWindow=60000&timestamp=1667410646331&symbol=BTCUSDT&leverage=2&signature=535fdbcfc455af8e55ece4a5e16cae44e222a7ddd9396bef4788a5884037b7b7"
+]
+Wed Nov 02 2022 20:37:26 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/marginType?recvWindow=60000&timestamp=1667410646838&symbol=BTCUSDT&marginType=ISOLATED&signature=b5da51448a09abfb62c9e72748d28db891955658178267418bcb371083a55090"
+]
+Wed Nov 02 2022 20:40:00 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667410800206&signature=471569db2b66276bd4e627e28ff93a664dc1a4779604b77ae530a09935198cb0"
+]
+Wed Nov 02 2022 20:42:03 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667410923610&signature=3ea30dbc51aa10820498a6a16e7ef9d27f92e41dc07241496af41ad6c78aeb6d"
+]
+Wed Nov 02 2022 20:42:03 GMT+0300 (GMT+03:00) LOG => [
+	"Service web on http://localhost:8010/"
+]
+Wed Nov 02 2022 20:42:05 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://api.binance.com/api/v3/exchangeInfo"
+]
+Wed Nov 02 2022 20:42:06 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://api.binance.com/api/v3/exchangeInfo"
+]
+Wed Nov 02 2022 20:42:10 GMT+0300 (GMT+03:00) LOG => [
+	"OKKK"
+]
+Wed Nov 02 2022 20:42:10 GMT+0300 (GMT+03:00) LOG => [
+	"Preparing..."
+]
+Wed Nov 02 2022 20:42:10 GMT+0300 (GMT+03:00) LOG => [
+	"Preparing..."
+]
+Wed Nov 02 2022 20:42:10 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/exchangeInfo"
+]
+Wed Nov 02 2022 20:42:11 GMT+0300 (GMT+03:00) LOG => [
+	"Setup is DONE."
+]
+Wed Nov 02 2022 20:43:03 GMT+0300 (GMT+03:00) LOG => [
+	"SET TRADER [BTCUSDT] => 60000"
+]
+Wed Nov 02 2022 20:43:03 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/leverage?recvWindow=60000&timestamp=1667410983890&symbol=BTCUSDT&leverage=2&signature=1c40e6c433c0b89950c86e543a99f0048bb513a94e01e6d9229af2d91cf8a339"
+]
+Wed Nov 02 2022 20:43:04 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/marginType?recvWindow=60000&timestamp=1667410984330&symbol=BTCUSDT&marginType=ISOLATED&signature=879fb562d78cada07354163b6405afb218ff3efba6d5dd4f0738f3ae38c12b74"
+]
+Wed Nov 02 2022 20:43:05 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 20:43:05 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"BTCUSDT",
+	0.005,
+	false,
+	false
+]
+Wed Nov 02 2022 20:43:05 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667410985110&symbol=BTCUSDT&side=BUY&quantity=0.005&type=MARKET&signature=4d5b71303a5042d750094bd60af67a5c52c2a40a95dda3198dcc66a7330aba84"
+]
+Wed Nov 02 2022 20:43:05 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667410985410&signature=33fcce24bb77d92ed0889b23ca04d058d07e83c1a6398f94a99fbbe5ca06ab0a"
+]
+Wed Nov 02 2022 20:44:38 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667411078336&signature=a6a1ad33a40fd3b7dbb6d1838f874a473449ff7d78271ef7cabc246a733d4373"
+]
+Wed Nov 02 2022 20:44:38 GMT+0300 (GMT+03:00) LOG => [
+	"Service web on http://localhost:8010/"
+]
+Wed Nov 02 2022 20:44:39 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://api.binance.com/api/v3/exchangeInfo"
+]
+Wed Nov 02 2022 20:44:40 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://api.binance.com/api/v3/exchangeInfo"
+]
+Wed Nov 02 2022 20:44:45 GMT+0300 (GMT+03:00) LOG => [
+	"OKKK"
+]
+Wed Nov 02 2022 20:44:45 GMT+0300 (GMT+03:00) LOG => [
+	"Preparing..."
+]
+Wed Nov 02 2022 20:44:45 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/exchangeInfo"
+]
+Wed Nov 02 2022 20:44:46 GMT+0300 (GMT+03:00) LOG => [
+	"Setup is DONE."
+]
+Wed Nov 02 2022 20:44:53 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667411093282&signature=b04869da9856403c7fd0004f9064e91d5f83a0be6522916dc187e31fc5b55240"
+]
+Wed Nov 02 2022 20:44:53 GMT+0300 (GMT+03:00) LOG => [
+	"Service web on http://localhost:8010/"
+]
+Wed Nov 02 2022 20:44:54 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://api.binance.com/api/v3/exchangeInfo"
+]
+Wed Nov 02 2022 20:44:55 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://api.binance.com/api/v3/exchangeInfo"
+]
+Wed Nov 02 2022 20:44:56 GMT+0300 (GMT+03:00) LOG => [
+	"OKKK"
+]
+Wed Nov 02 2022 20:44:56 GMT+0300 (GMT+03:00) LOG => [
+	"Preparing..."
+]
+Wed Nov 02 2022 20:44:56 GMT+0300 (GMT+03:00) LOG => [
+	"Preparing..."
+]
+Wed Nov 02 2022 20:44:57 GMT+0300 (GMT+03:00) LOG => [
+	"Preparing..."
+]
+Wed Nov 02 2022 20:44:57 GMT+0300 (GMT+03:00) LOG => [
+	"Preparing..."
+]
+Wed Nov 02 2022 20:44:58 GMT+0300 (GMT+03:00) LOG => [
+	"Preparing..."
+]
+Wed Nov 02 2022 20:44:58 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/exchangeInfo"
+]
+Wed Nov 02 2022 20:44:59 GMT+0300 (GMT+03:00) LOG => [
+	"Setup is DONE."
+]
+Wed Nov 02 2022 20:45:00 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667411100147&signature=7e50842f1e29a75bc0850a673e777a828f1bd1cd18467d2dc8ba3cb48c479ee6"
+]
+Wed Nov 02 2022 20:45:53 GMT+0300 (GMT+03:00) LOG => [
+	"SET TRADER [BTCUSDT] => 10000"
+]
+Wed Nov 02 2022 20:45:53 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/leverage?recvWindow=60000&timestamp=1667411153555&symbol=BTCUSDT&leverage=2&signature=2c6c9319ba88e43c17db0996b30e5450fee801e168fba0d8d87876bddb492d14"
+]
+Wed Nov 02 2022 20:45:53 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/marginType?recvWindow=60000&timestamp=1667411153852&symbol=BTCUSDT&marginType=ISOLATED&signature=d9fab7965b689372658d8dd187f8ca94c780c96b3ad73baf6d3384722d37eb29"
+]
+Wed Nov 02 2022 20:45:55 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 20:45:55 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"BTCUSDT",
+	-0.005,
+	false,
+	false
+]
+Wed Nov 02 2022 20:45:55 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667411155133&symbol=BTCUSDT&side=SELL&quantity=0.005&type=MARKET&signature=7581f510ab8ef4cfbfd79180eef935946acab86e43a4fa47a22e3f89a736c15d"
+]
+Wed Nov 02 2022 20:45:55 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667411155439&signature=a857e6a4bdbc49b3bfdbd0bd330fe3fa712aba7fde54a3cfa9af635671b8ea44"
+]
