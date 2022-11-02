@@ -5,7 +5,7 @@ module.exports = ((ATA)=>{
 	
 	const GenerateTextFileName = ()=>{
 		const ndate = new Date();
-		const dayfolder = "./" + sdatenum + "";
+		const dayfolder = "./src/UI/reports/alls/" + sdatenum + "";
 		FS.existsSync(dayfolder) || FS.mkdirSync(dayfolder);
 		const textfilepath = dayfolder + "/" + ndate.toLocaleDateString() + "-" +  ndate.getHours() + ".txt";
 		return textfilepath;
@@ -13,7 +13,7 @@ module.exports = ((ATA)=>{
 	
 	const AddLog = (type, message)=>{
 		const ndate = new Date();
-		var content = "\n(" + ndate + ") " + type + " => ";
+		var content = "\n" + ndate + " " + type + " => ";
 		try{
 			content += JSON.stringify(message, null, "\t");
 		}catch(e){

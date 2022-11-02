@@ -492,5 +492,7 @@ module.exports = ((ATA)=>{
 		FinancialPosition,
 		SetMakeOrder,
 		GenerateFinancialPosition,
+		//
+		stack_fpos,
 	};
 })(ATA());

@@ -70,7 +70,7 @@ const changeTheme = (name)=>{
 };
 
 const urltoframe = (url)=>{
-	return "<iframe class=\"fullframe\" src=\"" + url + "\"></iframe>";
+	return "<iframe class=\"fullframe\" src=\"" + url + "\"></iframe>"; // srcdoc=\"no content\"
 };
 
 const CreateTradeWin = ()=>{
@@ -88,6 +88,12 @@ ATA().Setups.push(()=>{
 	win1.Open();
 	win1.GetContent().html(urltoframe("console/console.html"));
 	win1.SetSize(800,600);
+	
+	const win2 = new Window("Reports");
+	win2.Closable = false;
+	win2.Open();
+	win2.GetContent().html(urltoframe("reports/reports.html"));
+	win2.SetSize(800,600);
 	
 	CreateTradeWin();
 });

@@ -35,10 +35,14 @@ module.exports = ((ATA)=>{
 					case "DU":
 						data.Answer.map(_dataUpdate);
 					break;
+					case "LOG":
+						console.log(data);
+					break;
 				}
 			};
 		};
 		OpenThread(()=>{
+			ATA()._R = "WSOCKET";
 			//const BASE_WS_BT = "wss://stream.binance.com:9443/ws/!bookTicker";
 			const BASE_WS_PT = "wss://stream.binance.com:9443/ws/!ticker@arr";
 			const WebSocket = ATA().Require("./WSSysytem");
@@ -142,6 +146,12 @@ module.exports = ((ATA)=>{
 				});
 				_changedList = {};
 			});
+			console.log = function(){
+				ATA().SendMessage({
+					ID		: "LOG",
+					Answer	: [...arguments]
+				});
+			};
 			return true;
 		});
     });

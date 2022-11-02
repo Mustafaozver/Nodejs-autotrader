@@ -2,6 +2,7 @@
 	ATA.isReady = true;
 	ATA.isDebug = false;
 	ATA.isMaster = true;
+	ATA._R = "MAIN";
 	
 	ATA.Require("./Logger.js");
 	ATA.Require("../package.json");
@@ -10,7 +11,7 @@
 	const {CreateHttpService} = ATA.Require("./Server");
 	ATA.Require("./TMoney");
 	const TradeInterface = ATA.Require("./TradeInterface");
-	const {GetPairList, CandleStick, Candle, Instrument, Pair, FinancialPosition, GetPair, SetMakeOrder, GetFinancialPosition} = ATA.Require("./FinancialClasses");
+	const {GetPairList, CandleStick, Candle, Instrument, Pair, FinancialPosition, GetPair, SetMakeOrder, GenerateFinancialPosition } = ATA.Require("./FinancialClasses");
 	
 	TradeInterface.SetListenerUpdate((x)=>{
 		const pair0 = GetPair(x.symbol);
@@ -71,15 +72,16 @@
 		}
 	};
 	ATA.Setups.push(()=>{
-		SetMakeOrder(async(symbol, quantity, price=false, leverage=false)=>{
+		SetMakeOrder(async function(symbol, quantity, price=false, leverage=false){
 			console.log("TRADER => ", symbol, quantity, price, leverage);
+			throw new Error("TRADER");
 			return;
 			const resp = await TradeInterface.MarketPosition(symbol, quantity, price);
 		});
 	});
 	const StrategicOrder = async(symbol, leverage, isLong, target)=>{
 		console.log("SET TRADER [" + symbol + "] => " + target);
-		const fpos = await GenerateFinancialPosition(pair0.symbol, target, leverage, isLong);
+		const fpos = await GenerateFinancialPosition(symbol, target, leverage, isLong);
 	};
 	
 	// web ui and TradingView apis

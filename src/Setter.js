@@ -53,8 +53,8 @@ module.exports = ((ATA)=>{
 		if(data[LastIndex].time < LTtime)return {Point:0};
 		const RSI_LIMIT = 22.3;
 		const eorfa_LIMIT = 2.67;
-		const tolerans = 1.006;
-		const timeout = 1000*60*60*2; // 2 saat
+		const tolerans = 1.0075;
+		const timeout = 1000 * 60 * 60 * 4; // 4 saat
 		var buy_setups = [];
 		var sell_setups = [];
 		
@@ -170,7 +170,7 @@ module.exports = ((ATA)=>{
 			const target = ((data[firstSignal].close + data[latestSignal].close) / 2 - ATR__).toPrecision(12)-0;
 			const lastprice = data[LastIndex].close;
 			const leverage = Math.floor(lastprice / (range[0] - range[1]) / 2 / 30);
-			const RSIF_range = ScaleRange([100].concat(RSIF_.slice(-2)));
+			const RSIF_range = ScaleRange([].concat(eorfa_.slice(-3)));
 			return {
 				Point       : target / data[LastIndex].close - 1,
 				Start       : data[latestSignal].time,
@@ -186,7 +186,7 @@ module.exports = ((ATA)=>{
 			const target = ((data[firstSignal].close + data[latestSignal].close) / 2 + ATR__).toPrecision(12)-0;
 			const lastprice = data[LastIndex].close;
 			const leverage = Math.min(Math.max(Math.floor(lastprice / (range[0] - range[1]) / 2 / 30), 2), 10);
-			const RSIF_range = ScaleRange([0].concat(RSIF_.slice(-2)));
+			const RSIF_range = ScaleRange([].concat(eorfa_.slice(-3)));
 			return {
 				Point       : target / data[LastIndex].close - 1,
 				Start       : data[latestSignal].time,

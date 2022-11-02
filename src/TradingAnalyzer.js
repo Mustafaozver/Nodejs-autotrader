@@ -127,10 +127,14 @@ module.exports = ((ATA)=>{
 					case "DU":
 						_DataUpdate(data.Answer);
 					break;
+					case "LOG":
+						console.log(data);
+					break;
 				}
 			};
 		};
 		OpenThread(()=>{
+			ATA()._R = "SETTER";
 			ATA().Setups.push(()=>{
 				ATA().SetVariable("scan", ()=>{});
 				ATA().PAIRPOOL = {};
@@ -138,6 +142,12 @@ module.exports = ((ATA)=>{
 				ATA().Loops.push(()=>{
 					ATA().GetVariable("scan")();
 				});
+				console.log = function(){
+					ATA().SendMessage({
+						ID		: "LOG",
+						Answer	: [...arguments]
+					});
+				};
 			});
 			return true;
 		});
