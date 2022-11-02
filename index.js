@@ -3,12 +3,12 @@
 	ATA.isDebug = false;
 	ATA.isMaster = true;
 	
-	const FS = ATA.Require("fs");
+	ATA.Require("./Logger.js");
+	ATA.Require("../package.json");
 	const Url = ATA.Require("url");
 	const {SetDataUpdate} = ATA.Require("./TradingAnalyzer");
 	const {CreateHttpService} = ATA.Require("./Server");
 	ATA.Require("./TMoney");
-	
 	const TradeInterface = ATA.Require("./TradeInterface");
 	const {GetPairList, CandleStick, Candle, Instrument, Pair, FinancialPosition, GetPair, SetMakeOrder, GetFinancialPosition} = ATA.Require("./FinancialClasses");
 	
@@ -34,6 +34,7 @@
 	*/
 	SetDataUpdate((data)=>{
 		data.filter((item)=>{
+			console.log("SIGNAL => ", item);
 			return item.Available;
 		}).sort((a, b)=>{
 			const apoint = Math.abs(a.Point);
@@ -57,7 +58,6 @@
 	
 	
 	const margin = true;
-	const MBalance = 100 * 0.75;
 	const Order = async(symbol, quantity, price=false, leverage=false)=>{
 		if(margin){
 			if(leverage){
@@ -71,21 +71,15 @@
 		}
 	};
 	ATA.Setups.push(()=>{
-		SetMakeOrder(async(symbol, quantity, price)=>{
-			console.log("TRADER => ", symbol, quantity, price);
+		SetMakeOrder(async(symbol, quantity, price=false, leverage=false)=>{
+			console.log("TRADER => ", symbol, quantity, price, leverage);
 			return;
 			const resp = await TradeInterface.MarketPosition(symbol, quantity, price);
 		});
 	});
 	const StrategicOrder = async(symbol, leverage, isLong, target)=>{
-		const pair0 = GetPair(symbol);
-		const balance = Number((MBalance * leverage / pair0.valueOf()).toPrecision(1));
-		await TradeInterface.SetLeverage(pair0.symbol, leverage);
-		await TradeInterface.SetMarginType(pair0.symbol, "ISOLATED");
-		const fpos = GetFinancialPosition(pair0, balance, isLong, leverage);
-		fpos.Entry = pair0.valueOf();
-		fpos.Target = target;
 		console.log("SET TRADER [" + symbol + "] => " + target);
+		const fpos = await GenerateFinancialPosition(pair0.symbol, target, leverage, isLong);
 	};
 	
 	// web ui and TradingView apis

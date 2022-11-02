@@ -155,7 +155,7 @@
 						};
 						console[fName] = function(){
 							ATA.SendMessage(who, "DATA", {EVAL:"("+tempfunc2+")(" + JSON.stringify(fName) + "," + JSON.stringify([...arguments]) + ")"});
-							//tempfunc.apply(console,[...arguments]);
+							tempfunc.apply(console,[...arguments]);
 						};
 					};
 					ATA.SendMessage({EVAL:"("+tempf+")(" + JSON.stringify(ATA.MyName) + ")"});

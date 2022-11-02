@@ -91,10 +91,6 @@ module.exports = ((ATA)=>{
 			if(pair)pair.Update(item.price);
 		});
 	};
-	var _MakeOrder = (symbol, Quantity, price, leverage)=>{};
-	const SetMakeOrder = (func)=>{
-		_MakeOrder = func;
-	};
 	ATA.Setups.push(async()=>{
 		const filterTypes = {
 			PRICE_FILTER:(pair,filter)=>{
@@ -281,223 +277,187 @@ module.exports = ((ATA)=>{
 	const SetListenerCheck = (func)=>{
 		isTradableCheck = func;
 	};
-	var MBALANCE = 0;
-	const stack_fpos = {};
-	var counter_fpos = 0;
-	const Calculate = (price, leverage)=>{
-		const MUsd = MBALANCE * 0.75;
-		return Number((MUsd / price * leverage).toPrecision(1)) + "";
-	};
+	
+	/* Financial Position Entries */
+	
 	const FinancialPosition = class{
 		Pair = null;
 		ID = "";
 		isLong = true;
 		Time = 0;
-		Balance = 0;
-		Entry = 0;
-		Target = 0;
+		TotalBalance = 0;
+		MorselBalance = 0;
+		EntryPrice = 0;
+		TargetPrice = 0;
 		High = 0;
 		Low = 0;
-		Quantity = 0;
-		__leverage = 1;
-		constructor(pair0, balance, isLong=true, leverage=false){
+		constructor(pair0, targetPrice, morselBalance){
 			this.Pair = pair0;
-			this.ID = "FP_" + (counter_fpos++);
-			if(stack_fpos[this.ID])return;
-			this.isLong = isLong ? true : false;
+			this.ID = this.Pair.ID;
 			this.Time = (new Date()).getTime();
-			this.Balance = Number(balance);
-			this.Entry = this.Pair[this.isLong?"Buy":"Sell"];
-			this.Target = this.isLong?Infinity:0;
+			this.MorselBalance = Number(morselBalance);
+			this.isLong = this.MorselBalance > 0; // isLong ? true : false;
+			this.TargetPrice = Number(targetPrice);
+			this.EntryPrice = this.Pair[this.isLong?"Buy":"Sell"];
 			this.High = -Infinity;
-			this.Low = Infinity;
-			this.__leverage = leverage > 0 ? leverage : 1;
-			//this.Quantity = Calculate(this.Entry, this.__leverage);
+			this.Low = +Infinity;
 			stack_fpos[this.ID] = this;
-			ActiveFinancialPosition = this;
-		};
-		GetInstrument0(){
-			return this.Pair.Instrument0;
-		};
-		GetInstrument1(){
-			return this.Pair.Instrument1;
-		};
-		Buy(quantity, price=false){
-			_MakeOrder(this.Pair.symbol, this.Quantity, price, this.__leverage);
-		};
-		Sell(quantity, price=false){
-			_MakeOrder(this.Pair.symbol, -this.Quantity, price, this.__leverage);
-		};
-		Update(){
-			const lastPrice = this.Pair.valueOf();
-			const high = this.isLong ? this.Target : lastPrice;
-			const low = this.isLong ? lastPrice : this.Target;
-			const EntryTime = this.Time;
-			
-			this.Pair.Candle.data.filter(function(item){
-				return item.time >= EntryTime;
-			}).map(function(item){
-				if (item.high > high) high = item.high;
-				if (item.low < low) low  = item.low;
-			});
-			
-			if(this.isLong){
-				if(this.High < high)this.High = high;
-				if(this.Low > low)this.Low = low;
-			}else if(!this.isLong){
-				if(this.High < high)this.High = high;
-				if(this.Low > low)this.Low = low;
-			}
-			const priceRange = high - low;
-			
-			const locationonRangeBuy = (this.Pair.Buy - low) / priceRange;
-			const locationonRangeSell = (this.Pair.Sell - low) / priceRange;
-			
-			if(this.Time < ((new Date()).getTime() - 1000*60*60*24*2)){
-				if(this.isLong){
-					this.Target = priceRange * Fibos[4] + low;
-				}else{
-					this.Target = priceRange * Fibos[0] + low;
-				}
-				this.Time += 1000*60*60*4;
-			}
-			
-			if(this.isLong){
-				//if (this.Entry > lastPrice) return "+L";		  // pozisyon artır kontrol
-				if (Fibos[0] > locationonRangeSell) return "++L"; // pozisyon artır kontrol
-				else if (Fibos[1] > locationonRangeSell) return "+L"; // pozisyon artır kontrol
-				else if (Fibos[2] > locationonRangeSell) return "L"; // bekle
-				else if (Fibos[3]/1.05 > locationonRangeBuy) return "L"; // bekle
-				else if (Fibos[4] > locationonRangeBuy) return "EL"; // pozisyon kapat ve bitir
-				else return "EL";								  // pozisyon kapat ve bitir
-				return "EL";
-			}else{
-				//if (this.Entry < lastPrice) return "+S";		  // pozisyon artır kontrol
-				if (Fibos[4] < locationonRangeBuy) return "++S"; // pozisyon artır kontrol
-				else if (Fibos[3] < locationonRangeBuy) return "+S"; // pozisyon artır kontrol
-				else if (Fibos[2] < locationonRangeBuy) return "S"; // bekle
-				else if (Fibos[1]*1.05 < locationonRangeSell) return "S"; // bekle
-				else if (Fibos[0] < locationonRangeSell) return "ES"; // pozisyon kapat ve bitir
-				else return "ES";								  // pozisyon kapat ve bitir
-				return "ES";
-			}
-			
-		};
-		AddBalance(balance){
-			const comM = 1.0002;
-			balance = Number(balance);
-			const oltCost = this.Balance * this.Entry;
-			const newCost = balance * this.Pair[this.isLong?"Buy":"Sell"] * (this.isLong?comM:(1/comM));
-			const totalCost = newCost + oltCost;
-			this.Balance += balance;
-			this.Entry = totalCost / this.Balance;
-			this.Balance = Number(Number(this.Balance).toPrecision(15));
 		};
 		Close(){
-			const lastPrice = this.Pair.valueOf();
-			const THAT = this;
-			const lot = this.LOT;
-			if(this.isLong){
-				if(lot > Balance0){
-					lot = Balance0;
-					this.Balance = lot;
-				}
-				this.Sell(lot);
-				this.AddBalance(-lot);
-			}else{
-				if(lot > Balance1/lastPrice){
-					lot = Balance1/lastPrice;
-					this.Balance = lot;
-				}
-				this.Buy(lot);
-				this.AddBalance(lot);
-			}
-			if(this.Balance == 0){
-				delete stack_fpos[this.ID];
-				ActiveFinancialPosition = false;
-			}
-			else setTimeout(function(){
-				THAT.F();
-			},200);
+			_MakeOrder(this.Pair.symbol, -this.TotalBalance);
+			delete stack_fpos[this.ID];
 		};
-		F(){
-			const st = this.Update();
-			const lot = this.LOT;
-			const entry = this.Entry;
-			const lastPrice = this.Pair.valueOf();
-			const high = this.isLong ? this.Target : this.High;
-			const low = this.isLong ? this.Low : this.Target;
-			
-			const priceRange = high - low;
-			const locationonRange = (entry - low) / priceRange;
-			
+		Update(){
+			var lastCandle = this.Pair.Candle.data.slice(-1)[0];
 			if(this.isLong){
-			}else{
+				if(this.Low > lastCandle.low)this.Low = lastCandle.low;
+				//if(this.TargetPrice < this.Pair.Sell)this.Close();
+			}else if(!this.isLong){
+				if(this.High < lastCandle.high)this.High = lastCandle.high;
+				//if(this.TargetPrice > this.Pair.Buy)this.Close();
 			}
-			
-			switch(st){
-				case "EL":this.Close();break; // Long side
-				case "+L"://break;
-				case "++L":
-					if(locationonRange < 0.38196601125011)return;
-					this.AddBalance(lot);
-					this.Buy(lot);
-				case "L":break; // hold
-				//--------------------------------------------------------------------
-				case "ES":this.Close();break; // Short side
-				case "+S"://break;
-				case "++S":
-					if(locationonRange > 0.61803398874990)return;
-					this.AddBalance(-lot);
-					this.Sell(lot);
-				case "S":break; // hold
-				default:break;
+		};
+		AddMorselBalance(){
+			_MakeOrder(this.Pair.symbol, this.MorselBalance);
+			const comM = 1.0002;
+			const activePrice = this.isLong ? (this.Pair.Buy * comM) : (this.Pair.Sell / comM);
+			const oltCost = this.TotalBalance * this.EntryPrice;
+			this.TotalBalance += this.MorselBalance;
+			const newCost = this.MorselBalance * activePrice;
+			const totalCost = newCost + oltCost;
+			this.EntryPrice = totalCost / this.TotalBalance;
+			this.TotalBalance = Number(this.TotalBalance.toPrecision(10));
+		};
+		CheckPriceLocation(){
+			const priceRange = this.High - this.Low;
+			const locationonRangeBuy = (this.Pair.Buy - this.Low) / priceRange;
+			const locationonRangeSell = (this.Pair.Sell - this.Low) / priceRange;
+			if(this.isLong){
+				     if(Fibos[0]      > locationonRangeSell) return "+L"; // pozisyon artır kontrol
+				else if(Fibos[1]      > locationonRangeSell) return "L"; // pozisyon artır kontrol
+				else if(Fibos[2]      > locationonRangeSell) return "HL"; // bekle
+				else if(Fibos[3]/1.05 > locationonRangeBuy) return "HL"; // bekle
+				else if(Fibos[4]      > locationonRangeBuy) return "XL"; // pozisyon kapat ve bitir
+				else return "XL";								  // pozisyon kapat ve bitir
+			}else if(!this.isLong){
+				     if(Fibos[4]      < locationonRangeBuy) return "+S"; // pozisyon artır kontrol
+				else if(Fibos[3]      < locationonRangeBuy) return "S"; // pozisyon artır kontrol
+				else if(Fibos[2]      < locationonRangeBuy) return "HS"; // bekle
+				else if(Fibos[1]*1.05 < locationonRangeSell) return "HS"; // bekle
+				else if(Fibos[0]      < locationonRangeSell) return "XS"; // pozisyon kapat ve bitir
+				else return "XS";								  // pozisyon kapat ve bitir
 			}
-			
+		};
+		CheckEntryLocation(){
+			const priceRange = this.High - this.Low;
+			const locationonEntry = (this.EntryPrice - this.Low) / priceRange;
+			if(this.isLong){
+				     if(Fibos[0]      > locationonEntry) return "+L"; // pozisyon iyi
+				else if(Fibos[1]      > locationonEntry) return "L"; // pozisyon iyi
+				else if(Fibos[2]      > locationonEntry) return "HL"; // pozisyon büyütülebilir
+				else if(Fibos[3]/1.05 > locationonEntry) return "HL"; // pozisyon büyütülebilir
+				else if(Fibos[4]      > locationonEntry) return "XL"; // pozisyon büyütülebilir
+				else return "XL";								  // pozisyon büyütülebilir
+			}else if(!this.isLong){
+				     if(Fibos[4]      < locationonEntry) return "+S"; // pozisyon iyi
+				else if(Fibos[3]      < locationonEntry) return "S"; // pozisyon iyi
+				else if(Fibos[2]      < locationonEntry) return "HS"; // pozisyon büyütülebilir
+				else if(Fibos[1]*1.05 < locationonEntry) return "HS"; // pozisyon büyütülebilir
+				else if(Fibos[0]      < locationonEntry) return "XS"; // pozisyon büyütülebilir
+				else return "XS";								  // pozisyon büyütülebilir
+			}
 		};
 	};
-	var ActiveFinancialPosition = false;
-	const GetFinancialPosition = (symbol, balance, isLong=true, leverage=false)=>{
+	var _MakeOrder = async(symbol, Quantity, price, leverage)=>{};
+	var _MyBalancePUSDT = 0;
+	const stack_fpos = {};
+	const SetMakeOrder = (func)=>{
+		_MakeOrder = func;
+	};
+	const CalculateMorselBalance = (price, leverage)=>{
+		if(_MyBalancePUSDT < 15)return 0;
+		const MUsd = _MyBalancePUSDT * 0.5;
+		return Number((MUsd / price * leverage).toPrecision(1)) + "";
+	};
+	const GenerateFinancialPosition = async(symbol, targetPrice, leverage, isLong)=>{
 		const pair0 = GetPair(symbol);
 		if(!pair0)return false;
-		if(!ActiveFinancialPosition){
-			return new FinancialPosition(pair0, balance, isLong, leverage);
-		}else if(ActiveFinancialPosition.Pair.ID == pair0.ID)return ActiveFinancialPosition;
-		return false;
+		var fpos;
+		const morselBalance = CalculateMorselBalance(pair0.valueOf(), leverage);
+		if(morselBalance == 0)return false;
+		if(!stack_fpos[pair0.ID]){
+			await TradeInterface.SetLeverage(pair0.symbol, leverage);
+			await TradeInterface.SetMarginType(pair0.symbol, "ISOLATED");
+			fpos = new FinancialPosition(pair0, targetPrice, isLong ? morselBalance : -morselBalance, isLong);
+		}else{
+			fpos = stack_fpos[pair0.ID];
+			//fpos.
+		}
+		return fpos;
 	};
 	const FinancialPositionCheck = async()=>{
+		const existedFPos = {};
+		Object.keys(stack_fpos).map((item)=>{
+			existedFPos[item] = true;
+		});
 		const FAccount = await TradeInterface.GetFutureAccount();
 		const balance = Number(FAccount.totalWalletBalance);
-		MBALANCE = balance;
-		return;
-		FAccount.positions.filter((item)=>{
-			return Number(item.positionAmt) != 0;
-		}).map((item)=>{
+		_MyBalancePUSDT = balance;
+		FAccount.positions.map(async(item)=>{
+			if(!item.isolated)return false;
+			const quantity = Number(item.positionAmt);
+			if(quantity == 0)return false;
 			const pair0 = GetPair(item.symbol);
-			if(!pair0)return;
-			const quantity = Number(item.positionAmt); // quantity +/-
-			/*
-			
-			item.isolated=true
-			
-			*/
-			const entry = Number(item.entryPrice);
+			if(!pair0)return false;
 			const profit = Number(item.unrealizedProfit);
 			const PUSDTBalance = Number(item.initialMargin); // kaş dolar bağlı x
+			if(existedFPos[item.symbol])delete existedFPos[item.symbol];
+			if(!stack_fpos[pair0.ID]){
+				if((profit / PUSDTBalance) > 0.0085){
+					_MakeOrder(pair0.symbol, -quantity);
+					return false;
+				}
+			}
+			const fpos = stack_fpos[pair0.ID];
+			const entry = Number(item.entryPrice);
+			fpos.EntryPrice = entry;
+			fpos.TotalBalance = quantity;
 			const PUSDTBalanceLeverage = Number(item.notional); // kaç dolar bağlı kaldıraçlı +/-
 			const leverage = Number(item.leverage);
 			const updatetime = new Date(item.updateTime);
 			
-			if(profit / PUSDTBalance > 1.01); // %1den fazla kazanç var
-			
+		});
+		Object.keys(existedFPos).map((item)=>{
 			
 		});
-		FAccount.assets.map((item)=>{
+		/*FAccount.assets.map((item)=>{
 			
-		});
+		});*/
+	};
+	const ExecutePosition = async(fpos)=>{
+		const entryLocation = fpos.CheckEntryLocation();
+		const priceLocation = fpos.CheckPriceLocation();
+		if(priceLocation == "+L" || priceLocation == "L" || priceLocation == "+S" || priceLocation == "S"){
+			if(entryLocation == "+L" || entryLocation == "L" || entryLocation == "+S" || entryLocation == "S"){
+				// fiyat ve giriş güzel değerde
+				
+			}else{
+				// fiyat iyi yerde ancak giriş iyi değil, pozisyon büyült
+				await _MakeOrder(fpos.Pair.symbol, fpos.MorselBalance);
+				await FinancialPositionCheck();
+			}
+		}else{
+			if(fpos.MorselBalance != 0)switch(priceLocation){
+				case "XL":
+				case "XS":
+					await _MakeOrder(fpos.Pair.symbol, -fpos.TotalBalance);
+					await FinancialPositionCheck();
+				break;
+			};
+		}
 	};
 	FinancialPositionCheck();
-	const period_fposcheck = 15*60*1000;
+	const period_fposcheck = 5*60*1000;
 	var pivottime_fposcheck = 0;
 	ATA.Loops.push(()=>{
 		const thisTime = (new Date()).getTime();
@@ -507,13 +467,14 @@ module.exports = ((ATA)=>{
 			FinancialPositionCheck();
 		}
 		pivottime_fposcheck = thisTime;
-		
-		if(ActiveFinancialPosition)ActiveFinancialPosition.F();
-		return;
 		for(var key in stack_fpos){
-			stack_fpos[key].F();
+			const fpos = stack_fpos[key];
+			fpos.Update();
+			ExecutePosition(fpos);
 		}
 	});
+	
+	/* Financial Position Entries */
 	
 	MainInstruments.map(GetInstrument);
 	
@@ -530,6 +491,6 @@ module.exports = ((ATA)=>{
 		Pair,
 		FinancialPosition,
 		SetMakeOrder,
-		GetFinancialPosition,
+		GenerateFinancialPosition,
 	};
 })(ATA());

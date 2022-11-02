@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "start.js",
   "scripts": {
-    "test": "node start.js"
+    "test": "node index.js",
+    "start": "node start.js"
   },
   "repository": {
     "type": "git",
