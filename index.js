@@ -76,12 +76,17 @@
 			console.log("TRADER => ", symbol, quantity, price, leverage);
 			//return;
 			const resp = await TradeInterface.MarketPosition(symbol, quantity, price);
+			return resp;
 		});
 	});
 	const StrategicOrder = async(symbol, leverage, isLong, target)=>{
 		console.log("SET TRADER [" + symbol + "] => " + target);
 		const fpos = await GenerateFinancialPosition(symbol, target, leverage, isLong);
 	};
+	
+	/*setTimeout(()=>{
+		StrategicOrder("BTCUSDT", 2, false, 10000);
+	},60*1000);*/
 	
 	// web ui and TradingView apis
 	CreateHttpService("TIME", (Request, Resources, Next)=>{

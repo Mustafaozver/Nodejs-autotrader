@@ -353,20 +353,23 @@ module.exports = ((ATA)=>{
 		CheckEntryLocation(){
 			const priceRange = this.High - this.Low;
 			const locationonEntry = (this.EntryPrice - this.Low) / priceRange;
+			if(this.TotalBalance == 0){ // ilk giriş
+				return this.isLong ? "XL" : "XS";
+			}
 			if(this.isLong){
 				     if(Fibos[0]      > locationonEntry) return "+L"; // pozisyon iyi
-				else if(Fibos[1]      > locationonEntry) return "L"; // pozisyon iyi
+				else if(Fibos[1]      > locationonEntry) return "L";  // pozisyon iyi
 				else if(Fibos[2]      > locationonEntry) return "HL"; // pozisyon büyütülebilir
 				else if(Fibos[3]/1.05 > locationonEntry) return "HL"; // pozisyon büyütülebilir
 				else if(Fibos[4]      > locationonEntry) return "XL"; // pozisyon büyütülebilir
-				else return "XL";								  // pozisyon büyütülebilir
+				else return "XL";								      // pozisyon büyütülebilir
 			}else if(!this.isLong){
 				     if(Fibos[4]      < locationonEntry) return "+S"; // pozisyon iyi
-				else if(Fibos[3]      < locationonEntry) return "S"; // pozisyon iyi
+				else if(Fibos[3]      < locationonEntry) return "S";  // pozisyon iyi
 				else if(Fibos[2]      < locationonEntry) return "HS"; // pozisyon büyütülebilir
 				else if(Fibos[1]*1.05 < locationonEntry) return "HS"; // pozisyon büyütülebilir
 				else if(Fibos[0]      < locationonEntry) return "XS"; // pozisyon büyütülebilir
-				else return "XS";								  // pozisyon büyütülebilir
+				else return "XS";								      // pozisyon büyütülebilir
 			}
 		};
 	};
@@ -389,7 +392,6 @@ module.exports = ((ATA)=>{
 		const morselBalance = CalculateMorselBalance(pair0.valueOf(), leverage);
 		if(morselBalance == 0)return false;
 		if(!stack_fpos[pair0.ID]){
-			console.log("392 => ", pair0, targetPrice, isLong ? morselBalance : -morselBalance, isLong);
 			await TradeInterface.SetLeverage(pair0.symbol, leverage);
 			await TradeInterface.SetMarginType(pair0.symbol, "ISOLATED");
 			fpos = new FinancialPosition(pair0, targetPrice, isLong ? morselBalance : -morselBalance, isLong);
@@ -432,13 +434,12 @@ module.exports = ((ATA)=>{
 			const updatetime = new Date(item.updateTime);
 			
 		});
-		Object.keys(existedFPos).map((item)=>{
+		/*Object.keys(existedFPos).map((item)=>{
 			stack_fpos[item].Close();
-			//existedFPos[item]
-		});
-		/*FAccount.assets.map((item)=>{
-			
 		});*/
+		FAccount.assets.map((item)=>{
+			
+		});
 	};
 	const ExecutePosition = async(fpos)=>{
 		const entryLocation = fpos.CheckEntryLocation();
