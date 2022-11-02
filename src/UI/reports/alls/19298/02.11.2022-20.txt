@@ -1,0 +1,29 @@
+
+Wed Nov 02 2022 20:06:12 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667408772027&signature=f4598203b432b9aa6ee7b39eaebff2f13a1f7f63eac6a7bb40b0e8643bc41f2d"
+]
+Wed Nov 02 2022 20:06:12 GMT+0300 (GMT+03:00) LOG => [
+	"Service web on http://localhost:8010/"
+]
+Wed Nov 02 2022 20:06:13 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://api.binance.com/api/v3/exchangeInfo"
+]
+Wed Nov 02 2022 20:06:14 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://api.binance.com/api/v3/exchangeInfo"
+]
+Wed Nov 02 2022 20:06:17 GMT+0300 (GMT+03:00) LOG => [
+	"OKKK"
+]
+Wed Nov 02 2022 20:06:17 GMT+0300 (GMT+03:00) LOG => [
+	"Preparing..."
+]
+Wed Nov 02 2022 20:06:17 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/exchangeInfo"
+]
+Wed Nov 02 2022 20:06:17 GMT+0300 (GMT+03:00) LOG => [
+	"Setup is DONE."
+]

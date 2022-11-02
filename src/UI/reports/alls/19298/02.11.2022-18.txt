@@ -1,0 +1,1215 @@
+
+Wed Nov 02 2022 18:01:01 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667401261801&symbol=MASKUSDT&side=BUY&quantity=80&type=MARKET&signature=0ffd3228c029e1e4aa98ed3c51021626a383608a104117123b467cf35b143ab1"
+]
+Wed Nov 02 2022 18:01:04 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667401264665&signature=d57ecea29fde8ee5cfb8723c1a65be4de06bb532c6b3b7f5b7d500836abf9f87"
+]
+Wed Nov 02 2022 18:01:04 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:01:04 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	80,
+	false,
+	false
+]
+Wed Nov 02 2022 18:01:07 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667401267866&symbol=MASKUSDT&side=BUY&quantity=80&type=MARKET&signature=12228dac4f6c4f2d26798a8e07575d247eb65df345212721297cac714ddf46c2"
+]
+Wed Nov 02 2022 18:01:07 GMT+0300 (GMT+03:00) LOG => [
+	"SIGNAL => ",
+	{
+		"P": "MASKUSDT",
+		"Point": 0.01928156365557321,
+		"Start": 1667398820000,
+		"Target": 3.859,
+		"Side": "LONG",
+		"Last": 3.786,
+		"leverage": 3,
+		"Available": false
+	}
+]
+Wed Nov 02 2022 18:01:07 GMT+0300 (GMT+03:00) LOG => [
+	"SIGNAL => ",
+	{
+		"P": "MASKUSDT",
+		"Point": 0.01928156365557321,
+		"Start": 1667398820000,
+		"Target": 3.859,
+		"Side": "LONG",
+		"Last": 3.786,
+		"leverage": 3,
+		"Available": false
+	}
+]
+Wed Nov 02 2022 18:01:07 GMT+0300 (GMT+03:00) LOG => [
+	"SIGNAL => ",
+	{
+		"P": "MASKUSDT",
+		"Point": 0.01928156365557321,
+		"Start": 1667398820000,
+		"Target": 3.859,
+		"Side": "LONG",
+		"Last": 3.786,
+		"leverage": 3,
+		"Available": false
+	}
+]
+Wed Nov 02 2022 18:01:07 GMT+0300 (GMT+03:00) LOG => [
+	"SIGNAL => ",
+	{
+		"P": "MASKUSDT",
+		"Point": 0.01928156365557321,
+		"Start": 1667398820000,
+		"Target": 3.859,
+		"Side": "LONG",
+		"Last": 3.786,
+		"leverage": 3,
+		"Available": false
+	}
+]
+Wed Nov 02 2022 18:01:07 GMT+0300 (GMT+03:00) LOG => [
+	"SIGNAL => ",
+	{
+		"P": "MASKUSDT",
+		"Point": 0.01928156365557321,
+		"Start": 1667398820000,
+		"Target": 3.859,
+		"Side": "LONG",
+		"Last": 3.786,
+		"leverage": 3,
+		"Available": false
+	}
+]
+Wed Nov 02 2022 18:01:07 GMT+0300 (GMT+03:00) LOG => [
+	"SIGNAL => ",
+	{
+		"P": "MASKUSDT",
+		"Point": 0.01928156365557321,
+		"Start": 1667398820000,
+		"Target": 3.859,
+		"Side": "LONG",
+		"Last": 3.786,
+		"leverage": 3,
+		"Available": false
+	}
+]
+Wed Nov 02 2022 18:01:07 GMT+0300 (GMT+03:00) LOG => [
+	"SIGNAL => ",
+	{
+		"P": "MASKUSDT",
+		"Point": 0.01928156365557321,
+		"Start": 1667398820000,
+		"Target": 3.859,
+		"Side": "LONG",
+		"Last": 3.786,
+		"leverage": 3,
+		"Available": false
+	}
+]
+Wed Nov 02 2022 18:01:07 GMT+0300 (GMT+03:00) LOG => [
+	"SIGNAL => ",
+	{
+		"P": "MASKUSDT",
+		"Point": 0.01928156365557321,
+		"Start": 1667398820000,
+		"Target": 3.859,
+		"Side": "LONG",
+		"Last": 3.786,
+		"leverage": 3,
+		"Available": false
+	}
+]
+Wed Nov 02 2022 18:01:07 GMT+0300 (GMT+03:00) LOG => [
+	"SIGNAL => ",
+	{
+		"P": "MASKUSDT",
+		"Point": 0.01928156365557321,
+		"Start": 1667398820000,
+		"Target": 3.859,
+		"Side": "LONG",
+		"Last": 3.786,
+		"leverage": 3,
+		"Available": false
+	}
+]
+Wed Nov 02 2022 18:01:07 GMT+0300 (GMT+03:00) LOG => [
+	"SIGNAL => ",
+	{
+		"P": "MASKUSDT",
+		"Point": 0.01928156365557321,
+		"Start": 1667398820000,
+		"Target": 3.859,
+		"Side": "LONG",
+		"Last": 3.786,
+		"leverage": 3,
+		"Available": false
+	}
+]
+Wed Nov 02 2022 18:01:07 GMT+0300 (GMT+03:00) LOG => [
+	"SIGNAL => ",
+	{
+		"P": "MASKUSDT",
+		"Point": 0.01928156365557321,
+		"Start": 1667398820000,
+		"Target": 3.859,
+		"Side": "LONG",
+		"Last": 3.786,
+		"leverage": 3,
+		"Available": false
+	}
+]
+Wed Nov 02 2022 18:01:07 GMT+0300 (GMT+03:00) LOG => [
+	"SIGNAL => ",
+	{
+		"P": "MASKUSDT",
+		"Point": 0.01928156365557321,
+		"Start": 1667398820000,
+		"Target": 3.859,
+		"Side": "LONG",
+		"Last": 3.786,
+		"leverage": 3,
+		"Available": false
+	}
+]
+Wed Nov 02 2022 18:01:07 GMT+0300 (GMT+03:00) LOG => [
+	"SIGNAL => ",
+	{
+		"P": "MASKUSDT",
+		"Point": 0.01928156365557321,
+		"Start": 1667398820000,
+		"Target": 3.859,
+		"Side": "LONG",
+		"Last": 3.786,
+		"leverage": 3,
+		"Available": false
+	}
+]
+Wed Nov 02 2022 18:01:07 GMT+0300 (GMT+03:00) LOG => [
+	"SIGNAL => ",
+	{
+		"P": "MASKUSDT",
+		"Point": 0.01928156365557321,
+		"Start": 1667398820000,
+		"Target": 3.859,
+		"Side": "LONG",
+		"Last": 3.786,
+		"leverage": 3,
+		"Available": false
+	}
+]
+Wed Nov 02 2022 18:01:07 GMT+0300 (GMT+03:00) LOG => [
+	"SIGNAL => ",
+	{
+		"P": "MASKUSDT",
+		"Point": 0.01928156365557321,
+		"Start": 1667398820000,
+		"Target": 3.859,
+		"Side": "LONG",
+		"Last": 3.786,
+		"leverage": 3,
+		"Available": false
+	}
+]
+Wed Nov 02 2022 18:01:07 GMT+0300 (GMT+03:00) LOG => [
+	"SIGNAL => ",
+	{
+		"P": "MASKUSDT",
+		"Point": 0.01928156365557321,
+		"Start": 1667398820000,
+		"Target": 3.859,
+		"Side": "LONG",
+		"Last": 3.786,
+		"leverage": 3,
+		"Available": false
+	}
+]
+Wed Nov 02 2022 18:01:07 GMT+0300 (GMT+03:00) LOG => [
+	"SIGNAL => ",
+	{
+		"P": "MASKUSDT",
+		"Point": 0.01928156365557321,
+		"Start": 1667398820000,
+		"Target": 3.859,
+		"Side": "LONG",
+		"Last": 3.786,
+		"leverage": 3,
+		"Available": false
+	}
+]
+Wed Nov 02 2022 18:01:08 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:01:08 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	80,
+	false,
+	false
+]
+Wed Nov 02 2022 18:01:15 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667401275484&symbol=MASKUSDT&side=BUY&quantity=80&type=MARKET&signature=d959e58dd60abc4df12cbf65122123193a5c273aa8f50430bb3a0a8a05beb972"
+]
+Wed Nov 02 2022 18:08:54 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667401734257&signature=7d61be5d771280bf548c8086738205fddb93c4a53a138c74783efde7c555aa79"
+]
+Wed Nov 02 2022 18:08:54 GMT+0300 (GMT+03:00) LOG => [
+	"Service web on http://localhost:8010/"
+]
+Wed Nov 02 2022 18:08:55 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://api.binance.com/api/v3/exchangeInfo"
+]
+Wed Nov 02 2022 18:08:56 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://api.binance.com/api/v3/exchangeInfo"
+]
+Wed Nov 02 2022 18:08:58 GMT+0300 (GMT+03:00) LOG => [
+	"OKKK"
+]
+Wed Nov 02 2022 18:08:58 GMT+0300 (GMT+03:00) LOG => [
+	"Preparing..."
+]
+Wed Nov 02 2022 18:08:58 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/exchangeInfo"
+]
+Wed Nov 02 2022 18:08:58 GMT+0300 (GMT+03:00) LOG => [
+	"Setup is DONE."
+]
+Wed Nov 02 2022 18:10:00 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667401800190&signature=ecc62ea4433bef78a44b3d111d3bcb9f710a10ab18252d01a5db65552a36025b"
+]
+Wed Nov 02 2022 18:15:00 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402100110&signature=1ca268dd2ff6e4e01e9d1d625dc0c09a70cd158a8d2bc81755733b97613eb1ea"
+]
+Wed Nov 02 2022 18:15:30 GMT+0300 (GMT+03:00) LOG => [
+	"SIGNAL => ",
+	{
+		"P": "MASKUSDT",
+		"Point": -0.0018106570098292973,
+		"Start": 1667402100000,
+		"Target": 3.859,
+		"Side": "SHORT",
+		"Last": 3.866,
+		"leverage": 2,
+		"Available": true
+	}
+]
+Wed Nov 02 2022 18:15:30 GMT+0300 (GMT+03:00) LOG => [
+	"[MASKUSDT] => SHORT 3.859 (Wed Nov 02 2022 18:15:00 GMT+0300 (GMT+03:00)) 2x Last=3.866"
+]
+Wed Nov 02 2022 18:15:30 GMT+0300 (GMT+03:00) LOG => [
+	"SET TRADER [MASKUSDT] => 3.859"
+]
+Wed Nov 02 2022 18:15:30 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/leverage?recvWindow=60000&timestamp=1667402130146&symbol=MASKUSDT&leverage=2&signature=c9a3585148d5cbf1fce80b322fa11ed217816c3ff75d9e0fba9ffd60a1fbb96d"
+]
+Wed Nov 02 2022 18:15:30 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/marginType?recvWindow=60000&timestamp=1667402130617&symbol=MASKUSDT&marginType=ISOLATED&signature=e3d54821ad4377fe1438a876790cfd6b56d38ccc85c5ca87a847cbb790a058e8"
+]
+Wed Nov 02 2022 18:15:35 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:15:35 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:15:35 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402135109&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=964dc4bb6ea9dcba414c67e7df93c4200b9b930d409340b915c268dbc6ad48e7"
+]
+Wed Nov 02 2022 18:15:35 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402135413&signature=1b9082897e3e1330108d0f6650cfe458b5c346fbe3cc2130a939c7cec2aa9731"
+]
+Wed Nov 02 2022 18:15:36 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:15:36 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:15:36 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402136139&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=5bc9dfea21dc9d7cf6e16e23eec51ded320112a18d74051fbb7c49d7a5878a86"
+]
+Wed Nov 02 2022 18:15:36 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402136444&signature=2f758e6dcf02f3cc428cbbf213fa19e3a28637af8b7a54a2769163e8642b344d"
+]
+Wed Nov 02 2022 18:15:37 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:15:37 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:15:37 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402137157&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=46399c2a09b8130b299c5f62fb03b2739870f1458ee08af7e114243a1b897189"
+]
+Wed Nov 02 2022 18:15:37 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402137459&signature=97d46bbdf4f00b5a3b1bbe7af5dbb9a973ed40c3b077efbdf87fb736b10f3892"
+]
+Wed Nov 02 2022 18:15:38 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:15:38 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:15:38 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402138193&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=6962028805bda50c29f698191e154ac5cbd0b77652815654b988352c8dba387e"
+]
+Wed Nov 02 2022 18:15:38 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402138495&signature=d14d2065d0f1c9b65d897d4cd51665e17e04871dfba5e5a49029b85de771fd67"
+]
+Wed Nov 02 2022 18:15:39 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:15:39 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:15:39 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402139024&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=8c8bc7cb7e02b9416ff2ea40a2fe8aae5fc5d3de50bc02cecee26438ebb030f5"
+]
+Wed Nov 02 2022 18:15:39 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402139440&signature=22e389b5d8fa27925742c317e126adc477cf0a17a89349c703827a6ed5f85fc6"
+]
+Wed Nov 02 2022 18:15:40 GMT+0300 (GMT+03:00) LOG => [
+	"SIGNAL => ",
+	{
+		"P": "MASKUSDT",
+		"Point": -0.005668642102550803,
+		"Start": 1667402100000,
+		"Target": 3.859,
+		"Side": "SHORT",
+		"Last": 3.881,
+		"leverage": 2,
+		"Available": true
+	}
+]
+Wed Nov 02 2022 18:15:40 GMT+0300 (GMT+03:00) LOG => [
+	"[MASKUSDT] => SHORT 3.859 (Wed Nov 02 2022 18:15:00 GMT+0300 (GMT+03:00)) 2x Last=3.881"
+]
+Wed Nov 02 2022 18:15:40 GMT+0300 (GMT+03:00) LOG => [
+	"SET TRADER [MASKUSDT] => 3.859"
+]
+Wed Nov 02 2022 18:15:40 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:15:40 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:15:40 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402140064&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=ffa16a927ec4c0aa9d9ef9f2a37282bf486ab7414dc54026d9cd6655c22e4051"
+]
+Wed Nov 02 2022 18:15:40 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402140367&signature=3bf3a97113df7be28604053eff39cce46024aa29a5f92e02da73d28199140916"
+]
+Wed Nov 02 2022 18:15:41 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:15:41 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:15:41 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402141085&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=5f979e4b0bd1ba7371498afd3400bcddfb58f2d24a04d82f24726ff7838a0904"
+]
+Wed Nov 02 2022 18:15:41 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402141400&signature=5c6ff18ac712629e22d510b9e54e1ff3029c96536845f0a5e577a50bca4b657e"
+]
+Wed Nov 02 2022 18:15:43 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:15:43 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:15:43 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402143165&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=f031441bf6872e62be2892564dbd9ee2757a26fb5cceb4c2d4fa6c10976890e1"
+]
+Wed Nov 02 2022 18:15:43 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402143472&signature=e1b0dc2be18a716b576fc04c9eae8008899716d7a7162e18654ab9317aa09149"
+]
+Wed Nov 02 2022 18:15:44 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:15:44 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:15:44 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402144174&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=374140fa338696662b6611cc296e4ba490adeeb17714e98904ee123ef3d7a697"
+]
+Wed Nov 02 2022 18:15:44 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402144478&signature=71792d50712ff3c810ba8e078cc4af162c061ecb7d8921e14c44dbcd195a5b3f"
+]
+Wed Nov 02 2022 18:15:45 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:15:45 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:15:45 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402145198&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=9ff1bed1bb515cb2ce3f65d17dd879a41c9bc2a192795a8f0321609276542692"
+]
+Wed Nov 02 2022 18:15:46 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:15:46 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:15:46 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402146019&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=d0f8fe3bb933684cd7eb71eee8d08775d8d0dd31997e3fbdc936f5ffd75a166d"
+]
+Wed Nov 02 2022 18:15:46 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402146209&signature=43f5de7ac4b1bf9950564163036d5069f157f1488cd3064f025e122b4537c0aa"
+]
+Wed Nov 02 2022 18:15:46 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402146328&signature=09d26d892af8754caa63001ac557186596883e7500c053b6a7fd414d12c8e638"
+]
+Wed Nov 02 2022 18:15:47 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:15:47 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:15:47 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402147066&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=82fe77dadc3af29cb9d4ec437dc084511b0b1a71ca125ec0d0b40f5a6a8082a4"
+]
+Wed Nov 02 2022 18:15:47 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402147659&signature=166a3fb6321dff2730216afbe41af0fda5b13356ea99ef8d0da7c20552930315"
+]
+Wed Nov 02 2022 18:15:48 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:15:48 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:15:48 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402148093&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=c598a0caaf84ba8751d5841fb4212a39f595bc0c44d10626217d2f859cf37fae"
+]
+Wed Nov 02 2022 18:15:48 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402148410&signature=602a5d502884d6c885d2c1f166bb5eb223026cd1473a91d26d6bb48be53c3949"
+]
+Wed Nov 02 2022 18:15:49 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:15:49 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:15:49 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402149122&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=8dfa7a601f5520f215deb21a35713220a57f7fe107cf3ef8237609120c56a8a6"
+]
+Wed Nov 02 2022 18:15:50 GMT+0300 (GMT+03:00) LOG => [
+	"SIGNAL => ",
+	{
+		"P": "MASKUSDT",
+		"Point": -0.00643666323377956,
+		"Start": 1667402100000,
+		"Target": 3.859,
+		"Side": "SHORT",
+		"Last": 3.884,
+		"leverage": 2,
+		"Available": false
+	}
+]
+Wed Nov 02 2022 18:15:50 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402150147&signature=ae8f7ff818b687b00dc49a1e4de339175a43686aa4c40fdca33f8714a9e6447b"
+]
+Wed Nov 02 2022 18:15:50 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:15:50 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:15:50 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402150161&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=e6d865e46dadf1dc818eda8467ff0d438a51c0cab1dbef51d8ee701a4eb4655d"
+]
+Wed Nov 02 2022 18:15:51 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:15:51 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:15:51 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402151177&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=05a362204236769b6402a22ea7a05afc6a3dd22a658483375e1f80189125eaf3"
+]
+Wed Nov 02 2022 18:15:51 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402151198&signature=2b0658b90eaea9a5598b11e1ebaa14a7727102c0455c56d54fc1d8ac306dc4e4"
+]
+Wed Nov 02 2022 18:15:51 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402151478&signature=911b504ae75dc9b19e4a670116034bb1119a73c2e030cb9eee9fcf84f6ed8cbd"
+]
+Wed Nov 02 2022 18:15:52 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:15:52 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:15:52 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402152192&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=074ed0dee8c5491c7beeaf038c8371a59bc84ef6a49f6953a872aa38bf282e3c"
+]
+Wed Nov 02 2022 18:15:53 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:15:53 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:15:53 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402153038&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=20fd3378a5d8fad757047052a1ca16b487b899748c98b7149882139c046129d3"
+]
+Wed Nov 02 2022 18:15:53 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402153196&signature=8e9a775471a409c60736e9b420c28de771b6f6a2086e88a40944f211064e5c30"
+]
+Wed Nov 02 2022 18:15:53 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402153354&signature=c2e23ceb4c8c400383d864dfd9599a1ec15cf78b2262ac0f5752bf4e07a86183"
+]
+Wed Nov 02 2022 18:15:54 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:15:54 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:15:54 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402154087&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=ec985456447d7d634aa658219b92f15bfcdb34605c32f488f2e5c5a351edd6c4"
+]
+Wed Nov 02 2022 18:15:54 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402154398&signature=7513e4bf37adcdb6c5b4033481fae4f9c08b9edefb782104ca488eb3233e2493"
+]
+Wed Nov 02 2022 18:15:55 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:15:55 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:15:55 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402155105&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=b829f09d32fe517ea06d599c9bab26af9cc45a7798340b97d0a288b3cd8fa8e7"
+]
+Wed Nov 02 2022 18:15:56 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:15:56 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:15:56 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402156135&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=f45021c30601bcdc2a5d2ba2b7cdedd8358f38d6a45cde6ae9048f874a346ce7"
+]
+Wed Nov 02 2022 18:15:56 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402156257&signature=fb01497a9c05480806b74205e2a9461974a3166b58fccdf1d6fc7c53f0926f2d"
+]
+Wed Nov 02 2022 18:15:56 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402156578&signature=02115a992f74936484cfe87248b700ac97a1dabaaa02d44535cbbcd6b00ef323"
+]
+Wed Nov 02 2022 18:15:57 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:15:57 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:15:57 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402157167&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=4a4776439f5d9ad47661116ab6206b2b55165693c6a5c5053cae66de1168c103"
+]
+Wed Nov 02 2022 18:15:57 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402157617&signature=5bb3bd40e419509b4297992b6c6ee63407f63708fa1475dbcfb11bdb53e5e264"
+]
+Wed Nov 02 2022 18:15:58 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:15:58 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:15:58 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402158193&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=28be7d39a19ef1ded5c58b23de8cd908df6d01fd2a02760750f18cdfe74c6be0"
+]
+Wed Nov 02 2022 18:15:58 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402158506&signature=412cf1e8e139aa6b14ab2d4c583313a1c8ee06bbcbd68a896aa206dc5338412f"
+]
+Wed Nov 02 2022 18:15:59 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:15:59 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:15:59 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402159045&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=6391506b2c57a33be98164d781910f5fcae6a9086726b6556ee389a2e1f73ee3"
+]
+Wed Nov 02 2022 18:16:00 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:16:00 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:16:00 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402160075&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=d8e5c7e7da6a7bdcc248fa76c7dece76d706e9310a08af01ad794b0032f8efd6"
+]
+Wed Nov 02 2022 18:16:00 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402160091&signature=aa2d13085e2b09dc096903d7822e5a522997baa8b2f4c691245dffee74d6f90d"
+]
+Wed Nov 02 2022 18:16:00 GMT+0300 (GMT+03:00) LOG => [
+	"SIGNAL => ",
+	{
+		"P": "MASKUSDT",
+		"Point": -0.0061807880504763935,
+		"Start": 1667402100000,
+		"Target": 3.859,
+		"Side": "SHORT",
+		"Last": 3.883,
+		"leverage": 10,
+		"Available": false
+	}
+]
+Wed Nov 02 2022 18:16:00 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402160414&signature=9e6c820c0fbc76342299a8f34ef3e9c83e136e63c7dc656112dccfe62c3511e9"
+]
+Wed Nov 02 2022 18:16:01 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:16:01 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:16:01 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402161101&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=a0d05a6ea5126bd7f2a589494a0b8f6960042b72dbedc04e4887214cfbb3e239"
+]
+Wed Nov 02 2022 18:16:01 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402161406&signature=8c59f9786e1a67bc4b3378910d5ab606447ad9cd29d5ee540fa2e680d79beb78"
+]
+Wed Nov 02 2022 18:16:03 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:16:03 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:16:03 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402163185&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=9f81b6a0b2f8a0112dd4c5fa2bfd9678edf8991a40fd0aab9048cfa72d65c27b"
+]
+Wed Nov 02 2022 18:16:03 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402163491&signature=7a1dca68db8daa28c7bf5f9fda5956230e1e6baf8bde84b630b66fcb4ce9caed"
+]
+Wed Nov 02 2022 18:16:04 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:16:04 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:16:04 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402164013&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=32d177c8bd064468238802bc79a6440567f81decae89364484b2443b479e0a61"
+]
+Wed Nov 02 2022 18:16:04 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402164358&signature=b341143230a5e120f0ad57862b41bcd0f2ca7465da8f295ac4bf9636b64b8941"
+]
+Wed Nov 02 2022 18:16:05 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:16:05 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:16:05 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402165040&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=6ec0a364b570f19bb8289c37c351df62d2979e478e95cd804d48b759366102fe"
+]
+Wed Nov 02 2022 18:16:05 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402165361&signature=6a42e1ee731a254851df117fc26d7fc3a7d9320b47dd32f457d58ae91ade9820"
+]
+Wed Nov 02 2022 18:16:06 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:16:06 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:16:06 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402166074&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=63ae53ec49aca0bf1df33ed536ad05420b97042d2d35942b9ee8b788b7284a3f"
+]
+Wed Nov 02 2022 18:16:06 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402166395&signature=5a67259f2b02753347d7a7bd5c9f7cc156c49a5431485e72b5deb2026862c3ec"
+]
+Wed Nov 02 2022 18:16:07 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:16:07 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:16:07 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402167116&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=93bec79c0767b41709fbc35d330290fd0d7043e6890cbb951ba7b0df3ef4c11b"
+]
+Wed Nov 02 2022 18:16:07 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402167431&signature=61595a4764b89f3006ae7edf162633cb3d169bffa619d601c548cf59861d57e9"
+]
+Wed Nov 02 2022 18:16:08 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:16:08 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:16:08 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402168150&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=5fc3ca6f601f26e41f353640402c4eb25a540e66d0a91bc385bfee2fabda37e0"
+]
+Wed Nov 02 2022 18:16:08 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402168472&signature=1090fe60b91d0d8c6a8862dcfb01a61391a0e4671f88fa26e57b9f10330905ed"
+]
+Wed Nov 02 2022 18:16:09 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:16:09 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:16:09 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402169182&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=2736bb0daa9edbe7c272fcc560f7d345ab86abe0c8923703756ea2a813a5dcfe"
+]
+Wed Nov 02 2022 18:16:09 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402169487&signature=0c92b8c316156681c80448e38cbdbf7e8caae6978328ef94b53278069b755396"
+]
+Wed Nov 02 2022 18:16:10 GMT+0300 (GMT+03:00) LOG => [
+	"SIGNAL => ",
+	{
+		"P": "MASKUSDT",
+		"Point": -0.007714065312419582,
+		"Start": 1667402100000,
+		"Target": 3.859,
+		"Side": "SHORT",
+		"Last": 3.889,
+		"leverage": 7,
+		"Available": false
+	}
+]
+Wed Nov 02 2022 18:16:10 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:16:10 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:16:10 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402170209&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=81439a665ab2adc741a6e9ed3c0a257d062c5cafc4b5fd740accfe185cde6913"
+]
+Wed Nov 02 2022 18:16:10 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402170515&signature=9773885637670055800ab8e225d9acefcfa6786d614655bc76e05cb07acc8623"
+]
+Wed Nov 02 2022 18:16:11 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:16:11 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:16:11 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402171020&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=fb36ef6ca79ac3d87967392cda3215dfda5892edcd8074d8d2d1a36105b07038"
+]
+Wed Nov 02 2022 18:16:11 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402171354&signature=daaf9b11c04f80f8626e7ac19e62cdd2952af374505d36a41d9af52b1ebeca05"
+]
+Wed Nov 02 2022 18:16:12 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:16:12 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:16:12 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402172058&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=245a3dc1a58183ecba260b969cc3d0d25510e82057a2f60cc2b758f6a4aa5186"
+]
+Wed Nov 02 2022 18:16:12 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402172407&signature=db320dfb0187068a2ce377e9e7e1e4c15a8a394ce996b4891e6bbcd29be9ca17"
+]
+Wed Nov 02 2022 18:16:13 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:16:13 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:16:13 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402173094&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=6c6ea109eff6b07cf713d803be70352857b1ec386eecbcb3ee9685d38b360a40"
+]
+Wed Nov 02 2022 18:16:13 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402173398&signature=3b2b24b255fc9ff5f67bf0634a5aa72ae68dadcf8dff1cb4d3347edebc3fc88e"
+]
+Wed Nov 02 2022 18:16:14 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:16:14 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:16:14 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402174140&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=8ae709675a7274d2a03df3ca643900ddbe682678c0598473c0319fe02fdfd2e9"
+]
+Wed Nov 02 2022 18:16:14 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402174451&signature=6ca36624fb444ca45270133deebbcc496771b4784e3bbb5fe4230e15a3e9f14e"
+]
+Wed Nov 02 2022 18:16:15 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:16:15 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:16:15 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402175167&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=3b311fb4f03ace2840a5050b3b25638396bb579a7c4caf0282e5b66de2e41cfd"
+]
+Wed Nov 02 2022 18:16:15 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402175478&signature=456cb81d11710854cd8db33f68b8496022d47a32e376978920576fe4a30d18f4"
+]
+Wed Nov 02 2022 18:16:16 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:16:16 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:16:16 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402176011&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=f11a2ee17312e6bacf4635d8c9bdfffc02ca7096776cbe82c53f7cc6836922d9"
+]
+Wed Nov 02 2022 18:16:16 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402176334&signature=ec1917307f573a5b5118bdfb48bd4ffc58062e71f18310fc4b0f2d2eb8b677ae"
+]
+Wed Nov 02 2022 18:16:17 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:16:17 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:16:17 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402177066&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=e3b429faae41e14ac3c1e230ce5d7e793ce57a274a570749164db63e23db1071"
+]
+Wed Nov 02 2022 18:16:17 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402177385&signature=10ec528cc6dd47aae8ed457011d3fdcc3dc0ea831928533ccd41997406a6e641"
+]
+Wed Nov 02 2022 18:16:18 GMT+0300 (GMT+03:00) LOG => [
+	"449"
+]
+Wed Nov 02 2022 18:16:18 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	-30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:16:18 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402178105&symbol=MASKUSDT&side=SELL&quantity=30&type=MARKET&signature=d70b2f8fb9edbc7217917250180ddbfc97d5df5f4bd02a52c98f42322470af6c"
+]
+Wed Nov 02 2022 18:16:20 GMT+0300 (GMT+03:00) LOG => [
+	"SIGNAL => ",
+	{
+		"P": "MASKUSDT",
+		"Point": -0.002320185614849146,
+		"Start": 1667402120000,
+		"Target": 3.87,
+		"Side": "SHORT",
+		"Last": 3.879,
+		"leverage": 6,
+		"Available": false
+	}
+]
+Wed Nov 02 2022 18:16:20 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402180837&signature=595314c9c620fec81fa77adca2ce778355910b2dcd2c3b50463f966d80a27396"
+]
+Wed Nov 02 2022 18:16:22 GMT+0300 (GMT+03:00) LOG => [
+	"457"
+]
+Wed Nov 02 2022 18:16:22 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:16:22 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402182193&symbol=MASKUSDT&side=BUY&quantity=30&type=MARKET&signature=f76dc3a3314d7e52b4e0ba5cd643828bc919f7b82496af13568e53372492c521"
+]
+Wed Nov 02 2022 18:16:22 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402182490&signature=b76b3882b0eede4add4f51d591b0e1a9711801dc43b3339b372660eb0cc88750"
+]
+Wed Nov 02 2022 18:16:23 GMT+0300 (GMT+03:00) LOG => [
+	"457"
+]
+Wed Nov 02 2022 18:16:23 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:16:23 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402183033&symbol=MASKUSDT&side=BUY&quantity=30&type=MARKET&signature=e42ab9fff5df59941b87056226d1391ad96e22dc0f31cef67e42d231ba11be71"
+]
+Wed Nov 02 2022 18:16:23 GMT+0300 (GMT+03:00) LOG => [
+	"307"
+]
+Wed Nov 02 2022 18:16:23 GMT+0300 (GMT+03:00) LOG => [
+	"TRADER => ",
+	"MASKUSDT",
+	30,
+	false,
+	false
+]
+Wed Nov 02 2022 18:16:23 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v1/order?recvWindow=60000&timestamp=1667402183041&symbol=MASKUSDT&side=BUY&quantity=30&type=MARKET&signature=c88af44553406ce4e37ab965169bbab4c7d82b5c1bff4d23a970151c75928705"
+]
+Wed Nov 02 2022 18:16:23 GMT+0300 (GMT+03:00) LOG => [
+	"REQUEST => ",
+	"https://fapi.binance.com/fapi/v2/account?recvWindow=60000&timestamp=1667402183398&signature=603709d13e52a0f46db85a73c691bad6273d2b2e627c72661e4d07ad9ae08fea"
+]
+Wed Nov 02 2022 18:16:23 GMT+0300 (GMT+03:00) LOG => [
+	"Unhandled rejection:",
+	"TypeError: Cannot set properties of undefined (setting 'EntryPrice')"
+]
+Wed Nov 02 2022 18:16:30 GMT+0300 (GMT+03:00) LOG => [
+	"SIGNAL => ",
+	{
+		"P": "MASKUSDT",
+		"Point": -0.0033574380165288797,
+		"Start": 1667402100000,
+		"Target": 3.859,
+		"Side": "SHORT",
+		"Last": 3.872,
+		"leverage": 5,
+		"Available": false
+	}
+]
