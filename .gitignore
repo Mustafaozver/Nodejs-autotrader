@@ -106,4 +106,5 @@ dist
 # Securities
 src/binance.config.json
 src/pancakeswap.config.json
+tools
 

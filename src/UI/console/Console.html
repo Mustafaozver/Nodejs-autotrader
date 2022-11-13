@@ -96,6 +96,7 @@
 					_line.style.fontFamily = "'Courier New', Courier, monospace";
 					_line.style.fontSize = "14px";
 					_line.style.paddingLeft = "1em";
+					_line.title = "" + (new Date());
 					for(var key in opts){
 						_line.style[key] = opts[key];
 					}
@@ -149,13 +150,11 @@
 				setTimeout(()=>{
 					const tempf = (who)=>{
 						const fName = "log";
-						const tempfunc = console[fName];
 						const tempfunc2 = function(fName, args){
 							console[fName].apply(console,[...args]);
 						};
-						console[fName] = function(){
+						ATA.Console[fName] = function(){
 							ATA.SendMessage(who, "DATA", {EVAL:"("+tempfunc2+")(" + JSON.stringify(fName) + "," + JSON.stringify([...arguments]) + ")"});
-							tempfunc.apply(console,[...arguments]);
 						};
 					};
 					ATA.SendMessage({EVAL:"("+tempf+")(" + JSON.stringify(ATA.MyName) + ")"});

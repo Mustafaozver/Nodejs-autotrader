@@ -176,6 +176,16 @@
 				success:(result)=>{
 					const lastIndex = result.t.length - 1;
 					THAT.Last = result.c[lastIndex];
+					try{
+						THAT._subscribeBars_onRealtimeCallback({
+							time: parseInt(result.t[lastIndex - 1]) * 1000,
+							close: parseFloat(result.c[lastIndex - 1]),
+							open: parseFloat(result.o[lastIndex - 1]),
+							high: parseFloat(result.h[lastIndex - 1]),
+							low: parseFloat(result.l[lastIndex - 1]),
+							volume: parseFloat(result.v[lastIndex - 1]),
+						});
+					}catch(e){}
 					THAT._subscribeBars_onRealtimeCallback({
 						time: parseInt(result.t[lastIndex]) * 1000,
 						close: parseFloat(result.c[lastIndex]),
@@ -183,15 +193,6 @@
 						high: parseFloat(result.h[lastIndex]),
 						low: parseFloat(result.l[lastIndex]),
 						volume: parseFloat(result.v[lastIndex]),
-					});
-					return;
-					THAT._subscribeBars_onRealtimeCallback({
-						time: parseInt(result.t[lastIndex - 1]) * 1000,
-						close: parseFloat(result.c[lastIndex - 1]),
-						open: parseFloat(result.o[lastIndex - 1]),
-						high: parseFloat(result.h[lastIndex - 1]),
-						low: parseFloat(result.l[lastIndex - 1]),
-						volume: parseFloat(result.v[lastIndex - 1]),
 					});
 				}
 			});

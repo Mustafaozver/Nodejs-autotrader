@@ -12,9 +12,6 @@ module.exports = ((ATA)=>{
 		_DataUpdate = func;
 	};
 	const ListenerCheck = (pair)=>{
-		const console = {
-			log:()=>{},
-		};
 		try{
 			if(pair.Type != "+")return false;
 			switch (pair.Instrument1.Symbol){
@@ -110,8 +107,7 @@ module.exports = ((ATA)=>{
 				return;
 			}
 			counter = 0;
-		},50);
-		console.log("Setup is DONE.");
+		},10);
 	};
 	ATA.Setups.push(async()=>{
 		const OpenThread = (codes)=>{
@@ -159,7 +155,6 @@ module.exports = ((ATA)=>{
 				const pair = GetPair(item.symbol);
 				pair.permissions = item.permissions;
 			});
-			console.log("OKKK");
 			SetListenerCheck(ListenerCheck);
 			MakeReadyTradeList();
 		});

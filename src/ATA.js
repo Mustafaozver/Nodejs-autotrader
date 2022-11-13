@@ -299,46 +299,32 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 	GLOBAL["ATA"] = function(){
 		return ATA;
 	};
-	if(!GLOBAL.Worker){
-		var worker_threads = ATA.Require("worker_threads");
-		GLOBAL.worker_threads = worker_threads;
-		if(worker_threads.isMainThread){
-			//console.log("MAİN THREAD", worker_threads);
-		}else{
-			ATA.SendMessage = function(msg){
-				worker_threads.parentPort.postMessage(msg);
-			};
-			worker_threads.parentPort.onmessage = async function(e){
-				ATA.OnMessage(e);
-			};
-			ATA.OnMessage = function(e){
-				if(e.data.EVAL){
-					var generatedRes;
-					var err = false;
-					try {
-						var code = e.data.EVAL+"";
-						generatedRes = eval.apply(ATA.GLOBAL,["try{var generatedRes=("+code+");}catch(e){generatedRes=e};generatedRes"]);
-					} catch (e) {
-						generatedRes = e.message;
-						err = true;
-					}
-					try{
-						ATA.SendMessage({
-							ID		: e.data.ID,
-							Answer	: generatedRes,
-							Error	: err,
-						});
-					}catch(err){
-						ATA.SendMessage({
-							ID		: e.data.ID,
-							Answer	: err.message,
-							Error	: true,
-						});
-					}
-				}
-			};
+	ATA.OnMessage = function(e){
+		if(e.data.EVAL){
+			var generatedRes;
+			var err = false;
+			try {
+				var code = e.data.EVAL+"";
+				generatedRes = eval.apply(ATA.GLOBAL,["try{var generatedRes=("+code+");}catch(e){generatedRes=e};generatedRes"]);
+			} catch (e) {
+				generatedRes = e.message;
+				err = true;
+			}
+			try{
+				ATA.SendMessage({
+					ID		: e.data.ID,
+					Answer	: generatedRes,
+					Error	: err,
+				});
+			}catch(err){
+				ATA.SendMessage({
+					ID		: e.data.ID,
+					Answer	: err.message,
+					Error	: true,
+				});
+			}
 		}
-	}
+	};
 	process.on("unhandledRejection", function(err){
 		console.log("Unhandled rejection:", err.toString());
 		//process.exit();
@@ -346,7 +332,19 @@ if(typeof ATA === "undefined")(function(GLOBAL){ // singleton class
 	process.on('uncaughtException', function (err) {
 		console.log('Caught exception: ', err.toString());
 		//process.exit();
-	  });
+	});
+	process.on("message", async(data)=>{
+		ATA.OnMessage({data});
+	});
+	ATA.SendMessage = (msg)=>{
+		process.send(msg);
+	};
+	const Exit = (code=0)=>{
+		process.reallyExit(code);
+	};
+	GLOBAL.Exit = ()=>{
+		Exit();
+	};
 	setTimeout(async function(){ // Start trigger
 		setInterval(function(){ // Time => /|. Clock
 			var thisTime = (new Date()).getTime();

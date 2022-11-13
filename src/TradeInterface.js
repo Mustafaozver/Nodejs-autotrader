@@ -1,15 +1,9 @@
 module.exports = ((ATA)=>{
 	// this file is for binance tarde system.
 	// modules
-	const Request1 = ATA.Require("request");
+	const Request = ATA.Require("request");
 	const Crypto = ATA.Require("crypto");
 	const Thread = ATA.Require("./Thread");
-	
-	const Request = async function(opts, resp){
-		//console.log("REQUEST => ", arguments.callee.caller.name);
-		console.log("REQUEST => ", opts.url);
-		return await Request1(opts, resp);
-	};
 	
 	// get api and secret key
 	const config = ATA.Require("./binance.config.json");
@@ -44,7 +38,8 @@ module.exports = ((ATA)=>{
 		OpenThread(()=>{
 			ATA()._R = "WSOCKET";
 			//const BASE_WS_BT = "wss://stream.binance.com:9443/ws/!bookTicker";
-			const BASE_WS_PT = "wss://stream.binance.com:9443/ws/!ticker@arr";
+			//const BASE_WS_PT = "wss://stream.binance.com:9443/ws/!ticker@arr";
+			const BASE_WS_PT = "wss://fstream.binance.com/ws/!ticker@arr";
 			const WebSocket = ATA().Require("./WSSysytem");
 			const WS_PT = new WebSocket(BASE_WS_PT);
 			const _pool = {};
@@ -176,13 +171,13 @@ module.exports = ((ATA)=>{
 		for(var key in query)arr.push(key + "=" + query[key]);
 		return arr.join("&");
 	};
-	const GetHash = (query)=>{
-		return Crypto.createHmac("sha256", config.Accounts[SELECTED_API].SECRETKEY).update(query).digest("hex");
+	const GetHash = (query, napi=SELECTED_API)=>{
+		return Crypto.createHmac("sha256", config.Accounts[napi].SECRETKEY).update(query).digest("hex");
 	};
 	const SetListenerUpdate = (func)=>{
 		_dataUpdate = func;
 	};
-	const GetSpotPrices = async()=>{
+	const GetSpotPrices = async(napi=SELECTED_API)=>{
 		var path = "/api/v3/ticker/price";
 		var url = BASE_URL;
 		var recvWindow = 60000;
@@ -195,7 +190,7 @@ module.exports = ((ATA)=>{
 			localAddress:false,
 			forever:true,
 			headers:{
-				//"X-MBX-APIKEY": config.Accounts[SELECTED_API].APIKEY,
+				//"X-MBX-APIKEY": config.Accounts[napi].APIKEY,
 				"User-Agent": "Mozilla/4.0 (compatible; Node Binance API)",
 				"Content-type": "application/x-www-form-urlencoded",
 			},
@@ -215,7 +210,7 @@ module.exports = ((ATA)=>{
 		await promise;
 		return JSONTryParse(_data);
 	};
-	const GetSpotBidAskPrices = async()=>{
+	const GetSpotBidAskPrices = async(napi=SELECTED_API)=>{
 		var path = "/api/v3/ticker/bookTicker";
 		var url = BASE_URL;
 		var recvWindow = 60000;
@@ -228,7 +223,7 @@ module.exports = ((ATA)=>{
 			localAddress:false,
 			forever:true,
 			headers:{
-				//"X-MBX-APIKEY": config.Accounts[SELECTED_API].APIKEY,
+				//"X-MBX-APIKEY": config.Accounts[napi].APIKEY,
 				"User-Agent": "Mozilla/4.0 (compatible; Node Binance API)",
 				"Content-type": "application/x-www-form-urlencoded",
 			},
@@ -248,7 +243,7 @@ module.exports = ((ATA)=>{
 		await promise;
 		return JSONTryParse(_data);
 	};
-	const GetSpotOpenOrders = async()=>{
+	const GetSpotOpenOrders = async(napi=SELECTED_API)=>{
 		var path = "/api/v3/openOrders";
 		var url = BASE_URL;
 		var timestamp = (new Date()).getTime();
@@ -273,7 +268,7 @@ module.exports = ((ATA)=>{
 				recvWindow:recvWindow,
 			},
 			headers:{
-				"X-MBX-APIKEY": config.Accounts[SELECTED_API].APIKEY,
+				"X-MBX-APIKEY": config.Accounts[napi].APIKEY,
 				"User-Agent": "Mozilla/4.0 (compatible; Node Binance API)",
 				"Content-type": "application/x-www-form-urlencoded",
 			},
@@ -293,7 +288,7 @@ module.exports = ((ATA)=>{
 		await promise;
 		return JSONTryParse(_data);
 	};
-	const GetFuturesBidAskPrices = async()=>{
+	const GetFuturesBidAskPrices = async(napi=SELECTED_API)=>{
 		var path = "/fapi/v1/ticker/bookTicker";
 		var url = BASE_URL_F;
 		var recvWindow = 60000;
@@ -306,7 +301,7 @@ module.exports = ((ATA)=>{
 			localAddress:false,
 			forever:true,
 			headers:{
-				//"X-MBX-APIKEY": config.Accounts[SELECTED_API].APIKEY,
+				//"X-MBX-APIKEY": config.Accounts[napi].APIKEY,
 				"User-Agent": "Mozilla/4.0 (compatible; Node Binance API)",
 				"Content-type": "application/x-www-form-urlencoded",
 			},
@@ -326,7 +321,7 @@ module.exports = ((ATA)=>{
 		await promise;
 		return JSONTryParse(_data);
 	};
-	const GetDepth = async(symbol)=>{
+	const GetDepth = async(symbol, napi=SELECTED_API)=>{
 		var path = "/api/v1/depth";
 		var url = BASE_URL;
 		var recvWindow = 60000;
@@ -343,7 +338,7 @@ module.exports = ((ATA)=>{
 			localAddress:false,
 			forever:true,
 			headers:{
-				//"X-MBX-APIKEY": config.Accounts[SELECTED_API].APIKEY,
+				//"X-MBX-APIKEY": config.Accounts[napi].APIKEY,
 				"User-Agent": "Mozilla/4.0 (compatible; Node Binance API)",
 				"Content-type": "application/x-www-form-urlencoded",
 			},
@@ -363,7 +358,7 @@ module.exports = ((ATA)=>{
 		await promise;
 		return JSONTryParse(_data);
 	};
-	const GetFutureExchangeInfo = async()=>{
+	const GetFutureExchangeInfo = async(napi=SELECTED_API)=>{
 		var path = "/fapi/v1/exchangeInfo";
 		var url = BASE_URL_F;
 		var recvWindow = 60000;
@@ -376,7 +371,7 @@ module.exports = ((ATA)=>{
 			localAddress:false,
 			forever:true,
 			headers:{
-				//"X-MBX-APIKEY": config.Accounts[SELECTED_API].APIKEY,
+				//"X-MBX-APIKEY": config.Accounts[napi].APIKEY,
 				"User-Agent": "Mozilla/4.0 (compatible; Node Binance API)",
 				"Content-type": "application/x-www-form-urlencoded",
 			},
@@ -396,7 +391,7 @@ module.exports = ((ATA)=>{
 		await promise;
 		return JSONTryParse(_data);
 	};
-	const GetSpotExchangeInfo = async()=>{
+	const GetSpotExchangeInfo = async(napi=SELECTED_API)=>{
 		var path = "/api/v3/exchangeInfo";
 		var url = BASE_URL;
 		var recvWindow = 60000;
@@ -409,7 +404,7 @@ module.exports = ((ATA)=>{
 			localAddress:false,
 			forever:true,
 			headers:{
-				//"X-MBX-APIKEY": config.Accounts[SELECTED_API].APIKEY,
+				//"X-MBX-APIKEY": config.Accounts[napi].APIKEY,
 				"User-Agent": "Mozilla/4.0 (compatible; Node Binance API)",
 				"Content-type": "application/x-www-form-urlencoded",
 			},
@@ -429,7 +424,7 @@ module.exports = ((ATA)=>{
 		await promise;
 		return JSONTryParse(_data);
 	};
-	const GetMarkPrices = async()=>{
+	const GetMarkPrices = async(napi=SELECTED_API)=>{
 		var path = "/fapi/v1/premiumIndex";
 		var url = BASE_URL_F;
 		var recvWindow = 60000;
@@ -442,7 +437,7 @@ module.exports = ((ATA)=>{
 			localAddress:false,
 			forever:true,
 			headers:{
-				//"X-MBX-APIKEY": config.Accounts[SELECTED_API].APIKEY,
+				//"X-MBX-APIKEY": config.Accounts[napi].APIKEY,
 				"User-Agent": "Mozilla/4.0 (compatible; Node Binance API)",
 				"Content-type": "application/x-www-form-urlencoded",
 			},
@@ -462,7 +457,7 @@ module.exports = ((ATA)=>{
 		await promise;
 		return JSONTryParse(_data);
 	};
-	const GetFuturePrices = async()=>{
+	const GetFuturePrices = async(napi=SELECTED_API)=>{
 		var path = "/fapi/v1/ticker/price";
 		var url = BASE_URL_F;
 		var recvWindow = 60000;
@@ -475,7 +470,7 @@ module.exports = ((ATA)=>{
 			localAddress:false,
 			forever:true,
 			headers:{
-				//"X-MBX-APIKEY": config.Accounts[SELECTED_API].APIKEY,
+				//"X-MBX-APIKEY": config.Accounts[napi].APIKEY,
 				"User-Agent": "Mozilla/4.0 (compatible; Node Binance API)",
 				"Content-type": "application/x-www-form-urlencoded",
 			},
@@ -495,7 +490,7 @@ module.exports = ((ATA)=>{
 		await promise;
 		return JSONTryParse(_data);
 	};
-	const GetFuturesOpenOrders = async()=>{
+	const GetFuturesOpenOrders = async(napi=SELECTED_API)=>{
 		var path = "/fapi/v1/allOrders";
 		var url = BASE_URL_F;
 		var timestamp = (new Date()).getTime();
@@ -519,7 +514,7 @@ module.exports = ((ATA)=>{
 				recvWindow:recvWindow,
 			},
 			headers:{
-				"X-MBX-APIKEY": config.Accounts[SELECTED_API].APIKEY,
+				"X-MBX-APIKEY": config.Accounts[napi].APIKEY,
 				"User-Agent": "Mozilla/4.0 (compatible; Node Binance API)",
 				"Content-type": "application/x-www-form-urlencoded",
 			},
@@ -539,7 +534,7 @@ module.exports = ((ATA)=>{
 		await promise;
 		return JSONTryParse(_data);
 	};
-	const GetSpotBalances = async()=>{
+	const GetSpotBalances = async(napi=SELECTED_API)=>{
 		var path = "/api/v3/account";
 		var url = BASE_URL;
 		var timestamp = (new Date()).getTime();
@@ -563,7 +558,7 @@ module.exports = ((ATA)=>{
 				recvWindow:recvWindow,
 			},
 			headers:{
-				"X-MBX-APIKEY": config.Accounts[SELECTED_API].APIKEY,
+				"X-MBX-APIKEY": config.Accounts[napi].APIKEY,
 				"User-Agent": "Mozilla/4.0 (compatible; Node Binance API)",
 				"Content-type": "application/x-www-form-urlencoded",
 			},
@@ -583,7 +578,7 @@ module.exports = ((ATA)=>{
 		await promise;
 		return JSONTryParse(_data);
 	};
-	const GetFutureBalances = async()=>{
+	const GetFutureBalances = async(napi=SELECTED_API)=>{
 		var path = "/fapi/v2/balance";
 		var url = BASE_URL_F;
 		var timestamp = (new Date()).getTime();
@@ -607,7 +602,7 @@ module.exports = ((ATA)=>{
 				recvWindow:recvWindow,
 			},
 			headers:{
-				"X-MBX-APIKEY": config.Accounts[SELECTED_API].APIKEY,
+				"X-MBX-APIKEY": config.Accounts[napi].APIKEY,
 				"User-Agent": "Mozilla/4.0 (compatible; Node Binance API)",
 				"Content-type": "application/x-www-form-urlencoded",
 			},
@@ -627,7 +622,7 @@ module.exports = ((ATA)=>{
 		await promise;
 		return JSONTryParse(_data);
 	};
-	const GetFutureAccount = async()=>{
+	const GetFutureAccount = async(napi=SELECTED_API)=>{
 		var path = "/fapi/v2/account";
 		var url = BASE_URL_F;
 		var timestamp = (new Date()).getTime();
@@ -651,7 +646,7 @@ module.exports = ((ATA)=>{
 				recvWindow:recvWindow,
 			},
 			headers:{
-				"X-MBX-APIKEY": config.Accounts[SELECTED_API].APIKEY,
+				"X-MBX-APIKEY": config.Accounts[napi].APIKEY,
 				"User-Agent": "Mozilla/4.0 (compatible; Node Binance API)",
 				"Content-type": "application/x-www-form-urlencoded",
 			},
@@ -671,7 +666,7 @@ module.exports = ((ATA)=>{
 		await promise;
 		return JSONTryParse(_data);
 	};
-	const GetMarginAccount = async()=>{
+	const GetMarginAccount = async(napi=SELECTED_API)=>{
 		var path = "/sapi/v1/margin/account";
 		var url = BASE_URL;
 		var timestamp = (new Date()).getTime();
@@ -695,7 +690,7 @@ module.exports = ((ATA)=>{
 				recvWindow:recvWindow,
 			},
 			headers:{
-				"X-MBX-APIKEY": config.Accounts[SELECTED_API].APIKEY,
+				"X-MBX-APIKEY": config.Accounts[napi].APIKEY,
 				"User-Agent": "Mozilla/4.0 (compatible; Node Binance API)",
 				"Content-type": "application/x-www-form-urlencoded",
 			},
@@ -715,7 +710,7 @@ module.exports = ((ATA)=>{
 		await promise;
 		return JSONTryParse(_data);
 	};
-	const GetPositionRisk = async()=>{
+	const GetPositionRisk = async(napi=SELECTED_API)=>{
 		var path = "/fapi/v2/positionRisk";
 		var url = BASE_URL_F;
 		var timestamp = (new Date()).getTime();
@@ -739,7 +734,7 @@ module.exports = ((ATA)=>{
 				recvWindow:recvWindow,
 			},
 			headers:{
-				"X-MBX-APIKEY": config.Accounts[SELECTED_API].APIKEY,
+				"X-MBX-APIKEY": config.Accounts[napi].APIKEY,
 				"User-Agent": "Mozilla/4.0 (compatible; Node Binance API)",
 				"Content-type": "application/x-www-form-urlencoded",
 			},
@@ -759,7 +754,7 @@ module.exports = ((ATA)=>{
 		await promise;
 		return JSONTryParse(_data);
 	};
-	const GetIncome = async()=>{
+	const GetIncome = async(napi=SELECTED_API)=>{
 		var path = "/fapi/v1/income";
 		var url = BASE_URL_F;
 		var timestamp = (new Date()).getTime();
@@ -783,7 +778,7 @@ module.exports = ((ATA)=>{
 				recvWindow:recvWindow,
 			},
 			headers:{
-				"X-MBX-APIKEY": config.Accounts[SELECTED_API].APIKEY,
+				"X-MBX-APIKEY": config.Accounts[napi].APIKEY,
 				"User-Agent": "Mozilla/4.0 (compatible; Node Binance API)",
 				"Content-type": "application/x-www-form-urlencoded",
 			},
@@ -803,7 +798,7 @@ module.exports = ((ATA)=>{
 		await promise;
 		return JSONTryParse(_data);
 	};
-	const SetLeverage = async(symbol, leverage)=>{
+	const SetLeverage = async(symbol, leverage, napi=SELECTED_API)=>{
 		var path = "/fapi/v1/leverage";
 		var url = BASE_URL_F;
 		var timestamp = (new Date()).getTime();
@@ -829,7 +824,7 @@ module.exports = ((ATA)=>{
 				recvWindow:recvWindow,
 			},
 			headers:{
-				"X-MBX-APIKEY": config.Accounts[SELECTED_API].APIKEY,
+				"X-MBX-APIKEY": config.Accounts[napi].APIKEY,
 				"User-Agent": "Mozilla/4.0 (compatible; Node Binance API)",
 				"Content-type": "application/x-www-form-urlencoded",
 			},
@@ -849,7 +844,7 @@ module.exports = ((ATA)=>{
 		await promise;
 		return JSONTryParse(_data);
 	};
-	const SetMarginType = async(symbol, marginType="ISOLATED")=>{
+	const SetMarginType = async(symbol, marginType="ISOLATED", napi=SELECTED_API)=>{
 		var path = "/fapi/v1/marginType";
 		var url = BASE_URL_F;
 		var timestamp = (new Date()).getTime();
@@ -875,7 +870,7 @@ module.exports = ((ATA)=>{
 				recvWindow:recvWindow,
 			},
 			headers:{
-				"X-MBX-APIKEY": config.Accounts[SELECTED_API].APIKEY,
+				"X-MBX-APIKEY": config.Accounts[napi].APIKEY,
 				"User-Agent": "Mozilla/4.0 (compatible; Node Binance API)",
 				"Content-type": "application/x-www-form-urlencoded",
 			},
@@ -895,7 +890,7 @@ module.exports = ((ATA)=>{
 		await promise;
 		return JSONTryParse(_data);
 	};
-	const MarketOrder = async(symbol, quantity, price=false)=>{
+	const MarketOrder = async(symbol, quantity, price=false, napi=SELECTED_API)=>{
 		var path = "/api/v3/order";
 		var url = BASE_URL;
 		var timestamp = (new Date()).getTime();
@@ -929,7 +924,7 @@ module.exports = ((ATA)=>{
 				recvWindow:recvWindow,
 			},
 			headers:{
-				"X-MBX-APIKEY": config.Accounts[SELECTED_API].APIKEY,
+				"X-MBX-APIKEY": config.Accounts[napi].APIKEY,
 				"User-Agent": "Mozilla/4.0 (compatible; Node Binance API)",
 				"Content-type": "application/x-www-form-urlencoded",
 			},
@@ -949,7 +944,7 @@ module.exports = ((ATA)=>{
 		await promise;
 		return JSONTryParse(_data);
 	};
-	const MarketPosition = async(symbol, quantity, price=false)=>{
+	const MarketPosition = async(symbol, quantity, price=false, napi=SELECTED_API)=>{
 		var path = "/fapi/v1/order";
 		var url = BASE_URL_F;
 		var timestamp = (new Date()).getTime();
@@ -983,7 +978,7 @@ module.exports = ((ATA)=>{
 				recvWindow:recvWindow,
 			},
 			headers:{
-				"X-MBX-APIKEY": config.Accounts[SELECTED_API].APIKEY,
+				"X-MBX-APIKEY": config.Accounts[napi].APIKEY,
 				"User-Agent": "Mozilla/4.0 (compatible; Node Binance API)",
 				"Content-type": "application/x-www-form-urlencoded",
 			},

@@ -61,10 +61,10 @@ const changeTheme = (name)=>{
 	switch(name){
 		default:
 		case "dark":
-			$("body").removeClass('bg-light').removeClass('text-dark').addClass('bg-dark').addClass("text-light");
+			$("body").removeClass("darktheme").addClass("lighttheme");
 			break;
 		case "light":
-			$("body").removeClass('bg-dark').removeClass('text-light').addClass('bg-light').addClass("text-dark");
+			$("body").removeClass("lighttheme").addClass("darktheme");
 		break;
 	}
 };
@@ -99,7 +99,7 @@ ATA().Setups.push(()=>{
 });
 		</SCRIPT>
 	</HEAD>
-	<BODY onselectstart="return false" class="bg-dark text-light">
+	<BODY onselectstart="return false" class="lighttheme">
 		<DIV style="height:100%;width:100%;position:fixed;left:0;top:0;" class="bg-dark text-light">
 			<TABLE style="width:100%;height:100%;" class="desktoplayout">
 				<TR style="height:2em;z-index:200000;">

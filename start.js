@@ -1,37 +1,15 @@
 (()=>{
-	const wt = require("worker_threads");
-	var WW;
-	const HeartBeat = ()=>{
-		
-	};
-	const OnMessage = (args)=>{
-		
-	};
-	const OnError = (args)=>{
-		BuildWW();
-	};
-	const OnExit = (args)=>{
-		BuildWW();
-	};
-	const BuildWW = ()=>{
-		WW = new wt.Worker("./index.js");
-		const addlistener = WW.addListener || WW.addEventListener;
-		addlistener.apply(WW, ["message", async function(){
-			OnMessage([...arguments]);
-			HeartBeat();
-		}]);
-		addlistener.apply(WW, ["error", async function(){
-			OnError([...arguments]);
-			HeartBeat();
-		}]);
-		addlistener.apply(WW, ["exit", async function(){
-			OnExit([...arguments]);
-			HeartBeat();
-		}]);
+	const { fork, spawn } = require("node:child_process");
+	const BuildPR = ()=>{
+		process._x = fork("index.js");
+		process._x.on("message", (data)=>{
+			console.log("data", data);
+		});
+		spawn(__dirname + "\\tools\\GoogleChromePortable\\GoogleChromePortable.exe", ["--app=http://localhost:8010/"]);
 	};
 	setTimeout(()=>{
 		console.log("Starting...");
-		BuildWW();
+		BuildPR();
 		setInterval(()=>{
 			const memdata = process.memoryUsage();
 			if((memdata.heapUsed / memdata.heapTotal) > 0.98){

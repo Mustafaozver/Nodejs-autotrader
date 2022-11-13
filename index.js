@@ -4,14 +4,19 @@
 	ATA.isMaster = true;
 	ATA._R = "MAIN";
 	
-	ATA.Require("./Logger.js");
+	const Console = ATA.Require("./Logger");
+	const DBManager = ATA.Require("./DBManager");
+	
+	const FAnalyzer = ATA.Require("./Financial.Analyzer");
+	
+	
 	ATA.Require("../package.json");
 	const Url = ATA.Require("url");
 	const {SetDataUpdate} = ATA.Require("./TradingAnalyzer");
 	const {CreateHttpService} = ATA.Require("./Server");
 	ATA.Require("./TMoney");
 	const TradeInterface = ATA.Require("./TradeInterface");
-	const {GetPairList, CandleStick, Candle, Instrument, Pair, FinancialPosition, GetPair, SetMakeOrder, GenerateFinancialPosition } = ATA.Require("./FinancialClasses");
+	const {GetPairList, CandleStick, Candle, Instrument, Pair, FinancialPosition, GetPair, SetMakeOrder, SetPosition, isActiveforPosition} = ATA.Require("./FinancialClasses");
 	
 	TradeInterface.SetListenerUpdate((x)=>{
 		const pair0 = GetPair(x.symbol);
@@ -35,7 +40,7 @@
 	*/
 	SetDataUpdate((data)=>{
 		data.filter((item)=>{
-			console.log("SIGNAL => ", item);
+			console.log("SIGNAL => ", item.P);
 			return item.Available;
 		}).sort((a, b)=>{
 			const apoint = Math.abs(a.Point);
@@ -44,8 +49,7 @@
 			else if(apoint < bpoint) return +1;
 			return 0;
 		}).slice(-1).map((item)=>{
-			console.log("[" + item.P + "] => " + item.Side + " " + item.Target + " (" + (new Date(item.Start)) + ") " + item.leverage + "x Last=" + item.Last);
-			StrategicOrder(item.P, item.leverage, item.Side=="LONG", item.Target);
+			StrategicOrder(item);
 		});
 	});
 	ATA.Loops.push(()=>{
@@ -73,20 +77,26 @@
 	};
 	ATA.Setups.push(()=>{
 		SetMakeOrder(async function(symbol, quantity, price=false, leverage=false){
-			console.log("TRADER => ", symbol, quantity, price, leverage);
-			//return;
+			console.log("TRADER (INDEX.JS) => ", symbol, quantity, price, leverage);
+			//return 1;
 			const resp = await TradeInterface.MarketPosition(symbol, quantity, price);
-			return resp;
+			if(resp.orderId > 0)return 1;
+			return -1;
 		});
 	});
-	const StrategicOrder = async(symbol, leverage, isLong, target)=>{
-		console.log("SET TRADER [" + symbol + "] => " + target);
-		const fpos = await GenerateFinancialPosition(symbol, target, leverage, isLong);
+	const StrategicOrder = async(signal)=>{
+		if(!isActiveforPosition()){
+			const symbol = signal.P;
+			const stime = new Date(signal.Start);
+			const target = signal.Target;
+			const isLong = signal.isLong;
+			const leverage = signal.leverage;
+			const ls_side = signal.Side; // isLong ? "LONG/BUY" : "SHORT/SELL";
+			const crossEdge = signal.Range[isLong ? 1 : 0];
+			SetPosition(symbol, target, leverage, isLong, crossEdge);
+			console.log("TRADER [" + symbol + "] => " + isLong + " " + target + " (" + stime + ") " + leverage + "x Last=" + signal.Last);
+		}
 	};
-	
-	/*setTimeout(()=>{
-		StrategicOrder("BTCUSDT", 2, false, 10000);
-	},60*1000);*/
 	
 	// web ui and TradingView apis
 	CreateHttpService("TIME", (Request, Resources, Next)=>{
@@ -305,6 +315,5 @@
 		Resources.set("Content-Type","application/json");
 		Resources.send(JSON.stringify(resp, null, "\t"));
 	});
-	
 	setInterval(console.clear, 1000 * 60 * 5);
 })(require("./src/ATA")());

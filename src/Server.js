@@ -172,9 +172,7 @@ module.exports = ((ATA)=>{
 				});
 				return;
 			}
-		}catch(e){
-			console.log("Error => ", e);
-		}
+		}catch(e){}
 	};
 	ATA.Execute = (who, func, args)=>{
 		ATA.SendMessage(who, "DATA", {

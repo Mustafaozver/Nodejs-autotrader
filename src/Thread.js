@@ -1,5 +1,5 @@
 module.exports = ((ATA)=>{
-	const wt = ATA.Require("worker_threads");
+	const wt = ATA.Require("node:child_process");
 	const datapool = {};
 	const stack = {};
 	var count = 0;
@@ -23,6 +23,25 @@ module.exports = ((ATA)=>{
 		Create(){
 			var THAT = this;
 			this.__updatetime = (new Date()).getTime();
+			
+			this._WW = wt.fork("./src/ata.wt.js");
+			var addlistener = this._WW.addListener || this._WW.addEventListener || this._WW.on;
+			addlistener.apply(this._WW, ["message", async function(){
+				THAT.OnMessage.apply(THAT,[...arguments]);
+				THAT.HeartBeat();
+			}]);
+			addlistener.apply(this._WW, ["error", function(){
+				THAT.OnError.apply(THAT,[...arguments]);
+				THAT.HeartBeat();
+			}]);
+			addlistener.apply(this._WW, ["exit", function(){
+				THAT.OnExit.apply(THAT,[...arguments]);
+				THAT.HeartBeat();
+			}]);
+			
+			
+			
+			return;
 			this._WW = new wt.Worker("./src/ata.wt.js");
 			var addlistener = this._WW.addListener || this._WW.addEventListener;
 			addlistener.apply(this._WW, ["message", async function(){
@@ -55,6 +74,11 @@ module.exports = ((ATA)=>{
 		Run(code, args=[]){
 			code = "(" + code + ")(" + args.map(JSON.stringify).join(",") + ")";
 			var ID = "1";
+			this._WW.send({
+				ID:ID,
+				EVAL:code,
+			});
+			return;
 			this._WW.postMessage({
 				ID:ID,
 				EVAL:code,

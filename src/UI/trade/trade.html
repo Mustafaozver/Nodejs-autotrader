@@ -96,6 +96,15 @@
 						"mainSeriesProperties.candleStyle.wickDownColor": '#7f323f',
 					}
 				});
+				$("#chngbtn").click(()=>{
+					if($("#tv_chart_container").is(":visible")){
+						$("#tv_chart_container").hide();
+						$("#ata_chart_container").show();
+					}else{
+						$("#tv_chart_container").show();
+						$("#ata_chart_container").hide();
+					}
+				});
 				$("#longbtn").click(()=>{
 					const lot = document.getElementById("lotinput").value;
 					const lav = document.getElementById("lavinput").value;
@@ -148,11 +157,15 @@
 	</HEAD>
 	<BODY style="background-color:rgb(32, 33, 36);">
 		<DIV id="tv_chart_container" style="position:absolute;width:100%;height:100%;left:0;top:0;"></DIV>
-		<DIV id="panel" style="position:absolute;right:0px;top:0;width:15em;" class="btn-group" role="group">
+		<DIV id="ata_chart_container" style="position:absolute;width:100%;height:100%;left:0;top:0;display:none;"></DIV>
+		<DIV id="panel" style="position:absolute;right:0px;bottom:0;width:15em;" class="btn-group" role="group">
 			<BUTTON id="longbtn" class="btn btn-success">L</BUTTON>
 			<INPUT id="lotinput" value="0" class="btn btn-outline-secondary" style="width:2em;" />
 			<INPUT type="number" id="lavinput" value="8" class="btn btn-outline-secondary" style="width:4em;" />
 			<BUTTON id="shortbtn" class="btn btn-danger">S</BUTTON>
+		</DIV>
+		<DIV id="panel" style="position:absolute;right:0px;top:0;width:1em;height:1em;">
+			<BUTTON id="chngbtn" class="btn btn-light">O</BUTTON>
 		</DIV>
 	</BODY>
 </HTML>
